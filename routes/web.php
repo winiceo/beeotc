@@ -7,11 +7,26 @@ Route::get('/', ['as' => 'home', 'uses' => 'HomeController@show']);
 Route::get('rules', ['as' => 'rules', 'uses' => 'HomeController@rules']);
 Route::get('bin/{paste?}', 'HomeController@pastebin');
 
+
+
 //web
+
+Route::get('fqa', 'FqaController@index');
+
 Route::group(['prefix' => 'trade', 'namespace' => 'Trade'], function () {
     Route::get('/', ['as' => 'trade', 'uses' => 'TradeController@overview']);
+    Route::get('/push/ad', ['as' => 'trade', 'uses' => 'AdController@create']);
 
 });
+
+Route::group(['prefix' => 'financial', 'namespace' => 'Financial'], function () {
+    Route::get('/', ['as' => 'financial', 'uses' => 'FinancialController@overview']);
+
+});
+
+
+
+
 // Authentication
 Route::group(['namespace' => 'Auth'], function () {
     // Sessions
@@ -73,10 +88,15 @@ Route::put('replies/{reply}', ['as' => 'replies.update', 'uses' => 'ReplyControl
 Route::delete('replies/{reply}', ['as' => 'replies.delete', 'uses' => 'ReplyController@delete']);
 
 // Admin
-Route::group(['prefix' => 'admin', 'as' => 'admin', 'namespace' => 'Admin'], function () {
+Route::group(['prefix' => 'backend', 'as' => 'admin', 'namespace' => 'Admin'], function () {
     Route::get('/', 'AdminController@index');
     Route::get('users/{username}', ['as' => '.users.show', 'uses' => 'UsersController@show']);
     Route::put('users/{username}/ban', ['as' => '.users.ban', 'uses' => 'UsersController@ban']);
     Route::put('users/{username}/unban', ['as' => '.users.unban', 'uses' => 'UsersController@unban']);
     Route::delete('users/{username}', ['as' => '.users.delete', 'uses' => 'UsersController@delete']);
+});
+
+
+Route::group(['prefix' => 'admin'], function () {
+    Voyager::routes();
 });

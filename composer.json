@@ -1,6 +1,6 @@
 {
-    "name": "laravelio/portal",
-    "description": "The source code for the Laravel.io community portal.",
+    "name": "beeotc",
+    "description": "beeotc",
     "license": "MIT",
     "type": "project",
     "require": {
@@ -16,7 +16,9 @@
         "league/commonmark": "^0.15.2",
         "roave/security-advisories": "dev-master",
         "spatie/laravel-robots-middleware": "^1.0",
-        "tijsverkoyen/akismet": "^1.1"
+        "tcg/voyager": "^1.0",
+        "tijsverkoyen/akismet": "^1.1",
+        "tymon/jwt-auth": "^0.5.12"
     },
     "require-dev": {
         "filp/whoops": "^2.1",
@@ -36,7 +38,8 @@
             "database"
         ],
         "files": [
-            "resources/helpers.php"
+            "resources/helpers.php",
+            "app/helpers.php"
         ],
         "psr-4": {
             "App\\": "app/"
@@ -79,6 +82,12 @@
     "extra": {
         "laravel": {
             "dont-discover": []
+        }
+    },
+    "repositories": {
+        "hooks": {
+            "type": "composer",
+            "url": "https://larapack.io"
         }
     }
 }

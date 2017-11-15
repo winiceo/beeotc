@@ -9,10 +9,15 @@ use App\Helpers\HasTimestamps;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
-class User extends Authenticatable
+use App\Models\Relations\UserHasWallet;
+class User extends \TCG\Voyager\Models\User
 {
     use HasTimestamps, ModelHelpers, Notifiable;
+
+
+    use UserHasWallet
+
+        ;
 
     const DEFAULT = 1;
     const MODERATOR = 2;
@@ -237,5 +242,22 @@ class User extends Authenticatable
         $this->deleteReplies();
 
         parent::delete();
+    }
+
+
+
+    /**
+     * 验证用户密码
+     *
+     * @Author   Wayne[qiaobin@zhiyicx.com]
+     * @DateTime 2016-12-30T18:44:40+0800
+     *
+     * @param string $password [description]
+     *
+     * @return bool 验证结果true or false
+     */
+    public function verifyPassword(string $password): bool
+    {
+        return $this->password && app('hash')->check($password, $this->password);
     }
 }

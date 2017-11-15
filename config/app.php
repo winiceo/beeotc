@@ -77,7 +77,7 @@ return [
     |
     */
 
-    'locale' => 'zh',
+    'locale' => 'zh_CN',
 
     /*
     |--------------------------------------------------------------------------
@@ -90,7 +90,7 @@ return [
     |
     */
 
-    'fallback_locale' => 'zh',
+    'fallback_locale' => 'zh_CN',
 
     /*
     |--------------------------------------------------------------------------
@@ -178,6 +178,9 @@ return [
         App\Spam\SpamServiceProvider::class,
         App\Validation\ValidationServiceProvider::class,
 
+        Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
+
+
     ],
 
     /*
@@ -233,6 +236,9 @@ return [
         'Bugsnag' => Bugsnag\BugsnagLaravel\Facades\Bugsnag::class,
         'Form' => Collective\Html\FormFacade::class,
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
+
+        'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
+
 
     ],
 

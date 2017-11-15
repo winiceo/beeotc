@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Auth\TokenGuard;
 use App\User;
 use App\Models\Reply;
 use App\Models\Thread;
@@ -24,5 +25,9 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
+
+        $this->app->auth->extend('token', function ($app) {
+            return $app->make(TokenGuard::class);
+        });
     }
 }
