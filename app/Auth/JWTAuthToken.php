@@ -53,7 +53,9 @@ class JWTAuthToken
      */
     public function refresh(string $token)
     {
-        $token = $this->auth->refresh($token);
+
+        $this->auth->setToken($token);
+        $token = $this->auth->refresh();
 
         if (! $token) {
             return false;

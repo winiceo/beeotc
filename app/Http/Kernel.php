@@ -75,5 +75,8 @@ class Kernel extends HttpKernel
         'can' => Authorize::class,
         'guest' => RedirectIfAuthenticated::class,
         'throttle' => ThrottleRequests::class,
+
+
+
     ];
 }

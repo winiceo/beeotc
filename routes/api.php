@@ -27,6 +27,9 @@ use Illuminate\Contracts\Routing\Registrar as RouteContract;
 |
 */
 
+
+
+
 Route::group(['prefix' => 'v1','namespace' => 'Api\V1'], function (RouteContract $api) {
 
     /*
@@ -46,13 +49,67 @@ Route::group(['prefix' => 'v1','namespace' => 'Api\V1'], function (RouteContract
 
     $api->get('/bootstrappers', 'BootstrappersController@show');
 
-    // Create user authentication token
-    $api->post('/tokens', 'TokenController@store');
+    //用户登录
+    Route::post('/account/login', 'AccountController@login');
 
-    // Refresh token
-    $api->patch('/tokens/{token}', API1\TokenController::class.'@refresh');
+    //Route::post('/login/refresh', 'LoginController@refresh');
 
-//     
+    Route::post('/account/logout', 'AccountController@logout');
+
+//    Route::post('login', 'AuthController@login');
+//    Route::post('me', 'AuthenticateController@login');
+//    Route::post('logout', 'AuthController@logout');
+    // Route::delete('me', 'AuthController@logout');
+
+
+    Route::get('account/test', 'AccountController@test');
+
+    Route::group(['middleware' => 'jwt.auth'], function () {
+        Route::get('/', function () {
+
+        });
+        //账户信息
+        Route::get('account/info', 'AccountController@info');
+
+
+
+        //获取所有正在进行的委托
+        Route::get('orders', 'OrdersController@index');
+
+        //获取委托详情
+        Route::get('order/info', 'OrdersController@info');
+
+        //买入
+        Route::get('order/buy', 'OrdersController@buy');
+
+        //卖出
+        Route::get('order/sell', 'OrdersController@sell');
+
+        //取消
+        Route::get('order/cancel', 'OrdersController@cancel');
+
+
+        //卖出(市价单)
+        Route::get('market/sell', 'MarketController@sell');
+
+        //买入(市价单)
+        Route::get('market/buy', 'MarketController@buy');
+
+
+        /**
+         * 查询个人最新10条成交订单
+         */
+        Route::get('orders/deal/new', 'MarketController@buy');
+
+        /**
+         * 根据trade_id查询oder_id
+         */
+        Route::get('orders/trade/new', 'MarketController@buy');
+
+
+
+    });
+//
 //
 //    /*
 //    |-----------------------------------------------------------------------
@@ -78,7 +135,7 @@ Route::group(['prefix' => 'v1','namespace' => 'Api\V1'], function (RouteContract
 //        $api->post('/', API1\VerifyCodeController::class.'@store');
 //    });
 //
-//     
+//
 //    /*
 //    | 获取文件.
 //    */

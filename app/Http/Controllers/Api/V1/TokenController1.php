@@ -21,19 +21,26 @@ class TokenController extends Controller
      */
     public function store(Request $request, ResponseFactoryContract $response, JWTAuthToken $jwtAuthToken, User $model)
     {
-        $login = $request->input('login', '');
-        $password = $request->input('password', '');
-        $user = $model->where(username($login), $login)->with('wallet')->first();
+//        $login = $request->input('email', '');
+//        $password = $request->input('password', '');
+
+        $credentials = $request->only('email', 'password');
+
+        $user = $model->where(username($credentials['email']), $credentials['email'])->with('wallet')->first();
+
+
+
 
         if (! $user) {
             return $response->json(['login' => ['用户不存在']], 404);
-        } elseif (! $user->verifyPassword($password)) {
+        } elseif (! $user->verifyPassword($credentials['password'])) {
             return $response->json(['password' => ['密码错误']], 422);
         }
 //        elseif ($user->roles->whereStrict('id', 3)->isNotEmpty()) { // 禁止登录用户
 //            return $response->json(['message' => ['你已被禁止登陆']], 422);
 //        }
-        elseif (($token = $jwtAuthToken->create($user))) {
+        elseif (($token = $jwtAuthToken->create( $user))) {
+
             return $response->json([
                 'token' => $token,
                 'user' => array_merge($user->toArray(), [
@@ -60,6 +67,9 @@ class TokenController extends Controller
      */
     public function refresh(ResponseFactoryContract $response, JWTAuthToken $jwtAuthToken, string $token)
     {
+
+
+
         if (! $jwtAuthToken->refresh($token)) {
             return $response->json(['message' => ['Failed to refresh token.']], 500);
         }

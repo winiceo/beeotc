@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use App\Models\JWTCache;
 use Tymon\JWTAuth\Providers\Storage\StorageInterface;
 
+
 class JWTAuthStorageAdapter implements StorageInterface
 {
     /**

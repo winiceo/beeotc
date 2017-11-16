@@ -2,12 +2,10 @@
 
 namespace App\Auth;
 
-
-use Codecasts\Auth\JWT\Contracts\Auth\Guard;
 use Tymon\JWTAuth\JWTAuth;
 use Illuminate\Http\Request;
 use Illuminate\Auth\GuardHelpers;
-
+use Illuminate\Contracts\Auth\Guard;
 
 class TokenGuard implements Guard
 {

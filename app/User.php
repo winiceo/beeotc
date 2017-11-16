@@ -10,9 +10,13 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Models\Relations\UserHasWallet;
-class User extends \TCG\Voyager\Models\User
+
+use Laravel\Passport\HasApiTokens;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+
+class User extends \TCG\Voyager\Models\User implements JWTSubject
 {
-    use HasTimestamps, ModelHelpers, Notifiable;
+    use HasTimestamps, ModelHelpers, HasApiTokens,Notifiable;
 
 
     use UserHasWallet
@@ -259,5 +263,28 @@ class User extends \TCG\Voyager\Models\User
     public function verifyPassword(string $password): bool
     {
         return $this->password && app('hash')->check($password, $this->password);
+    }
+
+    /**
+     * Get the identifier that will be stored in the subject claim of the JWT.
+     *
+     * @return mixed
+     */
+    public function getJWTIdentifier()
+    {
+        // TODO: Implement getJWTIdentifier() method.
+
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
+        // TODO: Implement getJWTCustomClaims() method.
     }
 }

@@ -40,6 +40,10 @@ $app->singleton(
     Illuminate\Contracts\Debug\ExceptionHandler::class,
     App\Exceptions\Handler::class
 );
+//
+//$app->bind(\Codecasts\Auth\JWT\Auth\Guard::class, function ($app) {
+//    return new Codecasts\Auth\JWT\Auth\Guard($app);
+//});
 
 /*
 |--------------------------------------------------------------------------

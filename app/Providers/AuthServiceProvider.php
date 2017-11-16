@@ -2,14 +2,18 @@
 
 namespace App\Providers;
 
-use App\Auth\TokenGuard;
+
 use App\User;
 use App\Models\Reply;
 use App\Models\Thread;
 use App\Policies\UserPolicy;
 use App\Policies\ReplyPolicy;
 use App\Policies\ThreadPolicy;
+
+use Carbon\Carbon;
+use Codecasts\Auth\JWT\Auth\Guard;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Laravel\Passport\Passport;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -26,8 +30,10 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        $this->app->auth->extend('token', function ($app) {
-            return $app->make(TokenGuard::class);
-        });
+        Passport::routes();
+
+        Passport::tokensExpireIn(Carbon::now()->addDays(15));
+
+        Passport::refreshTokensExpireIn(Carbon::now()->addDays(30));
     }
 }

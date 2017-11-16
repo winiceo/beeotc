@@ -178,7 +178,16 @@ return [
         App\Spam\SpamServiceProvider::class,
         App\Validation\ValidationServiceProvider::class,
 
-        Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
+        Laravel\Passport\PassportServiceProvider::class,
+
+
+        Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
+
+
+        Irazasyed\JwtAuthGuard\JwtAuthGuardServiceProvider::class
+
+
+        ///Codecasts\Auth\JWT\ServiceProvider::class,
 
 
     ],
@@ -236,8 +245,9 @@ return [
         'Bugsnag' => Bugsnag\BugsnagLaravel\Facades\Bugsnag::class,
         'Form' => Collective\Html\FormFacade::class,
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
+         'JWTAuth'    => Tymon\JWTAuth\Facades\JWTAuth::class,
+        'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
 
-        'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
 
 
     ],
