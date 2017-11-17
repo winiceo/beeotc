@@ -2,6 +2,8 @@
 
 return [
     'New Ad'=>'发布广告',
+    'Ad margin'=>'溢价',
+
     'Articles'    => '文章',
     'Article'    => '文章',
     'Discussions' => '讨论',

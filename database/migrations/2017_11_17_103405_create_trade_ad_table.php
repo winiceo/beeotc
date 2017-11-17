@@ -44,6 +44,7 @@ class CreateTradeAdTable extends Migration {
 			$table->integer('opening_hours_6_0')->default(-1);
 			$table->integer('opening_hours_6_1')->default(-1);
 			$table->integer('view_count')->unsigned()->default(0)->index()->comment('浏览次数');
+			$table->unsignedTinyInteger('stauts')->default(0)->comment('状态');
 			$table->timestamps();
 			$table->softDeletes();
 		});

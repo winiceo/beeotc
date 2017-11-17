@@ -19,6 +19,19 @@
                             @endif
                         </div>
                     </div>
+
+                    <div class="form-group{{ $errors->has('margin') ? ' has-error' : '' }}">
+                        <label for="title" class="col-sm-2 control-label">{{ lang('Ad margin') }}</label>
+                        <div class="col-sm-10">
+                            <input type="text" id="title" name="margin" class="form-control" value="{{ old('margin') }}">
+
+                            @if ($errors->has('margin'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('margin') }}</strong>
+                                </span>
+                            @endif
+                        </div>
+                    </div>
                     <div class="form-group{{ $errors->has('tags') ? ' has-error' : '' }}">
                         <label class="col-sm-2 control-label">{{ lang('Discuss Tag') }}</label>
                         <div class="col-sm-10">

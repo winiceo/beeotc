@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\DiscussionRequest;
+use App\Http\Requests\AdRequest;
+
+use App\Repositories\AdRepository;
 use App\Repositories\DiscussionRepository;
 use App\Repositories\TagRepository;
 
@@ -11,18 +13,18 @@ class AdController extends Controller
     /**
      * @var \App\Repositories\DiscussionRepository
      */
-    protected $discussion;
+    protected $ad;
 
     /**
      * @var \App\Repositories\TagRepository
      */
     protected $tag;
 
-    public function __construct(DiscussionRepository $discussion, TagRepository $tag)
+    public function __construct(AdRepository $ad, TagRepository $tag)
     {
         $this->middleware('auth')->except(['index', 'show']);
 
-        $this->discussion = $discussion;
+        $this->ad = $ad;
         $this->tag = $tag;
     }
 
@@ -56,15 +58,24 @@ class AdController extends Controller
      * @param  DiscussionRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function store(DiscussionRequest $request)
+    public function store(AdRequest $request)
     {
         $data = array_merge($request->all(), [
             'user_id'      => \Auth::id(),
-            'last_user_id' => \Auth::id(),
-            'status'       => true
+            'crypto_currency'=>'BTC',
+            'trade_type'=>'ONLINE_BUY',
+            'country_code'=>'ONLINE_BUY',
+            'status'       => 0
         ]);
 
-        $this->discussion->store($data);
+        dump($data);
+
+
+
+
+
+        $this->ad->store($data);
+        exit;
 
         return redirect()->to('discussion');
     }
