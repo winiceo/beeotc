@@ -21,6 +21,7 @@
             <ul class="nav navbar-nav">
                 <li><a href="{{ url('/') }}">{{ lang('Articles') }}</a></li>
                 <li><a href="{{ url('discussion') }}">{{ lang('Discussions') }}</a></li>
+                 <li><a href="{{ url('ad/create') }}">{{ lang('New Ad') }}</a></li>
             </ul>
 
             <!-- Right Side Of Navbar -->

@@ -45,7 +45,19 @@ Route::group(['middleware' => 'auth', 'prefix' => 'setting'], function () {
 
     Route::get('notification', 'SettingController@notification')->name('setting.notification');
     Route::post('notification', 'SettingController@setNotification');
+
+
+
+
+
+
+
 });
+
+Route::get('ad/create', 'AdController@create')->name('ad.create');
+
+Route::post('ad/store', 'AdController@store');
+
 
 // Link
 Route::get('link', 'LinkController@index');
