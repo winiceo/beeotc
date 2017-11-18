@@ -26,11 +26,12 @@ class UserController extends Controller
      */
     public function index()
     {
-        if (Auth::check()) {
-            return redirect()->to('/user/' . Auth::user()->name);
-        }
+        $user = $this->user->getById(Auth::id());
 
-        return redirect()->to('/login');
+
+        return view('user.index', compact('user'));
+
+
     }
 
     /**
@@ -209,4 +210,36 @@ class UserController extends Controller
 
         return view('user.notifications', compact('user'));
     }
+
+    /**
+     * 安全设置
+     */
+    public function security(){
+
+        $user = $this->user->getById(Auth::id());
+
+        return view('user.security', compact('user'));
+    }
+
+    /**
+     * 受信任的人
+     */
+    public function trusted(){
+
+        $user = $this->user->getById(Auth::id());
+
+        return view('user.trusted', compact('user'));
+    }
+
+    /**
+     * 钱包
+     */
+    public function wallet(){
+
+        $user = $this->user->getById(Auth::id());
+
+        return view('user.wallet', compact('user'));
+    }
+
+
 }

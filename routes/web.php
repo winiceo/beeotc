@@ -28,7 +28,22 @@ Route::group(['prefix' => 'user'], function () {
     Route::get('/', 'UserController@index');
 
     Route::group(['middleware' => 'auth'], function () {
+
+        Route::get('/', 'UserController@index');
+        Route::get('security', 'UserController@security');
+        Route::get('trusted', 'UserController@trusted');
+        Route::get('trusting', 'UserController@trusting');
+
+        Route::get('blocking', 'UserController@blocking');
+
+        Route::get('wallet', 'WalletController@index');
+
         Route::get('profile', 'UserController@edit');
+        Route::get('ad', 'UserAdController@index');
+
+
+
+
         Route::put('profile/{id}', 'UserController@update');
         Route::post('follow/{id}', 'UserController@doFollow');
         Route::get('notification', 'UserController@notifications');
@@ -36,7 +51,7 @@ Route::group(['prefix' => 'user'], function () {
     });
 
     Route::group(['prefix' => '{username}'], function () {
-        Route::get('/', 'UserController@show');
+       // Route::get('/', 'UserController@show');
         Route::get('comments', 'UserController@comments');
         Route::get('following', 'UserController@following');
         Route::get('discussions', 'UserController@discussions');
@@ -58,6 +73,14 @@ Route::group(['middleware' => 'auth', 'prefix' => 'setting'], function () {
 
 
 });
+
+
+Route::group(['prefix' => 'ad'], function () {
+
+    Route::get('/create', 'AdController@create')->name('ad.create');
+    Route::get('store', 'AdController@store');
+    Route::get('detail/{id}', 'AdController@detail');
+ });
 
 Route::get('ad/create', 'AdController@create')->name('ad.create');
 

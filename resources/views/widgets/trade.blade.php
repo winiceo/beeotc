@@ -57,12 +57,12 @@
                         <td>现金存款</td>
                         <td>1000-20000 CNY</td>
                         <td>46271.49 CNY</td>
-                        <td><a href="/Newad/advdetail/type/1/id/6.html" class="bsedit">购买</a></td>
+                        <td><a href="/ad/detail/{{$ad->id}}" class="bsedit">购买</a></td>
                     </tr>
                         @endforeach
 
                   </tbody></table>
-                 
+
             </div>
         </div>
     </div>

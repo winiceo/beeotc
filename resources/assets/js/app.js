@@ -39,6 +39,7 @@ Vue.use(VueRouter);
 
 Vue.config.lang = window.Language;
 
+
 const i18n = new VueI18n({
     locale: Vue.config.lang,
     messages: locales

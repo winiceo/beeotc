@@ -1,6 +1,7 @@
 window.$ = window.jQuery = require('jquery');
 window.swal = require('sweetalert');
 window.Vue = require('vue');
+window.Popper = require('popper.js/dist/umd/popper');
 
 import VueI18n from 'vue-i18n';
 import locales from 'lang';

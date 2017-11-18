@@ -63310,6 +63310,8 @@ window.swal = __webpack_require__("./node_modules/sweetalert/lib/sweetalert.js")
 //window.Tether = require('tether');
 
 
+window.Vue = __webpack_require__("./node_modules/vue/dist/vue.common.js");
+
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting

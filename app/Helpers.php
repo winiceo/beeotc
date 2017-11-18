@@ -66,6 +66,6 @@ if(!function_exists('lang')) {
     {
 
 
-        return trans('blog.'.$text, $parameters);
+        return trans('trade.'.$text, $parameters);
     }
 }

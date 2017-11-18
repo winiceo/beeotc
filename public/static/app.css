@@ -5,6 +5,7 @@
 @import "index.css";
 
 @import "style.css";
+.content .usnc_right{width:1120px;float: left;margin-left:40px;border: none;}
 
 
 .change_tab{height: 40px;line-height: 40px;text-align: center;}

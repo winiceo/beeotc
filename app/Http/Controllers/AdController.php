@@ -86,11 +86,11 @@ class AdController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function detail($id)
     {
-        $discussion = $this->discussion->getById($id);
+        $ad = $this->ad->getById($id);
 
-        return view('discussion.show', compact('discussion'));
+        return view('ad.detail', compact('ad'));
     }
 
     /**
