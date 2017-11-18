@@ -77,7 +77,7 @@ return [
     |
     */
 
-    'locale' => env('LOCALE') ?: 'en',
+    'locale' => env('LOCALE') ?: 'zh_CN',
 
     /*
     |--------------------------------------------------------------------------
@@ -90,7 +90,7 @@ return [
     |
     */
 
-    'fallback_locale' => 'en',
+    'fallback_locale' => 'zh_CN',
 
     /*
     |--------------------------------------------------------------------------
@@ -168,10 +168,10 @@ return [
          */
         Laravel\Passport\PassportServiceProvider::class,
         //Laravel\Socialite\SocialiteServiceProvider::class,
-     //   JellyBool\Translug\TranslugServiceProvider::class,
+        //   JellyBool\Translug\TranslugServiceProvider::class,
         //Intervention\Image\ImageServiceProvider::class,
         Laravel\Tinker\TinkerServiceProvider::class,
-          Jcc\LaravelVote\VoteServiceProvider::class,
+        Jcc\LaravelVote\VoteServiceProvider::class,
 //        JellyBool\Flysystem\Upyun\UpyunServiceProvider::class,
 
         /*
@@ -231,7 +231,7 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
+        //'Socialite' => Laravel\Socialite\Facades\Socialite::class,
         'Translug' => JellyBool\Translug\TranslugFacade::class,
         'Image' => Intervention\Image\Facades\Image::class,
     ],
