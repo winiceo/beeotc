@@ -15,6 +15,10 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         Commands\BlogInstall::class,
         Commands\CreateAdmin::class,
+
+        Commands\PackageArchiveCommand::class,
+        Commands\PackageLinkCommand::class,
+        Commands\PackageHandlerCommand::class,
     ];
 
     /**
