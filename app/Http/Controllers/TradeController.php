@@ -39,7 +39,7 @@ class TradeController extends Controller
 
        // $search = request('search');//$search ? SearchAds::get($search) :
         $ads =  Ad::feedPaginated();
-        dump($ads);
+        //dump($ads);
 
         return view('trade.buy', compact('ads'));
 

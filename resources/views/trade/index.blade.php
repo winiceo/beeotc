@@ -12,6 +12,7 @@
                 @include('widgets.trade')
 
                 {{ $ads->links('pagination.default') }}
+
             </div>
         </div>
     </div>

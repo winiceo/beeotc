@@ -51,7 +51,7 @@
                     <tr>
                         <td style="padding-left:40px;"><img style="height:35px;vertical-align: middle;margin-right:10px;width:35px;border-radius: 50%;" src="/Public/Home/images/hportrait/head_portrait60.png">wangyujie123</td>
                         <td>{{  $ad->crypto_currency }}</td>
-                        <td>CN</td>
+                        <td>{{$ad->id}}</td>
                         <td>
                             交易 0 |  好评度 0% | 信任 0                            </td>
                         <td>现金存款</td>
@@ -62,7 +62,7 @@
                         @endforeach
 
                   </tbody></table>
-                <div class="pages"> 5 条记录 1/1 页          </div>
+                 
             </div>
         </div>
     </div>

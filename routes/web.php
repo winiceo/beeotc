@@ -15,6 +15,7 @@ Route::group(['prefix' => 'auth/github'], function () {
 
 
 Route::get('/', 'IndexController@index');
+Route::get('/test', 'IndexController@test');
 
 // Search
 Route::get('search', 'HomeController@search');
