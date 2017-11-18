@@ -1,5 +1,6 @@
 <?php
 
+
 // User Auth
 Auth::routes();
 Route::post('password/change', 'UserController@changePassword')->middleware('auth');
@@ -11,6 +12,9 @@ Route::group(['prefix' => 'auth/github'], function () {
     Route::get('register', 'Auth\AuthController@create');
     Route::post('register', 'Auth\AuthController@store');
 });
+
+
+Route::get('/', 'IndexController@index');
 
 // Search
 Route::get('search', 'HomeController@search');
@@ -59,6 +63,18 @@ Route::get('ad/create', 'AdController@create')->name('ad.create');
 Route::post('ad/store', 'AdController@store');
 
 
+//Route::get('trade/buy/{coin}', 'TradeController@overview')->name('trade.overview');
+//Route::get('trade/buy/{coin}', 'TradeController@overview')->name('trade.overview');
+
+// Category
+Route::group(['prefix' => 'trade'], function () {
+
+    Route::get('/', 'TradeController@overview')->name('trade.overview');
+    Route::get('/buy/{coin}', 'TradeController@buy')->name('trade.buy');
+    Route::get('/sell/{coin}', 'TradeController@sell')->name('trade.overview');
+});
+
+
 // Link
 Route::get('link', 'LinkController@index');
 
@@ -76,9 +92,13 @@ Route::group(['prefix' => 'tag'], function () {
 
 /* Dashboard Index */
 Route::group(['prefix' => 'dashboard', 'middleware' => ['auth', 'admin']], function () {
-   Route::get('{path?}', 'HomeController@dashboard')->where('path', '[\/\w\.-]*');
+    Route::get('{path?}', 'HomeController@dashboard')->where('path', '[\/\w\.-]*');
 });
 
 // Article
-Route::get('/', 'ArticleController@index');
+Route::get('/help', 'ArticleController@index');
 Route::get('{slug}', 'ArticleController@show');
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+

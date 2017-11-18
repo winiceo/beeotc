@@ -6,13 +6,18 @@ import VueI18n from 'vue-i18n';
 import locales from 'lang';
 import httpPlugin from 'plugins/http';
 
-require('bootstrap-sass');
+
+import iView from 'iview';
+import 'iview/dist/styles/iview.css';
+
+require('bootstrap');
 require('social-share.js/dist/js/social-share.min.js');
 require('vendor/select2.min.js');
 window.marked = require('marked');
 window.hljs = require('vendor/highlight.min.js');
 window.toastr = require('toastr/build/toastr.min.js');
 
+Vue.use(iView)
 Vue.use(VueI18n);
 Vue.use(httpPlugin);
 

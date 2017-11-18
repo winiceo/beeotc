@@ -3,7 +3,6 @@
 </template>
 
 <script>
-import emojione from 'emojione'
 
 export default {
     props: {
@@ -20,7 +19,7 @@ export default {
         }
     },
     created() {
-        this.rawHtml = emojione.toImage(marked(this.content))
+        this.rawHtml =  marked(this.content)
     }
 }
 </script>

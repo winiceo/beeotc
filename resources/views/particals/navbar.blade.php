@@ -1,82 +1,92 @@
-<nav class="navbar navbar-default navbar-static-top">
-    <div class="container">
-        <div class="navbar-header">
+<nav class="navbar navbar-toggleable-md navbar-inverse fixed-top bg-inverse">
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+            data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false"
+            aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <a class="navbar-brand" href="#">LOGO</a>
 
-            <!-- Collapsed Hamburger -->
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#app-navbar-collapse">
-                <span class="sr-only">Toggle Navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
+    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
 
-            <!-- Branding Image -->
-            <a class="navbar-brand" href="{{ url('/') }}">
-                {{ config('app.name') }}
-            </a>
-        </div>
+            <li class="nav-item active">
+                <a class="nav-link" href="{{ url('/') }}">{{ __('trade.Index')}} <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url('trade') }}">{{ __('trade.Trade') }}</a>
+            </li>
 
-        <div class="collapse navbar-collapse" id="app-navbar-collapse">
-            <!-- Left Side Of Navbar -->
-            <ul class="nav navbar-nav">
-                <li><a href="{{ url('/') }}">{{ lang('Articles') }}</a></li>
-                <li><a href="{{ url('discussion') }}">{{ lang('Discussions') }}</a></li>
-                 <li><a href="{{ url('ad/create') }}">{{ lang('New Ad') }}</a></li>
-            </ul>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url('ad/create') }}">{{ __('trade.New Ad') }}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url('help') }}">{{ __('trade.Help') }}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url('discussion') }}">{{ lang('Discussions') }}</a>
+            </li>
 
-            <!-- Right Side Of Navbar -->
-            <ul class="nav navbar-nav navbar-right">
-                <!-- Search Box -->
-                <li>
-                    <form class="navbar-form navbar-right search" role="search" method="get" action="{{ url('search') }}">
-                        <input type="text" class="form-control" name="q" placeholder="{{ lang('Search') }}" required>
-                    </form>
-                </li>
 
-                <!-- Authentication Links -->
-                @if (Auth::guest())
-                    <li><a href="{{ url('login') }}">{{ lang('Login') }}</a></li>
-                    <li><a href="{{ url('register') }}">{{ lang('Register') }}</a></li>
-                @else
-                    <li class="notification">
-                        <a href="{{ url('user/notification') }}"><i class="ion-android-notifications">
-                            <span class="new" 
-                            @if (Auth::user()->unreadNotifications->count() > 0)
-                            style='display: block'
-                            @endif
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+            <!-- Search Box -->
+            <li>
+                <form class="navbar-form navbar-right search" role="search" method="get" action="{{ url('search') }}">
+                    <input type="text" class="form-control" name="q" placeholder="{{ lang('Search') }}" required>
+                </form>
+            </li>
+
+            <!-- Authentication Links -->
+            @if (Auth::guest())
+                <li><a href="{{ url('login') }}">{{ lang('Login') }}</a></li>
+                <li><a href="{{ url('register') }}">{{ lang('Register') }}</a></li>
+            @else
+                <li class="notification">
+                    <a href="{{ url('user/notification') }}"><i class="ion-android-notifications">
+                            <span class="new"
+                                  @if (Auth::user()->unreadNotifications->count() > 0)
+                                  style='display: block'
+                                    @endif
                             >
                             </span>
                         </i></a>
-                    </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            {{ Auth::user()->nickname ?: Auth::user()->name }}
-                            <b class="caret"></b>&nbsp;&nbsp;
-                            <img class="avatar img-circle" src="{{ Auth::user()->avatar }}">
+                </li>
+
+                <li class="nav-item dropdown">
+
+                    <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown01" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false"> {{ Auth::user()->nickname ?: Auth::user()->name }}
+                        <b class="caret"></b>&nbsp;&nbsp;</a>
+                    <div class="dropdown-menu" aria-labelledby="dropdown01">
+                        <a class="dropdown-item" href="{{ url('user', ['name' => Auth::user()->name]) }}"><i
+                                    class="ion-person"></i>{{ lang('Personal Center') }}</a>
+                        <a class="dropdown-item" href="{{ url('setting') }}"><i
+                                    class="ion-gear-b"></i>{{ lang('Settings') }}</a>
+                        @if(Auth::user()->is_admin)
+                            <a class="dropdown-item" href="{{ url('dashboard') }}"><i
+                                        class="ion-ios-speedometer"></i>{{ lang('Dashboard') }}</a>
+
+                        @endif
+
+                        <a class="dropdown-item" href="{{ url('logout') }}"
+                           onclick="event.preventDefault();
+                                             document.getElementById('logout-form').submit();">
+                            <i class="ion-log-out"></i>{{ lang('Logout') }}
                         </a>
 
-                        <ul class="dropdown-menu text-center" role="menu">
-                            <li><a href="{{ url('user', ['name' => Auth::user()->name]) }}"><i class="ion-person"></i>{{ lang('Personal Center') }}</a></li>
-                            <li><a href="{{ url('setting') }}"><i class="ion-gear-b"></i>{{ lang('Settings') }}</a></li>
-                            @if(Auth::user()->is_admin)
-                                <li><a href="{{ url('dashboard') }}"><i class="ion-ios-speedometer"></i>{{ lang('Dashboard') }}</a></li>
-                            @endif
-                            <li class="divider"></li>
-                            <li>
-                                <a href="{{ url('logout') }}"
-                                    onclick="event.preventDefault();
-                                             document.getElementById('logout-form').submit();">
-                                    <i class="ion-log-out"></i>{{ lang('Logout') }}
-                                </a>
+                        <form id="logout-form" action="{{ url('logout') }}" method="POST" style="display: none;">
+                            {{ csrf_field() }}
+                        </form>
+                    </div>
 
-                                <form id="logout-form" action="{{ url('logout') }}" method="POST" style="display: none;">
-                                    {{ csrf_field() }}
-                                </form>
-                            </li>
-                        </ul>
-                    </li>
-                @endif
-            </ul>
-        </div>
+
+                </li>
+            @endif
+        </ul>
+        {{--<form class="form-inline my-2 my-lg-0">--}}
+        {{--<input class="form-control mr-sm-2" type="text" placeholder="Search">--}}
+        {{--<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>--}}
+        {{--</form>--}}
     </div>
 </nav>

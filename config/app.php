@@ -12,7 +12,7 @@ return [
     | any other location as required by the application or its packages.
     */
 
-    'name' => env('APPLICATION_NAME') ?: 'PJ Blog',
+    'name' => env('APPLICATION_NAME') ?: 'OTC',
 
     /*
     |--------------------------------------------------------------------------
@@ -167,12 +167,12 @@ return [
          * Package Service Providers...
          */
         Laravel\Passport\PassportServiceProvider::class,
-        Laravel\Socialite\SocialiteServiceProvider::class,
-        JellyBool\Translug\TranslugServiceProvider::class,
-        Intervention\Image\ImageServiceProvider::class,
+        //Laravel\Socialite\SocialiteServiceProvider::class,
+     //   JellyBool\Translug\TranslugServiceProvider::class,
+        //Intervention\Image\ImageServiceProvider::class,
         Laravel\Tinker\TinkerServiceProvider::class,
-        Jcc\LaravelVote\VoteServiceProvider::class,
-        JellyBool\Flysystem\Upyun\UpyunServiceProvider::class,
+          Jcc\LaravelVote\VoteServiceProvider::class,
+//        JellyBool\Flysystem\Upyun\UpyunServiceProvider::class,
 
         /*
          * Application Service Providers...

@@ -54,8 +54,7 @@
 <script>
 import { default as toastr } from 'toastr/build/toastr.min.js'
 import toastrConfig from '../config/toastr'
-import emojione from 'emojione'
-import FineUploader from 'fine-uploader/lib/traditional'
+ import FineUploader from 'fine-uploader/lib/traditional'
 import { stack_error } from '../config/helper'
 import VoteButton from './VoteButton'
 import TextComplete from 'v-textcomplete'
@@ -206,7 +205,7 @@ export default {
                 }
             })
 
-            return emojione.toImage(marked(html))
+            return (marked(html))
         },
         contentUploader() {
             let vm = this

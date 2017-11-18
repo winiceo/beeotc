@@ -20,6 +20,8 @@
                         </div>
                     </div>
 
+
+
                     <div class="form-group{{ $errors->has('margin') ? ' has-error' : '' }}">
                         <label for="title" class="col-sm-2 control-label">{{ lang('Ad margin') }}</label>
                         <div class="col-sm-10">
@@ -74,6 +76,8 @@
 @section('scripts')
 <script type="text/javascript">
     $('.select').select2();
+
+
 </script>
 @endsection
 
