@@ -10,7 +10,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable
+class User extends \TCG\Voyager\Models\User
 {
     use HasApiTokens, Notifiable, SoftDeletes, FollowTrait, Vote;
 
@@ -95,4 +95,21 @@ class User extends Authenticatable
             return $this->email;
         }
     }
+
+
+    /**
+     * 验证用户密码
+     *
+     * @Author   Wayne[qiaobin@zhiyicx.com]
+     * @DateTime 2016-12-30T18:44:40+0800
+     *
+     * @param string $password [description]
+     *
+     * @return bool 验证结果true or false
+     */
+    public function verifyPassword(string $password): bool
+    {
+        return $this->password && app('hash')->check($password, $this->password);
+    }
+
 }

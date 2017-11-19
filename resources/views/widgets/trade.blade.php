@@ -49,7 +49,7 @@
 
 
                     <tr>
-                        <td style="padding-left:40px;"><img style="height:35px;vertical-align: middle;margin-right:10px;width:35px;border-radius: 50%;" src="/Public/Home/images/hportrait/head_portrait60.png">wangyujie123</td>
+                        <td style="padding-left:40px;"><img style="height:35px;vertical-align: middle;margin-right:10px;width:35px;border-radius: 50%;" src="{{asset('images/user_avatar.png')}}">wangyujie123</td>
                         <td>{{  $ad->crypto_currency }}</td>
                         <td>{{$ad->id}}</td>
                         <td>

@@ -13,6 +13,14 @@ return [
         'sortColumn'  => 'published_at',
     ],
 
+    'address' => [
+        'title'       => 'Nothing is impossible.',
+        'description' => ' ',
+        'number'      => 15,
+        'sort'        => 'desc',
+        'sortColumn'  => 'created_at',
+    ],
+
     // Discussion Page
     'discussion' => [
         'number' => 20,

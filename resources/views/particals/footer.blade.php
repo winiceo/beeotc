@@ -1,16 +1,5 @@
 <!-- 底部 -->
-<style type="text/css">
-    .bottom{margin-bottom: -2px;}
-    .noticeright{width: 350px;height: auto;overflow: hidden;float: right;border:1px dashed #e75600;font-size: 13px;text-align:left;padding:15px;color: #e75600;line-height: 23px;}
-    .noticeright h4{font-size: 16px;font-weight: 900;margin-bottom: 10px;text-align: center;}
-    .fxts{width:1200px;margin:20px auto 0;height:auto;color:#fff;border-bottom:1px solid rgba(255,255,255,0.1);padding: 0 0 20px;color:#e75600;}
-    .fxts h3{font-size: 18px;margin-bottom: 15px;color:#e75600;}
-    .fxts h3 .span1{display: inline-block;width:23px;height:23px;border:1px solid #e75600;border-radius: 20px;text-align: center;line-height: 23px;color:#e75600;margin-right:5px;}
-    .fxts p{font-size: 13px;line-height: 20px;color:#e75600;}
-    .ftmenu_new{width:300px;float:right;}
-    .ftmenu_new p{font-size: 13px;color:#989FA9;line-height: 30px;}
-    .ftmenu_new .phone{font-size:13px;color:#989FA9;line-height: 30px;}
-</style>
+
 <div class="bottom">
     <div class="bottop">
         <!--  <div class="botleft">
@@ -59,12 +48,3 @@
         </div>
     </div>
 </div>
-<!--Start of Zendesk Chat Script-->
-<script type="text/javascript">
-    window.$zopim||(function(d,s){var z=$zopim=function(c){
-        z._.push(c)},$=z.s=
-        d.createElement(s),e=d.getElementsByTagName(s)[0];z.set=function(o){z.set.
-    _.push(o)};z._=[];z.set._=[];$.async=!0;$.setAttribute('charset','utf-8');
-        $.src='https://v2.zopim.com/?5CMdnN3tFR45GuScDtJlw75MpMw0St6d';z.t=+new Date;$.
-            type='text/javascript';e.parentNode.insertBefore($,e)})(document,'script');
-</script>

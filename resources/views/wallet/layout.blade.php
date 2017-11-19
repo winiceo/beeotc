@@ -7,7 +7,7 @@
 
             <div class="usncont">
                 <!--左侧菜单-->
-                @include('wallet.particals.side')
+
 
                 @yield('userright')
 

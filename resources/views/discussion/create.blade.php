@@ -4,6 +4,8 @@
     <div class="container">
         <div class="dicussion row">
             <div class="col-md-9 col-md-offset-1">
+
+                <avatar></avatar>sadf
                 <form class="form-horizontal" action="{{ url('discussion') }}" method="POST">
                     {{ csrf_field() }}
 

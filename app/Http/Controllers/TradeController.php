@@ -17,6 +17,12 @@ class TradeController extends Controller
     {
         $this->ad = $ad;
     }
+    public function index()
+    {
+        $ads = $this->ad->page(config('trade.ad.number'), config('trade.ad.sort'), config('trade.ad.sortColumn'));
+
+        return view('trade.index', compact('ads'));
+    }
 
     /**
      * Display the articles resource.

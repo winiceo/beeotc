@@ -3,6 +3,11 @@
 
 // User Auth
 Auth::routes();
+Route::group(['prefix' => 'crm'], function () {
+    Voyager::routes();
+});
+
+
 Route::post('password/change', 'UserController@changePassword')->middleware('auth');
 
 // Github Auth Route
@@ -16,6 +21,7 @@ Route::group(['prefix' => 'auth/github'], function () {
 
 Route::get('/', 'IndexController@index');
 Route::get('/test', 'IndexController@test');
+Route::get('/init', 'InitController@init');
 
 // Search
 Route::get('search', 'HomeController@search');
@@ -77,14 +83,14 @@ Route::group(['middleware' => 'auth', 'prefix' => 'setting'], function () {
 
 Route::group(['prefix' => 'ad'], function () {
 
-    Route::get('/create', 'AdController@create')->name('ad.create');
+    Route::get('create', 'AdController@create')->name('ad.create');
     Route::get('store', 'AdController@store');
     Route::get('detail/{id}', 'AdController@detail');
  });
 
-Route::get('ad/create', 'AdController@create')->name('ad.create');
-
-Route::post('ad/store', 'AdController@store');
+//Route::get('ad/create', 'AdController@create')->name('ad.create');
+//
+//Route::post('ad/store', 'AdController@store');
 
 
 //Route::get('trade/buy/{coin}', 'TradeController@overview')->name('trade.overview');
@@ -122,7 +128,8 @@ Route::group(['prefix' => 'dashboard', 'middleware' => ['auth', 'admin']], funct
 // Article
 Route::get('/help', 'ArticleController@index');
 Route::get('{slug}', 'ArticleController@show');
-Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+
 

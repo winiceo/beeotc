@@ -19,7 +19,7 @@ class CreateUserWalletTable extends Migration
 
             $table->integer('user_id')->comment('创建者uid');
 
-            $table->tinyInteger('coin_type')->comment('币种');
+            $table->string('coin_type',10)->comment('币种');
             $table->string('wallet_name', 50)->comment('钱包名称');
             $table->string('wallet_address')->nullable()->comment('钱包地址');
             $table->timestamps();

@@ -22,3 +22,17 @@
 .table_trade table tr td{padding:16px 0;border-bottom: 1px solid #d6dbdd;font-size: 14px;color: rgba(0, 0, 0, 0.7);}
 .table_trade table tr:hover{background: #ecf6fd;}
 .bsedit{color:#108ee9;display: inline-block;width:72px;height:30px;border:1px solid #108ee9;line-height:30px;text-align: center;border-radius: 4px;}
+
+
+ 
+.bottom{margin-bottom: -2px;}
+.noticeright{width: 350px;height: auto;overflow: hidden;float: right;border:1px dashed #e75600;font-size: 13px;text-align:left;padding:15px;color: #e75600;line-height: 23px;}
+.noticeright h4{font-size: 16px;font-weight: 900;margin-bottom: 10px;text-align: center;}
+.fxts{width:1200px;margin:20px auto 0;height:auto;color:#fff;border-bottom:1px solid rgba(255,255,255,0.1);padding: 0 0 20px;color:#e75600;}
+.fxts h3{font-size: 18px;margin-bottom: 15px;color:#e75600;}
+.fxts h3 .span1{display: inline-block;width:23px;height:23px;border:1px solid #e75600;border-radius: 20px;text-align: center;line-height: 23px;color:#e75600;margin-right:5px;}
+.fxts p{font-size: 13px;line-height: 20px;color:#e75600;}
+.ftmenu_new{width:300px;float:right;}
+.ftmenu_new p{font-size: 13px;color:#989FA9;line-height: 30px;}
+.ftmenu_new .phone{font-size:13px;color:#989FA9;line-height: 30px;}
+ 

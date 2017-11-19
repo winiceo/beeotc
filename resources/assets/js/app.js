@@ -60,6 +60,8 @@ Vue.component(
     require('components/dashboard/Form.vue')
 );
 
+
+
 const router = new VueRouter({
     mode: 'history',
     base: __dirname,
