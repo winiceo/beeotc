@@ -40,4 +40,27 @@ class HomeController extends ApiController
         return $this->response->json($data);
     }
 
+
+    public function setting(){
+
+        $data=
+            [
+
+                "logo_home"=> "//cdn.chojer.com/setting/chojer_logo.png",
+              "logo_console"=> "//cdn.chojer.com/setting/chojer_logo_white.png",
+
+              "site_copy_right"=> "Copyright© 2015-2017 chojer All Rights Reserved.",
+              "site_icp"=> "蜀ICP备15025439号-2",
+
+              "home_ads"=> [
+                "//cdn.chojer.com/setting/carousel_1.png",
+                "//cdn.chojer.com/setting/carousel_2.jpeg",
+                "//cdn.chojer.com/setting/carousel_3.jpeg",
+                "//cdn.chojer.com/setting/carousel_4.jpeg"
+            ]
+
+            ];
+        return $this->response->json($data);
+    }
+
 }

@@ -59,7 +59,7 @@
         <div class="safeftbox" id="safebox">
             <div class="sc_info_list" id="sc_info_list">
                 <dl>
-                    <div style="float: left;height: 90px;width:60px;"><img src="/Public/Home/news/images/icon_03.png" alt=""></div>
+                    <div style="float: left;height: 90px;width:60px;"><img src="/images/icon_03.png" alt=""></div>
                     <div style="float: left;height: 90px;width:850px;">
                         <dt>登录密码</dt>
                         <dd>
@@ -73,7 +73,7 @@
                     </div>
                 </dl>
                 <dl>
-                    <div style="float: left;height: 90px;width:60px;"><img src="/Public/Home/news/images/icon_05.png" alt=""></div>
+                    <div style="float: left;height: 90px;width:60px;"><img src="/images/icon_05.png" alt=""></div>
                     <div style="float: left;height: 90px;width:850px;">
                         <dt>交易密码</dt>
                         <dd>
@@ -86,7 +86,7 @@
                     </div>
                 </dl>
                 <dl>
-                    <div style="float: left;height: 90px;width:60px;"><img src="/Public/Home/news/images/icon_07.png" alt=""></div>
+                    <div style="float: left;height: 90px;width:60px;"><img src="/images/icon_07.png" alt=""></div>
                     <div style="float: left;height: 90px;width:850px;">
                         <dt>实名认证</dt>
                         <dd>
@@ -99,7 +99,7 @@
                     </div>
                 </dl>
                 <dl>
-                    <div style="float: left;height: 90px;width:60px;"><img src="/Public/Home/news/images/icon_09.png" alt=""></div>
+                    <div style="float: left;height: 90px;width:60px;"><img src="/images/icon_09.png" alt=""></div>
                     <div style="float: left;height: 90px;width:850px;">
                         <dt>谷歌验证</dt>
                         <dd>
@@ -115,7 +115,7 @@
 
                 <dl>
                     <div>
-                        <div style="float: left;height: 90px;width:60px;"><img src="/Public/Home/news/images/icon_11.png" alt=""></div>
+                        <div style="float: left;height: 90px;width:60px;"><img src="/images/icon_11.png" alt=""></div>
                         <div style="float: left;height: 90px;width:850px;">
                             <dt>邮箱绑定</dt>
                             <dd>
@@ -128,7 +128,7 @@
                         </div>
                     </div></dl>
                 <dl>
-                    <div style="float: left;height: 90px;width:60px;"><img src="/Public/Home/news/images/icon_13.png" alt=""></div>
+                    <div style="float: left;height: 90px;width:60px;"><img src="/images/icon_13.png" alt=""></div>
                     <div style="float: left;height: 90px;width:850px;">
                         <dt>手机绑定</dt>
                         <dd>
@@ -141,7 +141,7 @@
                     </div>
                 </dl>
                 <!-- <dl>
-                <div style="float: left;height: 90px;width:60px;"><img src="/Public/Home/news/images/icon_13.png" alt=""></div>
+                <div style="float: left;height: 90px;width:60px;"><img src="/images/icon_13.png" alt=""></div>
                  <div style="float: left;height: 90px;width:850px;">
                     <dt>密保问题</dt>
                     <dd>

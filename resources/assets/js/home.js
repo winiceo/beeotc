@@ -40,6 +40,8 @@ Vue.component('parse-textarea', require('components/Textarea.vue'));
 
 Vue.component('avatar', require('components/AvatarUpload.vue'));
 Vue.component('wallet-add', require('./components/WalletAdd.vue'));
+Vue.component('ad-create', require('./components/AdCreate.vue'));
+Vue.component('order-create', require('./components/OrderCreate.vue'));
 
 
 

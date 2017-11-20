@@ -1,12 +1,17 @@
 <?php
 use Illuminate\Contracts\Routing\Registrar as RouteContract;
 
+
+
 Route::group([
     'middleware' => ['cors'],
     'prefix' => 'admin',
     'namespace' => 'Api'], function ( ) {
 
     Route::get('cms/notice',  'NoticeController@index');
+    Route::get('json/setting',  'HomeController@setting');
+
+
 
     /*
     | 应用启动配置.
@@ -16,7 +21,7 @@ Route::group([
 
     // Create user authentication token
     Route::post('tokens',  'TokenController@store');
-    Route::get('tokens',  'TokenController@index');
+    Route::get('tokens',  'TokenController@refresh');
 
     // Refresh token
     //$api->patch('/tokens/{token}',  TokenController::class . '@refresh');
@@ -69,6 +74,10 @@ Route::group([
     'namespace' => 'Api',
 ], function () {
     Route::post('user/address', 'AddressController@store')->middleware('auth:api');
+
+
+    Route::post('ad', 'AdController@store')->middleware('auth:api');
+    Route::post('order', 'OrderController@store')->middleware('auth:api');
 
 
     // File Upload

@@ -175,6 +175,7 @@ return [
 //        JellyBool\Flysystem\Upyun\UpyunServiceProvider::class,
 
         Barryvdh\Cors\ServiceProvider::class,
+        Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
 
 
         /*

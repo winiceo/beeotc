@@ -1,6 +1,6 @@
 <template>
     <el-form ref="form" :inline="true" :model="form" label-width="80px">
-        <el-form-item label="币钏">
+        <el-form-item label="币种">
             <el-select v-model="form.coin_type" placeholder="请选择币钟">
                 <el-option label="比特币" value="BTC"></el-option>
 

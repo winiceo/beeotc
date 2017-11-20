@@ -26,23 +26,17 @@
             <li class="nav-item">
                 <a class="nav-link" href="{{ url('help') }}">{{ __('trade.Help') }}</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url('discussion') }}">{{ lang('Discussions') }}</a>
-            </li>
+
 
         </ul>
 
         <ul class="nav navbar-nav navbar-right">
             <!-- Search Box -->
-            <li>
-                <form class="navbar-form navbar-right search" role="search" method="get" action="{{ url('search') }}">
-                    <input type="text" class="form-control" name="q" placeholder="{{ lang('Search') }}" required>
-                </form>
-            </li>
+
 
             <!-- Authentication Links -->
             @if (Auth::guest())
-                <li><a href="{{ url('login') }}">{{ lang('Login') }}</a></li>
+                <li style="margin-right:20px;"><a href="{{ url('login') }}">{{ lang('Login') }}</a></li>
                 <li><a href="{{ url('register') }}">{{ lang('Register') }}</a></li>
             @else
                 <li class="notification">

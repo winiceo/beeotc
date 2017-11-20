@@ -45,6 +45,7 @@ class Menu extends Model
             }])
             ->first();
 
+
         // Check for Menu Existence
         if (!isset($menu)) {
             return false;

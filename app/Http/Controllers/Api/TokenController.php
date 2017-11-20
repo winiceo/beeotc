@@ -8,6 +8,7 @@ use App\User;
 use Illuminate\Http\Request;
 
 use Illuminate\Contracts\Routing\ResponseFactory as ResponseFactoryContract;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class TokenController extends ApiController
@@ -17,47 +18,40 @@ class TokenController extends ApiController
 
     private $user;
 
-    function index(Request $request, Auth $auth, $token = null) {
-        $user = $auth->user();
+    function refresh(Request $request,  $token = null) {
+         $user = Auth::user();
+
+        if (!$token) {
+
+
+
+        }
         $res = [
-            'user_info' => [],
-            'org_info' => [],
+            'errMsg' => '登录成功',
+            'errCode'=>0,
+            'data' => [
+                'user_info' => $user,
+                'auth_token' => $token,
+                'org_info'=>[],
+                'menu' => [
+                    'top' => Menu::buildMenuTop($user),
+                    'map' => Menu::buildMenuMap($user),
+                    'uri_tops' => Menu::UriTops(),
+                    'uris' => Menu::Uris()
+                ]
+            ],
             'menu' => [
                 'top' => Menu::buildMenuTop($user),
                 'map' => Menu::buildMenuMap($user),
                 'uri_tops' => Menu::UriTops(),
                 'uris' => Menu::Uris()
             ]
+
         ];
-        if ($token) {
-            $res['auth_token'] = $token;
-        } else {
-            $token = $request->get('auth-token');
-            //Logi::login($user->id, $token, true);
-            $res['auth_token'] = $token;
-        }
-        return response()->ok('登录成功', $res);
+
+        return response()->json(  $res);
     }
 
-    function store1(Request $request, Auth $auth) {
-        $this->validate($request, [
-            'name' => 'required',
-            'password' => 'required'
-        ], [
-            'name.required' => '账号不能为空',
-            'password.required' => '密码不能为空',
-        ]);
-        $name = $request->name;
-        if ($user = User::where('account', $name)->first()) {
-            if (!Hash::check($request->password, $user->password)) {
-                throw new ErrorCodeException(211);
-            }
-            $this->user = $user;
-            $token = $auth->login($user);
-            return $this->index($request, $auth, $token);
-        }
-        throw new ErrorCodeException(210);
-    }
     /**
      * Create a user token.
      *
@@ -85,28 +79,7 @@ class TokenController extends ApiController
 
         $token = $user->createToken('Token Name')->accessToken;
 
-        return response()->json([
-            'errMsg' => 'asdf',
-            'errCode'=>0,
-            'data' => [
-                'user_info' => $user,
-                'auth_token' => $token,
-                'org_info'=>[],
-                'menu' => [
-                    'top' => Menu::buildMenuTop($user),
-                    'map' => Menu::buildMenuMap($user),
-                    'uri_tops' => Menu::UriTops(),
-                    'uris' => Menu::Uris()
-                ]
-            ],
-            'menu' => [
-                'top' => Menu::buildMenuTop($user),
-                'map' => Menu::buildMenuMap($user),
-                'uri_tops' => Menu::UriTops(),
-                'uris' => Menu::Uris()
-            ]
-
-        ]);
+        return $this->refresh($request,$token);
 
         //response()->ok();
         // $response->json()->setStatusCode(201);
@@ -127,25 +100,25 @@ class TokenController extends ApiController
         return $response->json(['message' => ['Failed to create token.']])->setStatusCode(500);
     }
 
-    /**
-     * Refresh a user token.
-     *
-     * @param \Illuminate\Contracts\Routing\ResponseFactory $response
-     * @param \Tymon\JWTAuth\JWTAuth $auth
-     * @param string $token
-     * @return mixed
-     * @author Seven Du <shiweidu@outlook.com>
-     */
-    public function refresh(ResponseFactoryContract $response, JWTAuthToken $jwtAuthToken, string $token)
-    {
-        if (!$jwtAuthToken->refresh($token)) {
-            return $response->json(['message' => ['Failed to refresh token.']], 500);
-        }
-
-        return $response->json([
-            'token' => $token,
-            'ttl' => config('jwt.ttl'),
-            'refresh_ttl' => config('jwt.refresh_ttl'),
-        ])->setStatusCode(201);
-    }
+//    /**
+//     * Refresh a user token.
+//     *
+//     * @param \Illuminate\Contracts\Routing\ResponseFactory $response
+//     * @param \Tymon\JWTAuth\JWTAuth $auth
+//     * @param string $token
+//     * @return mixed
+//     * @author Seven Du <shiweidu@outlook.com>
+//     */
+//    public function refresh(ResponseFactoryContract $response, JWTAuthToken $jwtAuthToken, string $token)
+//    {
+//        if (!$jwtAuthToken->refresh($token)) {
+//            return $response->json(['message' => ['Failed to refresh token.']], 500);
+//        }
+//
+//        return $response->json([
+//            'token' => $token,
+//            'ttl' => config('jwt.ttl'),
+//            'refresh_ttl' => config('jwt.refresh_ttl'),
+//        ])->setStatusCode(201);
+//    }
 }

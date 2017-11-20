@@ -3,23 +3,19 @@
 namespace App\Models;
 
 use App\Scopes\StatusScope;
+use App\User;
 use DB;
-use App\Helpers\HasSlug;
-use App\Helpers\HasTags;
-use App\Helpers\HasAuthor;
-use App\Helpers\ModelHelpers;
-use App\Helpers\HasTimestamps;
-use App\Helpers\ReceivesReplies;
-use Illuminate\Database\Eloquent\Model;
+
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Contracts\Pagination\Paginator;
 use App\Exceptions\CouldNotMarkReplyAsSolution;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Ad extends Model
 {
-    use HasAuthor, HasSlug, HasTimestamps, ModelHelpers, ReceivesReplies, HasTags;
+    use SoftDeletes;
 
     const TABLE = 'ads';
 
@@ -28,17 +24,39 @@ class Ad extends Model
      */
     protected $table = self::TABLE;
 
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['deleted_at'];
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
         'user_id',
         'crypto_currency',
         'trade_type',
         'country_code',
         'margin',
+
+
+        'currency',
+
+        'price',
+        'min_price',
+        'min_amount',
+        'max_amount',
+        'payment_window_minutes',
+        'payment_provider',
+        'message',
+
+
         'status'
     ];
-
-
 
     /**
      * The "booting" method of the model.
@@ -62,25 +80,6 @@ class Ad extends Model
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    //protected $fillable = ['subject', 'body', 'ip', 'slug'];
-
-    public function id(): int
-    {
-        return $this->id;
-    }
-
-
-
-    public function delete()
-    {
-//        $this->removeTags();
-//        $this->deleteReplies();
-
-        parent::delete();
-    }
 
     /**
      * @return \App\Models\Thread[]
@@ -98,6 +97,19 @@ class Ad extends Model
         return static::feedQuery()->paginate($perPage);
     }
 
+    /**
+     * @return \App\Models\Thread[]
+     */
+    public static function feedByTagPaginated(Tag $tag, int $perPage = 20): Paginator
+    {
+        return static::feedQuery()
+            ->join('taggables', function ($join) use ($tag) {
+                $join->on('threads.id', 'taggables.taggable_id')
+                    ->where('taggable_type', static::TABLE);
+            })
+            ->where('taggables.tag_id', $tag->id())
+            ->paginate($perPage);
+    }
 
     /**
      * This will order the threads by creation date and latest reply.
@@ -106,7 +118,7 @@ class Ad extends Model
     {
 //        return static::leftJoin('replies', function ($join) {
 //            $join->on('threads.id', 'replies.replyable_id')
-//                    ->where('replies.replyable_type', static::TABLE);
+//                ->where('replies.replyable_type', static::TABLE);
 //        })
 //            ->orderBy('latest_creation', 'DESC')
 //            ->groupBy('threads.id')
@@ -116,10 +128,10 @@ class Ad extends Model
 //                ELSE threads.created_at
 //                END AS latest_creation
 //            '));
-        return static::orderBy('created_at', 'DESC')
-
-            ->select('ads.*');
 
 
+        return static:: orderBy('published_at', 'DESC')
+            ->select('*');
     }
+
 }

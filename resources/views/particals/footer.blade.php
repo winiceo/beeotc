@@ -25,15 +25,15 @@
         </div>
         <div class="ftmenu_new">
             <h4 style="color:#ececec;font-size:13px;line-height:30px;font-weight:normal;font-size:15px;cursor:pointer;">联系我们</h4>
-            <p class="phone">18954215320</p>
+            <p class="phone">1000000000</p>
             <p class="kf_footer">客服热线：9:00-21:00 (节假日除外)</p>
-            <p>市场合作：QQ1145557081</p>
+            <p>市场合作：QQ 324324324</p>
             <p>合作邮箱：admin@163.com</p>
         </div>
     </div>
     <!-- <div class="fxts">
         <h3><span class="span1">!</span>风险提示</h3>
-        CoinWord            </div>
+        BEE Network            </div>
     <div class="linkbox">
         <ul>
             <li><b>友情链接</b></li>
@@ -43,7 +43,7 @@
     <div class="botbox">
         <div class="inbot">
             <div class="inbotleft" style="text-align:left;">
-                CopyRight© 2017-2018 CoinWord All Rights Reserved.
+                CopyRight© 2017-2018 biying All Rights Reserved.
             </div>
         </div>
     </div>

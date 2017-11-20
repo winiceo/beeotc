@@ -7,7 +7,8 @@
         <wallet-add></wallet-add>
         <div class="recharge_list nmt">
 
-            @include('wallet.address')
+
+            @include('wallet.address', ['addresss' => $user->addresss()->paginate(5)])
 
             {{ $addresss->links('pagination.default') }}
 

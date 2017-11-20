@@ -12,7 +12,7 @@
                         <option value="1">搜广告</option>
                         <option value="2">搜用户</option>
                     </select>
-                    <div class="search_input" id="adbox">
+
                         <select name="coin">
                             <option value="" selected="">币种</option>
                             <option value="3">BTC 比特币</option><option value="4">ETH 以太坊</option>                        </select>
@@ -25,7 +25,7 @@
                         <select name="paym">
                             <option value="" selected="">支付方式</option>
                             <option value="1">现金存款</option><option value="2">银行转账</option><option value="3">支付宝</option><option value="4">微信支付</option><option value="5">iTunes礼品卡</option><option value="6">Paytm</option><option value="7">其它</option>                        </select>
-                    </div>
+
                     <div class="search_input" id="userbox" style="display: none;">
                         <input type="text" name="uname" value="" style="width:672px;height:33px;border: 1px solid #dbdbdb;border-radius: 4px;color: #252525;text-indent: 5px;margin-left: -5px;">
                     </div>
@@ -49,14 +49,15 @@
 
 
                     <tr>
-                        <td style="padding-left:40px;"><img style="height:35px;vertical-align: middle;margin-right:10px;width:35px;border-radius: 50%;" src="{{asset('images/user_avatar.png')}}">wangyujie123</td>
+                        <td style="padding-left:40px;"><img style="height:35px;vertical-align: middle;margin-right:10px;width:35px;border-radius: 50%;" src="{{asset('images/user_avatar.png')}}">{{$ad->user->name}}</td>
                         <td>{{  $ad->crypto_currency }}</td>
-                        <td>{{$ad->id}}</td>
+                        <td>{{$ad->country_code}}</td>
+
                         <td>
                             交易 0 |  好评度 0% | 信任 0                            </td>
-                        <td>现金存款</td>
-                        <td>1000-20000 CNY</td>
-                        <td>46271.49 CNY</td>
+                        <td>{{$ad->payment_provider}} </td>
+                        <td>{{$ad->min_amount}}-{{$ad->max_amount}} CNY</td>
+                        <td>{{$ad->price}} CNY</td>
                         <td><a href="/ad/detail/{{$ad->id}}" class="bsedit">购买</a></td>
                     </tr>
                         @endforeach

@@ -1,8 +1,12 @@
 @extends('layouts.app')
 
 @section('title', $ad->id)
-
+ 
+ 
+               
 @section('content')
+ 
+ 
     <div class=" content">
         <div class="usncont">
             <div class="usnc_right">
@@ -16,7 +20,7 @@
                                     <img class="tou" src="/Public/Home/images/hportrait/20171115/s_5a0bf4ab92c27.jpg">
                                 </a>
                                 <div class="aduser_names">
-                                    <span>wangyujie123</span>
+                                    <span>{{$ad->user->name}}</span>
                                     <span><a href="javascript:;" onclick="chatwindow();"><img src="/Public/Home/news/images/chat.png" style="width: 20px;"></a></span>
                                     <div style="float: right;">
                                         <input class="input2_new" id="trust" type="button" value="取消信任">
@@ -65,49 +69,32 @@
                             <tbody><tr>
                                 <th>报价:
                                 </th><td></td>
-                                <td class="price">52280.64 CNY/BTC</td>
+                                <td class="price">{{$ad->price}} CNY/BTC</td>
                             </tr>
                             <tr>
                                 <th>交易限额:
                                 </th><td></td>
-                                <td>3000-50000 CNY</td>
+                                <td>{{$ad->min_amount}}-{{$ad->max_amount}} CNY</td>
                             </tr>
                             <tr>
                                 <th>付款方式:
                                 </th><td></td>
-                                <td>现金存款</td>
+                                <td>{{$ad->payment_provider}}</td>
                             </tr>
                             <tr>
                                 <th>付款期限:
                                 </th><td></td>
-                                <td>5 分钟</td>
+                                <td>{{$ad->payment_window_minutes}} 分钟</td>
                             </tr>
 
                             </tbody></table>
                         <div class="form-cont">
+
+                           
+
+                            <order-create price="{{$ad->price}}" adId="{{$ad->id}}"></order-create>
                             <!-- 购买 -->
-                            <div class="form-title">
-                                <span class="form-name">你想出售多少？ </span>
-                                <span class="form-name"></span>
-                            </div>
 
-                            <div class="input-cont input2 mr-12">
-                                <input type="number" placeholder="输入您想出售的金额" class="input" name="amount" id="amount0">
-                                <div class="input-after">CNY</div>
-                            </div>
-
-                            <span class="icon-equal"></span>
-
-                            <div class="input-cont input2">
-                                <input type="number" placeholder="输入您想出售的数量" class="input" name="qty" id="qty0">
-                                <div class="input-after">BTC</div>
-                            </div>						<input type="hidden" id="baojia" value="52280.64">
-                            <!-- 是否登陆了 -->
-                            <!-- 判断是否实名认证 -->
-                            <textarea id="lmessage" onblur="if(this.value == '')this.placeholder='告诉ta您的要求';" onclick="if(this.placeholder == '告诉ta您的要求')this.placeholder='';" style="width: 730px;height: 50px;padding: 0 20px;resize: none;line-height: 50px;font-size: 16px;margin-bottom: 20px;
-    border: 1px solid #d6dbdd;" placeholder="告诉ta您的要求"></textarea>
-                            <a href="javascript:;" onclick="trade()" class="btn submit disable bsbut">
-                                立即出售            					</a>
                             <div class="ad_right" style="float:left;width:100%;margin-bottom: 35px;">
                                 <div class="form-title pt-30" style="margin-bottom: 20px;padding-bottom: 10px;border-bottom:1px solid #d6dbdd;">
                                     <span class="form-name" style="color:rgba(0,0,0,0.7);">交易条款</span>
@@ -141,7 +128,7 @@
                                 <span class="form-name" style="color:rgba(0,0,0,0.7);">交易须知</span>
                             </div>
                             <div class="line mt-20 mb-20"></div>
-                            <p class="p">1.交易前请详细了解对方的交易信息。<br>2.请通过平台进行沟通约定，并保存好相关聊天记录。<br>3.如遇到交易纠纷，可通过申诉来解决问题。<br>4.在您发起交易请求后，币被锁定在托管中，受到CoinWord保护。如果您是买家，发起交易请求后，请在付款周期内付款并把交易标记为付款已完成。卖家在收到付款后将会放行处于托管中的币。<br>5.交易前请阅读《CoinWord服务条款》以及常见问题、交易指南等帮助文档。<br>6.请注意欺诈风险，交易前请检查该用户收到的评价和相关信用信息，并对新近创建的账户多加留意。<br>7.托管服务保护网上交易的买卖双方。在发生争议的情况下，我们将评估所提供的所有信息，并将托管的币放行给其合法所有者。<br></p>
+                            <p class="p">1.交易前请详细了解对方的交易信息。<br>2.请通过平台进行沟通约定，并保存好相关聊天记录。<br>3.如遇到交易纠纷，可通过申诉来解决问题。<br>4.在您发起交易请求后，币被锁定在托管中，受到BEE Network保护。如果您是买家，发起交易请求后，请在付款周期内付款并把交易标记为付款已完成。卖家在收到付款后将会放行处于托管中的币。<br>5.交易前请阅读《BEE Network服务条款》以及常见问题、交易指南等帮助文档。<br>6.请注意欺诈风险，交易前请检查该用户收到的评价和相关信用信息，并对新近创建的账户多加留意。<br>7.托管服务保护网上交易的买卖双方。在发生争议的情况下，我们将评估所提供的所有信息，并将托管的币放行给其合法所有者。<br></p>
                         </div>
                     </div>
                 </div>

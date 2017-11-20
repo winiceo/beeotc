@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Ad;
+use App\Models\Ad;
  
 use App\Scopes\StatusScope;
 
@@ -29,7 +29,7 @@ class AdRepository
     {
         $this->model = $this->checkAuthScope();
 
-        return $this->model->orderBy($sortColumn, $sort)->paginate($number);
+        return $this->model->orderBy($sortColumn, $sort)->with('User')->paginate($number);
     }
 
     /**
@@ -42,7 +42,7 @@ class AdRepository
     {
         $this->model = $this->checkAuthScope();
 
-        return $this->model->findOrFail($id);
+        return $this->model->with('User')->findOrFail($id);
     }
 
     /**

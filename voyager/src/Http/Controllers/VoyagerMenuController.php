@@ -9,11 +9,17 @@ class VoyagerMenuController extends Controller
 {
     public function builder($id)
     {
+
         $menu = Voyager::model('Menu')->findOrFail($id);
+
 
         $this->authorize('edit', $menu);
 
         $isModelTranslatable = is_bread_translatable(Voyager::model('MenuItem'));
+
+
+
+
 
         return Voyager::view('voyager::menus.builder', compact('menu', 'isModelTranslatable'));
     }

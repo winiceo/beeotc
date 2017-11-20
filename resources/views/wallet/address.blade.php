@@ -1,3 +1,6 @@
+
+
+
 <div class=" ">
     <div class="usncont">
         <div>
@@ -23,7 +26,7 @@
                             <td>{{ $address->wallet_address }}</td>
                             <td>{{ $address->created_at }}</td>
 
-                            <td> 购买</td>
+                            <td> 充值 提币</td>
                         </tr>
                         @endforeach
 

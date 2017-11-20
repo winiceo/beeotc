@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-use App\Ad;
+use App\Models\Ad;
 class Ads extends Seeder
 {
     /**

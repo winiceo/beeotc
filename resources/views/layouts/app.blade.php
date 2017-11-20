@@ -25,8 +25,10 @@
         ]); ?>
     </script>
 
-    @yield('styles')
+
 </head>
+
+@yield('styles')
 <body>
 
 

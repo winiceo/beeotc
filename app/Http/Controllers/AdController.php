@@ -62,9 +62,7 @@ class AdController extends Controller
     {
         $data = array_merge($request->all(), [
             'user_id'      => \Auth::id(),
-            'crypto_currency'=>'BTC',
-            'trade_type'=>'ONLINE_BUY',
-            'country_code'=>'ONLINE_BUY',
+
             'status'       => 0
         ]);
 
@@ -89,6 +87,8 @@ class AdController extends Controller
     public function detail($id)
     {
         $ad = $this->ad->getById($id);
+
+
 
         return view('ad.detail', compact('ad'));
     }

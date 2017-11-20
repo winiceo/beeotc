@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\Address;
 use Jcc\LaravelVote\Vote;
 use App\Traits\FollowTrait;
 use App\Scopes\StatusScope;
@@ -52,6 +53,13 @@ class User extends \TCG\Voyager\Models\User
 
         static::addGlobalScope(new StatusScope());
     }
+
+
+    public function addresss()
+    {
+        return $this->hasMany(Address::class)->orderBy('created_at', 'desc');
+    }
+
 
     /**
      * Get the discussions for the user.

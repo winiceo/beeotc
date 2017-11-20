@@ -69734,7 +69734,7 @@ var render = function() {
     [
       _c(
         "el-form-item",
-        { attrs: { label: "币钏" } },
+        { attrs: { label: "币种" } },
         [
           _c(
             "el-select",

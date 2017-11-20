@@ -3113,6 +3113,131 @@ function mergeFn (a, b) {
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}],\"es2015\",\"stage-2\"],\"plugins\":[\"transform-object-rest-spread\"]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0&bustCache!./resources/assets/js/components/AdCreate.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+exports.default = {
+    data: function data() {
+        return {
+            form: {
+                crypto_currency: '',
+                trade_type: '',
+                country_code: '',
+                currency: '',
+                margin: '',
+                price: '',
+                min_price: '',
+                min_amount: '',
+                max_amount: '',
+                payment_window_minutes: '',
+                payment_provider: '',
+                message: ''
+            }
+        };
+    },
+
+    methods: {
+        onSubmit: function onSubmit() {
+            this.$http.post('/ad', this.form).then(function (response) {
+                console.log(response);
+
+                toastr.success('You publish the comment success!');
+            }).catch(function (_ref) {
+                //this.isSubmiting = false
+                //stack_error(response)
+
+                var response = _ref.response;
+            });
+        }
+    }
+};
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}],\"es2015\",\"stage-2\"],\"plugins\":[\"transform-object-rest-spread\"]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0&bustCache!./resources/assets/js/components/AvatarUpload.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -3626,6 +3751,193 @@ exports.default = {
       this.$emit('canceled');
     }
   }
+};
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}],\"es2015\",\"stage-2\"],\"plugins\":[\"transform-object-rest-spread\"]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0&bustCache!./resources/assets/js/components/OrderCreate.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+exports.default = {
+    props: {
+        price: {
+            type: String,
+            default: function _default() {
+                return '';
+            }
+        },
+        adId: {
+            type: String,
+            default: function _default() {
+                return '';
+            }
+        }
+    },
+    data: function data() {
+        return {
+            form: {
+                qty: '',
+                amount: '',
+                order_desc: ''
+
+            }
+
+        };
+    },
+
+
+    watch: {
+        'form.amount': function formAmount(val, oldVal) {
+            this.change_amount();
+        },
+        'form.qty': function formQty(val, oldVal) {
+            this.change_qty();
+        }
+    },
+    mounted: function mounted() {},
+    created: function created() {},
+
+    methods: {
+        change_amount: function change_amount() {
+            var amount = this.form.amount.toString();
+            if (amount.indexOf(".") != "-1") {
+                var barr = amount.split(".");
+                var xiaoshu = barr[1].length;
+                if (xiaoshu > 2) {
+                    var org = barr[1].substr(0, xiaoshu - 1);
+                    var xin = parseFloat(barr[0] + "." + org);
+                    this.form.amount = xin;
+                    // $("#amount"+type).val(xin);
+                }
+            }
+
+            //转换成比特币 需要保留八位小数
+            var btcnum = (this.form.amount / this.price).toFixed(10);
+            btcnum = this.getnum(btcnum, 8);
+            this.form.qty = btcnum;
+        },
+        change_qty: function change_qty() {
+            var qty = this.form.qty.toString();
+            if (qty.indexOf(".") != "-1") {
+                var barr = qty.split(".");
+                var xiaoshu = barr[1].length;
+                if (xiaoshu > 8) {
+                    var org = barr[1].substr(0, xiaoshu - 1);
+                    var xin = parseFloat(barr[0] + "." + org);
+                    this.form.qty = xin;
+                }
+            }
+
+            //转换成比特币 需要保留八位小数
+            var btcnum = (this.form.qty * this.price).toFixed(4);
+            btcnum = this.getnum(btcnum, 2);
+            this.form.amount = btcnum;
+        },
+        getnum: function getnum(num, ss) {
+            if (num.indexOf(".") != "-1") {
+                var barr = num.split(".");
+                var org = barr[1].substr(0, ss);
+                var xin = parseFloat(barr[0] + "." + org);
+                return xin;
+            }
+        },
+        onSubmit: function onSubmit() {
+            this.form.ad_id = this.adId;
+
+            this.$http.post('/order', this.form).then(function (response) {
+                console.log(response);
+
+                window.location.href = '/order/info/' + response.data.id;
+
+                toastr.success('You publish the comment success!');
+            }).catch(function (_ref) {
+                var response = _ref.response;
+            });
+        }
+    }
 };
 
 /***/ }),
@@ -13136,6 +13448,21 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 // module
 exports.push([module.i, "\n.modal[data-v-467dc58b] {\n    display: block;\n    position: fixed;\n    z-index: 9998;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 100%;\n    background-color: rgba(0, 0, 0, .5);\n    -webkit-transition: opacity .3s ease;\n    transition: opacity .3s ease;\n}\n.modal-header[data-v-467dc58b] {\n    padding-bottom: 25px;\n    border: none;\n}\n.modal-dialog[data-v-467dc58b] {\n    display: table;\n    vertical-align: middle;\n    margin: 30px auto;\n}\n.modal-content[data-v-467dc58b] {\n    background-color: #fff;\n    border-radius: 5px;\n    -webkit-box-shadow: 0 2px 8px rgba(0, 0, 0, .33);\n            box-shadow: 0 2px 8px rgba(0, 0, 0, .33);\n    -webkit-transition: all .3s ease;\n    transition: all .3s ease;\n    font-family: Helvetica, Arial, sans-serif;\n}\n.modal-enter[data-v-467dc58b] {\n    opacity: 0;\n}\n.modal-leave-active[data-v-467dc58b] {\n    opacity: 0;\n}\n.modal-enter .modal-content[data-v-467dc58b],\n.modal-leave-active .modal-content[data-v-467dc58b] {\n    -webkit-transform: scale(1.1);\n    transform: scale(1.1);\n}\n.btn-outline[data-v-467dc58b] {\n    color: #fff;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-61f55083\",\"scoped\":false,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0&bustCache!./resources/assets/js/components/OrderCreate.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/css-base.js")(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n.el-row {\n    margin-bottom: 20px;\n}\n.el-col {\n    border-radius: 4px;\n}\n.bg-purple-dark {\n    background: #99a9bf;\n}\n.bg-purple {\n    background: #d3dce6;\n}\n.bg-purple-light {\n    background: #e5e9f2;\n}\n.grid-content {\n    border-radius: 4px;\n    min-height: 36px;\n}\n.row-bg {\n    padding: 10px 0;\n    background-color: #f9fafc;\n}\n", ""]);
 
 // exports
 
@@ -78869,6 +79196,145 @@ if (false) {
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-61f55083\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0&bustCache!./resources/assets/js/components/OrderCreate.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _vm._m(0, false, false),
+      _vm._v(" "),
+      _c("span", { staticClass: "icon-equal" }),
+      _vm._v(" "),
+      _c(
+        "el-row",
+        { attrs: { gutter: 20 } },
+        [
+          _c(
+            "el-col",
+            { attrs: { span: 10 } },
+            [
+              _c(
+                "el-input",
+                {
+                  attrs: { placeholder: "输入您想出售的金额" },
+                  model: {
+                    value: _vm.form.amount,
+                    callback: function($$v) {
+                      _vm.$set(_vm.form, "amount", $$v)
+                    },
+                    expression: "form.amount"
+                  }
+                },
+                [_c("template", { slot: "append" }, [_vm._v("CNY")])],
+                2
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c("el-col", { attrs: { span: 4 } }, [
+            _vm._v("\n            《=》\n\n        ")
+          ]),
+          _vm._v(" "),
+          _c(
+            "el-col",
+            { attrs: { span: 10 } },
+            [
+              _c(
+                "el-input",
+                {
+                  attrs: { placeholder: "输入您想出售的比特币" },
+                  on: {
+                    change: _vm.change_qty,
+                    keyup: function($event) {
+                      if (
+                        !("button" in $event) &&
+                        _vm._k($event.keyCode, "up", 38, $event.key)
+                      ) {
+                        return null
+                      }
+                      _vm.change_qty($event)
+                    }
+                  },
+                  model: {
+                    value: _vm.form.qty,
+                    callback: function($$v) {
+                      _vm.$set(_vm.form, "qty", $$v)
+                    },
+                    expression: "form.qty"
+                  }
+                },
+                [_c("template", { slot: "append" }, [_vm._v("BTC")])],
+                2
+              )
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "el-row",
+        { attrs: { gutter: 20 } },
+        [
+          _c(
+            "el-col",
+            { attrs: { span: 24 } },
+            [
+              _c("el-input", {
+                model: {
+                  value: _vm.form.order_desc,
+                  callback: function($$v) {
+                    _vm.$set(_vm.form, "order_desc", $$v)
+                  },
+                  expression: "form.order_desc"
+                }
+              })
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "el-button",
+        { attrs: { type: "primary" }, on: { click: _vm.onSubmit } },
+        [_vm._v("立即购买")]
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "form-title" }, [
+      _c("span", { staticClass: "form-name" }, [_vm._v("你想出售多少？ ")]),
+      _vm._v(" "),
+      _c("span", { staticClass: "form-name" })
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-61f55083", module.exports)
+  }
+}
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-725e0371\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0&bustCache!./resources/assets/js/components/Textarea.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -78889,6 +79355,292 @@ if (false) {
   module.hot.accept()
   if (module.hot.data) {
     require("vue-hot-reload-api")      .rerender("data-v-725e0371", module.exports)
+  }
+}
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-74ced694\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0&bustCache!./resources/assets/js/components/AdCreate.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "el-form",
+    { ref: "form", attrs: { model: _vm.form, "label-width": "80px" } },
+    [
+      _c(
+        "el-form-item",
+        { attrs: { label: "交易币种" } },
+        [
+          _c(
+            "el-select",
+            {
+              attrs: { placeholder: "交易币种" },
+              model: {
+                value: _vm.form.crypto_currency,
+                callback: function($$v) {
+                  _vm.$set(_vm.form, "crypto_currency", $$v)
+                },
+                expression: "form.crypto_currency"
+              }
+            },
+            [_c("el-option", { attrs: { label: "比特币", value: "btc" } })],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "el-form-item",
+        { attrs: { label: "交易类型" } },
+        [
+          _c(
+            "el-radio-group",
+            {
+              model: {
+                value: _vm.form.trade_type,
+                callback: function($$v) {
+                  _vm.$set(_vm.form, "trade_type", $$v)
+                },
+                expression: "form.trade_type"
+              }
+            },
+            [
+              _c("el-radio", { attrs: { label: "ONLINE_SELL" } }, [
+                _vm._v("在线出售比特币")
+              ]),
+              _vm._v(" "),
+              _c("el-radio", { attrs: { label: "ONLINE_BUY" } }, [
+                _vm._v("在线购买比特币")
+              ])
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "el-form-item",
+        { attrs: { label: "所在国家" } },
+        [
+          _c(
+            "el-select",
+            {
+              attrs: { placeholder: "所在国家" },
+              model: {
+                value: _vm.form.country_code,
+                callback: function($$v) {
+                  _vm.$set(_vm.form, "country_code", $$v)
+                },
+                expression: "form.country_code"
+              }
+            },
+            [_c("el-option", { attrs: { label: "中国", value: "btc" } })],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "el-form-item",
+        { attrs: { label: "所在国家" } },
+        [
+          _c(
+            "el-select",
+            {
+              attrs: { placeholder: "所在国家" },
+              model: {
+                value: _vm.form.currency,
+                callback: function($$v) {
+                  _vm.$set(_vm.form, "currency", $$v)
+                },
+                expression: "form.currency"
+              }
+            },
+            [_c("el-option", { attrs: { label: "人民币", value: "CNY" } })],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "el-form-item",
+        { attrs: { label: "溢价" } },
+        [
+          _c("el-input", {
+            model: {
+              value: _vm.form.margin,
+              callback: function($$v) {
+                _vm.$set(_vm.form, "margin", $$v)
+              },
+              expression: "form.margin"
+            }
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "el-form-item",
+        { attrs: { label: "价格" } },
+        [
+          _c("el-input", {
+            model: {
+              value: _vm.form.price,
+              callback: function($$v) {
+                _vm.$set(_vm.form, "price", $$v)
+              },
+              expression: "form.price"
+            }
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "el-form-item",
+        { attrs: { label: "最低价" } },
+        [
+          _c("el-input", {
+            model: {
+              value: _vm.form.min_price,
+              callback: function($$v) {
+                _vm.$set(_vm.form, "min_price", $$v)
+              },
+              expression: "form.min_price"
+            }
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "el-form-item",
+        { attrs: { label: "最小限额" } },
+        [
+          _c("el-input", {
+            model: {
+              value: _vm.form.min_amount,
+              callback: function($$v) {
+                _vm.$set(_vm.form, "min_amount", $$v)
+              },
+              expression: "form.min_amount"
+            }
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "el-form-item",
+        { attrs: { label: "最大限额" } },
+        [
+          _c("el-input", {
+            model: {
+              value: _vm.form.max_amount,
+              callback: function($$v) {
+                _vm.$set(_vm.form, "max_amount", $$v)
+              },
+              expression: "form.max_amount"
+            }
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "el-form-item",
+        { attrs: { label: "付款期限" } },
+        [
+          _c("el-input", {
+            model: {
+              value: _vm.form.payment_window_minutes,
+              callback: function($$v) {
+                _vm.$set(_vm.form, "payment_window_minutes", $$v)
+              },
+              expression: "form.payment_window_minutes"
+            }
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "el-form-item",
+        { attrs: { label: "收款方式" } },
+        [
+          _c(
+            "el-select",
+            {
+              attrs: { placeholder: "收款方式" },
+              model: {
+                value: _vm.form.payment_provider,
+                callback: function($$v) {
+                  _vm.$set(_vm.form, "payment_provider", $$v)
+                },
+                expression: "form.payment_provider"
+              }
+            },
+            [
+              _c("el-option", { attrs: { label: "支付宝", value: "CNY" } }),
+              _vm._v(" "),
+              _c("el-option", { attrs: { label: "微信", value: "CNY" } })
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "el-form-item",
+        { attrs: { label: "广告留言" } },
+        [
+          _c("el-input", {
+            attrs: { type: "message" },
+            model: {
+              value: _vm.form.desc,
+              callback: function($$v) {
+                _vm.$set(_vm.form, "desc", $$v)
+              },
+              expression: "form.desc"
+            }
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "el-form-item",
+        [
+          _c(
+            "el-button",
+            { attrs: { type: "primary" }, on: { click: _vm.onSubmit } },
+            [_vm._v("立即创建")]
+          ),
+          _vm._v(" "),
+          _c("el-button", [_vm._v("取消")])
+        ],
+        1
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-74ced694", module.exports)
   }
 }
 
@@ -79096,7 +79848,7 @@ var render = function() {
     [
       _c(
         "el-form-item",
-        { attrs: { label: "币钏" } },
+        { attrs: { label: "币种" } },
         [
           _c(
             "el-select",
@@ -79243,6 +79995,33 @@ if(false) {
  if(!content.locals) {
    module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-467dc58b\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0&bustCache!./Modal.vue", function() {
      var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-467dc58b\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0&bustCache!./Modal.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+
+/***/ "./node_modules/vue-style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-61f55083\",\"scoped\":false,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0&bustCache!./resources/assets/js/components/OrderCreate.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__("./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-61f55083\",\"scoped\":false,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0&bustCache!./resources/assets/js/components/OrderCreate.vue");
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__("./node_modules/vue-style-loader/lib/addStylesClient.js")("fa60affc", content, false);
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-61f55083\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0&bustCache!./OrderCreate.vue", function() {
+     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-61f55083\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0&bustCache!./OrderCreate.vue");
      if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
      update(newContent);
    });
@@ -90229,6 +91008,55 @@ module.exports = g;
 
 /***/ }),
 
+/***/ "./resources/assets/js/components/AdCreate.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__("./node_modules/vue-loader/lib/component-normalizer.js")
+/* script */
+var __vue_script__ = __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}],\"es2015\",\"stage-2\"],\"plugins\":[\"transform-object-rest-spread\"]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0&bustCache!./resources/assets/js/components/AdCreate.vue")
+/* template */
+var __vue_template__ = __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-74ced694\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0&bustCache!./resources/assets/js/components/AdCreate.vue")
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/AdCreate.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-74ced694", Component.options)
+  } else {
+    hotAPI.reload("data-v-74ced694", Component.options)
+' + '  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+
 /***/ "./resources/assets/js/components/AvatarUpload.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -90373,6 +91201,59 @@ if (false) {(function () {
     hotAPI.createRecord("data-v-321d3a26", Component.options)
   } else {
     hotAPI.reload("data-v-321d3a26", Component.options)
+' + '  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+
+/***/ "./resources/assets/js/components/OrderCreate.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__("./node_modules/vue-style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-61f55083\",\"scoped\":false,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0&bustCache!./resources/assets/js/components/OrderCreate.vue")
+}
+var normalizeComponent = __webpack_require__("./node_modules/vue-loader/lib/component-normalizer.js")
+/* script */
+var __vue_script__ = __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}],\"es2015\",\"stage-2\"],\"plugins\":[\"transform-object-rest-spread\"]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0&bustCache!./resources/assets/js/components/OrderCreate.vue")
+/* template */
+var __vue_template__ = __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-61f55083\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0&bustCache!./resources/assets/js/components/OrderCreate.vue")
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/OrderCreate.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-61f55083", Component.options)
+  } else {
+    hotAPI.reload("data-v-61f55083", Component.options)
 ' + '  }
   module.hot.dispose(function (data) {
     disposed = true
@@ -90759,6 +91640,8 @@ Vue.component('parse-textarea', __webpack_require__("./resources/assets/js/compo
 
 Vue.component('avatar', __webpack_require__("./resources/assets/js/components/AvatarUpload.vue"));
 Vue.component('wallet-add', __webpack_require__("./resources/assets/js/components/WalletAdd.vue"));
+Vue.component('ad-create', __webpack_require__("./resources/assets/js/components/AdCreate.vue"));
+Vue.component('order-create', __webpack_require__("./resources/assets/js/components/OrderCreate.vue"));
 
 new Vue({
     i18n: i18n

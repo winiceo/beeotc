@@ -18,7 +18,9 @@
         "laravel/passport": "^4.0",
         "laravel/tinker": "~1.0",
         "league/fractal": "^0.17.0",
-        "tcg/voyager": "^1.0"
+        "tcg/voyager": "^1.0",
+        "tymon/jwt-auth": "^0.5.12",
+        "yzalis/identicon": "^1.2"
     },
     "require-dev": {
         "filp/whoops": "~2.0",
