@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class MenuItem extends Model
 {
 
-    protected $table = 'menu_item';
+    protected $table = 'menu_items';
     protected $connection = 'mysql';
     public $timestamps = false;
 
@@ -38,8 +38,8 @@ class MenuItem extends Model
                     'title' => $item->title,
                     'is_top' => $item->is_top,
                     'parent_id' => $item->parent_id,
-                    'uri' => $item->uri,
-                    'icon' => $item->icon
+                    'url' => $item->url,
+                    'icon_class' => $item->icon_class
                 ];
                 if (count($item->sub) > 0) {
                     $sub = static::formart($item->sub);
@@ -78,21 +78,21 @@ class MenuItem extends Model
     }
 
     static function UriTops () {
-        $uris = static::where('is_top', 1)->where('parent_id', null)->whereNotNull('uri')->select('id', 'title', 'uri')->get();
+        $uris = static::where('is_top', 1)->where('parent_id', null)->whereNotNull('url')->select('id', 'title', 'url')->get();
         $result = [];
         foreach ($uris as $uri) $result[$uri['uri']] = $uri;
         return $result;
     }
     static function Uris () {
-        $uris = static::where('is_top', 0)->whereNotNull('uri')->select('id', 'title', 'uri')->get();
+        $uris = static::where('is_top', 0)->whereNotNull('url')->select('id', 'title', 'url')->get();
         $result = [];
-        foreach ($uris as $uri) $result[$uri['uri']] = $uri;
+        foreach ($uris as $uri) $result[$uri['url']] = $uri;
         return $result;
     }
 
     function parent () {
         // 父表: 子表关联键 -> 父键
-        return $this->belongsTo(static::class, 'parent_id')->select('id', 'title', 'uri', 'icon');
+        return $this->belongsTo(static::class, 'parent_id')->select('id', 'title', 'url', 'icon_class');
     }
 
     function sub () {

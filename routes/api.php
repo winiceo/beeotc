@@ -23,6 +23,12 @@ Route::group([
     Route::post('tokens',  'TokenController@store');
     Route::get('tokens',  'TokenController@refresh');
 
+
+    Route::post('login', 'AuthController@login');
+    Route::post('logout', 'AuthController@logout');
+    Route::post('refresh', 'AuthController@refresh');
+    Route::post('me', 'AuthController@me');
+
     // Refresh token
     //$api->patch('/tokens/{token}',  TokenController::class . '@refresh');
 });

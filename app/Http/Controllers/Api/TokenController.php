@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use function App\Helpers\username;
 use App\Models\Menu;
+use App\Models\MenuItem;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -20,12 +21,9 @@ class TokenController extends ApiController
 
     function refresh(Request $request,  $token = null) {
          $user = Auth::user();
-
-        if (!$token) {
-
+        $token = $request->header('Auth-Token');
 
 
-        }
         $res = [
             'errMsg' => '登录成功',
             'errCode'=>0,
@@ -34,17 +32,17 @@ class TokenController extends ApiController
                 'auth_token' => $token,
                 'org_info'=>[],
                 'menu' => [
-                    'top' => Menu::buildMenuTop($user),
-                    'map' => Menu::buildMenuMap($user),
-                    'uri_tops' => Menu::UriTops(),
-                    'uris' => Menu::Uris()
+                    'top' => MenuItem::buildMenuTop($user),
+                    'map' => MenuItem::buildMenuMap($user),
+                    'url_tops' => MenuItem::UriTops(),
+                    'urls' => MenuItem::Uris()
                 ]
             ],
             'menu' => [
-                'top' => Menu::buildMenuTop($user),
-                'map' => Menu::buildMenuMap($user),
-                'uri_tops' => Menu::UriTops(),
-                'uris' => Menu::Uris()
+                'top' => MenuItem::buildMenuTop($user),
+                'map' => MenuItem::buildMenuMap($user),
+                'uri_tops' => MenuItem::UriTops(),
+                'uris' => MenuItem::Uris()
             ]
 
         ];
