@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -3199,13 +3199,30 @@ Object.defineProperty(exports, "__esModule", {
 //
 //
 //
+//
+//
+//
+//
+//
+//
+
 
 exports.default = {
+
+    props: {
+        coins: {
+            type: String,
+            default: function _default() {
+                return '';
+            }
+        }
+    },
     data: function data() {
         return {
+            coin_type: [],
             form: {
-                crypto_currency: '',
-                trade_type: '',
+                crypto_currency: 1,
+                trade_type: "0",
                 country_code: '',
                 currency: '',
                 margin: '',
@@ -3218,6 +3235,9 @@ exports.default = {
                 message: ''
             }
         };
+    },
+    mounted: function mounted() {
+        this.coin_type = JSON.parse(this.coins);
     },
 
     methods: {
@@ -79387,8 +79407,12 @@ var render = function() {
                 expression: "form.crypto_currency"
               }
             },
-            [_c("el-option", { attrs: { label: "比特币", value: "btc" } })],
-            1
+            _vm._l(_vm.coin_type, function(coin, index) {
+              return _c("el-option", {
+                key: coin.value,
+                attrs: { label: coin.label, value: coin.value }
+              })
+            })
           )
         ],
         1
@@ -79410,11 +79434,11 @@ var render = function() {
               }
             },
             [
-              _c("el-radio", { attrs: { label: "ONLINE_SELL" } }, [
+              _c("el-radio", { attrs: { label: "0" } }, [
                 _vm._v("在线出售比特币")
               ]),
               _vm._v(" "),
-              _c("el-radio", { attrs: { label: "ONLINE_BUY" } }, [
+              _c("el-radio", { attrs: { label: "1" } }, [
                 _vm._v("在线购买比特币")
               ])
             ],
@@ -79449,12 +79473,12 @@ var render = function() {
       _vm._v(" "),
       _c(
         "el-form-item",
-        { attrs: { label: "所在国家" } },
+        { attrs: { label: "货币" } },
         [
           _c(
             "el-select",
             {
-              attrs: { placeholder: "所在国家" },
+              attrs: { placeholder: "货币" },
               model: {
                 value: _vm.form.currency,
                 callback: function($$v) {
@@ -79465,7 +79489,8 @@ var render = function() {
             },
             [_c("el-option", { attrs: { label: "人民币", value: "CNY" } })],
             1
-          )
+          ),
+          _vm._v("\n        您希望交易付款的货币类型。\n    ")
         ],
         1
       ),
@@ -80293,7 +80318,7 @@ module.exports = function listToStyles (parentId, list) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(global, setImmediate) {/*!
- * Vue.js v2.5.5
+ * Vue.js v2.5.6
  * (c) 2014-2017 Evan You
  * Released under the MIT License.
  */
@@ -85262,7 +85287,7 @@ Object.defineProperty(Vue$3.prototype, '$ssrContext', {
   }
 });
 
-Vue$3.version = '2.5.5';
+Vue$3.version = '2.5.6';
 
 /*  */
 
@@ -86969,7 +86994,6 @@ function model (
   var modifiers = dir.modifiers;
   var tag = el.tag;
   var type = el.attrsMap.type;
-  var attrsMap = el.attrsMap;
 
   if (true) {
     // inputs with type="file" are read only and setting the input's
@@ -86978,20 +87002,6 @@ function model (
       warn$1(
         "<" + (el.tag) + " v-model=\"" + value + "\" type=\"file\">:\n" +
         "File inputs are read only. Use a v-on:change listener instead."
-      );
-    }
-
-    // warn if v-bind:value conflicts with v-model
-    if (
-      (attrsMap['v-bind:value'] || attrsMap[':value']) &&
-      type !== 'checkbox' &&
-      type !== 'radio' &&
-      tag !== 'select'
-    ) {
-      var vBindValue = attrsMap['v-bind:value'] ? 'v-bind:value' : ':value';
-      warn$1(
-        vBindValue + " conflicts with v-model on the same element " +
-        'because the latter already expands to a value binding internally'
       );
     }
   }
@@ -87091,6 +87101,19 @@ function genDefaultModel (
   modifiers
 ) {
   var type = el.attrsMap.type;
+
+  // warn if v-bind:value conflicts with v-model
+  if (true) {
+    var value$1 = el.attrsMap['v-bind:value'] || el.attrsMap[':value'];
+    if (value$1) {
+      var binding = el.attrsMap['v-bind:value'] ? 'v-bind:value' : ':value';
+      warn$1(
+        binding + "=\"" + value$1 + "\" conflicts with v-model on the same element " +
+        'because the latter already expands to a value binding internally'
+      );
+    }
+  }
+
   var ref = modifiers || {};
   var lazy = ref.lazy;
   var number = ref.number;
@@ -91643,6 +91666,12 @@ Vue.component('wallet-add', __webpack_require__("./resources/assets/js/component
 Vue.component('ad-create', __webpack_require__("./resources/assets/js/components/AdCreate.vue"));
 Vue.component('order-create', __webpack_require__("./resources/assets/js/components/OrderCreate.vue"));
 
+// Vue.component(
+//     'chat',
+//     require('components/Chat.vue')
+// );
+
+
 new Vue({
     i18n: i18n
 }).$mount('#app');
@@ -95138,10 +95167,26 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 /***/ }),
 
-/***/ 1:
+/***/ "./resources/assets/sass/app.scss":
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+
+/***/ "./resources/assets/sass/home.scss":
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+
+/***/ 0:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__("./resources/assets/js/home.js");
+__webpack_require__("./resources/assets/js/home.js");
+__webpack_require__("./resources/assets/sass/app.scss");
+module.exports = __webpack_require__("./resources/assets/sass/home.scss");
 
 
 /***/ })

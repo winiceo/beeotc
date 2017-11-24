@@ -18,7 +18,9 @@
                         <a href="/User/nameauth.html" style="color:#108ee9;">身份验证</a>成功后您的广告才会显示在交易列表中。
                     </div>
 
-                    <ad-create></ad-create>
+
+
+                    <ad-create coins='@json($coins)'></ad-create>
 
 
                 </div>

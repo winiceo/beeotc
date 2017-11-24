@@ -86,7 +86,7 @@
 /******/ 		if (__webpack_require__.nc) {
 /******/ 			script.setAttribute("nonce", __webpack_require__.nc);
 /******/ 		}
-/******/ 		script.src = __webpack_require__.p + "js/" + ({}[chunkId]||chunkId) + "." + {"0":"7b3b3bbdcbeef39c65b7","1":"bf069fa35ff21ee83f56","2":"0af6e862c1c3a4616d6e","3":"02f3c7142eccf62751c1","4":"92ce2beb9db463583184","5":"886e88b5ef758d9814b9","6":"d30bc50a823fb3fe96ef","7":"e937e74faacdb5abcc67","8":"3c5d38802718c06f3862","9":"2536a65bdfcc0d0ab4e3","10":"77429f4cc272e4fc0a57","11":"acbec1c043cec78103c8","12":"f4916717f54ef6677674","13":"a1d2b8398dc0d874d2da","14":"6d23603e3e61e65bd046","15":"fa3eed746a42fee76ffc","16":"ecf1f31f2f74255d2147","17":"1ee11413958e4876fdd0","18":"c8a37573da41afcf3951","19":"b0faaa48a7d00b7c3443","20":"a5883e2a2077b17fa0bd","21":"d52bbc489f6112313275","22":"0132acaaadfd5966c5e3","23":"6b9c8a31bbb284f74b43"}[chunkId] + ".js";
+/******/ 		script.src = __webpack_require__.p + "js/" + ({}[chunkId]||chunkId) + "." + {"0":"97a85a8019e53ba9b558","1":"775d3b2a4f2313ee0f57","2":"d07f2f6e3effe8520e21","3":"02f3c7142eccf62751c1","4":"92ce2beb9db463583184","5":"886e88b5ef758d9814b9","6":"d30bc50a823fb3fe96ef","7":"e937e74faacdb5abcc67","8":"3c5d38802718c06f3862","9":"2536a65bdfcc0d0ab4e3","10":"77429f4cc272e4fc0a57","11":"acbec1c043cec78103c8","12":"f4916717f54ef6677674","13":"a1d2b8398dc0d874d2da","14":"6d23603e3e61e65bd046","15":"fa3eed746a42fee76ffc","16":"ecf1f31f2f74255d2147","17":"1ee11413958e4876fdd0","18":"c8a37573da41afcf3951","19":"b0faaa48a7d00b7c3443","20":"a5883e2a2077b17fa0bd","21":"d52bbc489f6112313275","22":"0132acaaadfd5966c5e3","23":"6b9c8a31bbb284f74b43"}[chunkId] + ".js";
 /******/ 		var timeout = setTimeout(onScriptComplete, 120000);
 /******/ 		script.onerror = script.onload = onScriptComplete;
 /******/ 		function onScriptComplete() {
@@ -142,7 +142,7 @@
 /******/ 	__webpack_require__.oe = function(err) { console.error(err); throw err; };
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -51423,7 +51423,7 @@ module.exports = function listToStyles (parentId, list) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(global, setImmediate) {/*!
- * Vue.js v2.5.5
+ * Vue.js v2.5.6
  * (c) 2014-2017 Evan You
  * Released under the MIT License.
  */
@@ -56392,7 +56392,7 @@ Object.defineProperty(Vue$3.prototype, '$ssrContext', {
   }
 });
 
-Vue$3.version = '2.5.5';
+Vue$3.version = '2.5.6';
 
 /*  */
 
@@ -58099,7 +58099,6 @@ function model (
   var modifiers = dir.modifiers;
   var tag = el.tag;
   var type = el.attrsMap.type;
-  var attrsMap = el.attrsMap;
 
   if (true) {
     // inputs with type="file" are read only and setting the input's
@@ -58108,20 +58107,6 @@ function model (
       warn$1(
         "<" + (el.tag) + " v-model=\"" + value + "\" type=\"file\">:\n" +
         "File inputs are read only. Use a v-on:change listener instead."
-      );
-    }
-
-    // warn if v-bind:value conflicts with v-model
-    if (
-      (attrsMap['v-bind:value'] || attrsMap[':value']) &&
-      type !== 'checkbox' &&
-      type !== 'radio' &&
-      tag !== 'select'
-    ) {
-      var vBindValue = attrsMap['v-bind:value'] ? 'v-bind:value' : ':value';
-      warn$1(
-        vBindValue + " conflicts with v-model on the same element " +
-        'because the latter already expands to a value binding internally'
       );
     }
   }
@@ -58221,6 +58206,19 @@ function genDefaultModel (
   modifiers
 ) {
   var type = el.attrsMap.type;
+
+  // warn if v-bind:value conflicts with v-model
+  if (true) {
+    var value$1 = el.attrsMap['v-bind:value'] || el.attrsMap[':value'];
+    if (value$1) {
+      var binding = el.attrsMap['v-bind:value'] ? 'v-bind:value' : ':value';
+      warn$1(
+        binding + "=\"" + value$1 + "\" conflicts with v-model on the same element " +
+        'because the latter already expands to a value binding internally'
+      );
+    }
+  }
+
   var ref = modifiers || {};
   var lazy = ref.lazy;
   var number = ref.number;
@@ -64722,26 +64720,10 @@ exports.default = new _vuex2.default.Store({
 
 /***/ }),
 
-/***/ "./resources/assets/sass/app.scss":
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-
-/***/ "./resources/assets/sass/home.scss":
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-
-/***/ 0:
+/***/ 1:
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__("./resources/assets/js/app.js");
-__webpack_require__("./resources/assets/sass/app.scss");
-module.exports = __webpack_require__("./resources/assets/sass/home.scss");
+module.exports = __webpack_require__("./resources/assets/js/app.js");
 
 
 /***/ })

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\UserWalletCharge;
 use Auth;
 use Hash;
 use Image;
@@ -28,8 +29,12 @@ class UserController extends Controller
     {
         $user = $this->user->getById(Auth::id());
 
+        $wallets= UserWalletCharge:: where('user_id', $user->id)
+            ->orderBy('id', 'asc')
 
-        return view('user.index', compact('user'));
+            ->get();
+
+        return view('user.index', compact('user',   'wallets'));
 
 
     }
@@ -51,6 +56,9 @@ class UserController extends Controller
 
         return view('user.index', compact('user', 'discussions', 'comments'));
     }
+
+
+
 
     /**
      * Display the following users list.

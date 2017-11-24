@@ -7,7 +7,9 @@ use App\Models\Test;
 use App\Repositories\AdRepository;
 use Illuminate\Http\Request;
 use App\Repositories\ArticleRepository;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Jrean\UserVerification\Facades\UserVerification;
 use TCG\Voyager\Models\MenuItem;
 
 class TestController extends Controller
@@ -17,6 +19,19 @@ class TestController extends Controller
     public function __construct(ArticleRepository $article)
     {
         $this->article = $article;
+    }
+
+
+    public function mail(){
+
+        $user=Auth::user();
+
+        UserVerification::generate($user);
+
+        dump($user);
+
+        UserVerification::send($user, 'My Custom E-mail Subject','zshdiy@163.com','zshdiy');
+
     }
 
 

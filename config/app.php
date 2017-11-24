@@ -179,16 +179,23 @@ return [
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
 
 
+
+        Clockwork\Support\Laravel\ClockworkServiceProvider::class,
+
+        Jrean\UserVerification\UserVerificationServiceProvider::class,
+
+
         /*
          * Application Service Providers...
          */
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
-        // App\Providers\BroadcastServiceProvider::class,
+        App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
 
+        Naux\Mail\SendCloudServiceProvider::class,
 
 
     ],
@@ -242,6 +249,9 @@ return [
         //'Socialite' => Laravel\Socialite\Facades\Socialite::class,
         'Translug' => JellyBool\Translug\TranslugFacade::class,
         'Image' => Intervention\Image\Facades\Image::class,
+
+        'UserVerification' => Jrean\UserVerification\Facades\UserVerification::class,
+
     ],
 
 ];

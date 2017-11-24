@@ -1,95 +1,106 @@
-<!doctype html>
-<html lang="{{ app()->getLocale() }}">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>Laravel</title>
-
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
-
-    <!-- Styles -->
+    <title>Chat with Laravel + Socket.IO</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css"
+          integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
     <style>
-        html, body {
-            background-color: #fff;
-            color: #636b6f;
-            font-family: 'Raleway', sans-serif;
-            font-weight: 100;
-            height: 100vh;
-            margin: 0;
-        }
-
-        .full-height {
-            height: 100vh;
-        }
-
-        .flex-center {
-            align-items: center;
-            display: flex;
-            justify-content: center;
-        }
-
-        .position-ref {
-            position: relative;
-        }
-
-        .top-right {
+        .list-group.chatlist {
+            display: block;
             position: absolute;
-            right: 10px;
-            top: 18px;
+            width: 100%;
+            height: 100%;
+            padding-bottom: 60px;
+            overflow: scroll;
         }
 
-        .content {
-            text-align: center;
+        .container-fluid.message {
+            width: 100%;
+            display: block;
+            position: fixed;
+            bottom: 0px;
+            padding: 10px;
+            background: antiquewhite;
         }
 
-        .title {
-            font-size: 84px;
-        }
-
-        .links > a {
-            color: #636b6f;
-            padding: 0 25px;
-            font-size: 12px;
-            font-weight: 600;
-            letter-spacing: .1rem;
-            text-decoration: none;
-            text-transform: uppercase;
-        }
-
-        .m-b-md {
-            margin-bottom: 30px;
+        .float-right {
+            float: right;
         }
     </style>
 </head>
 <body>
-    <div class="flex-center position-ref full-height">
-        @if (Route::has('login'))
-            <div class="top-right links">
-                @auth
-                    <a href="{{ url('/home') }}">Home</a>
-                    @else
-                        <a href="{{ route('login') }}">Login</a>
-                        <a href="{{ route('register') }}">Register</a>
-                        @endauth
-            </div>
-        @endif
 
-        <div class="content">
-            <div class="title m-b-md">
-                Laravel
-            </div>
-
-            <div class="links">
-                <a href="https://laravel.com/docs">Documentation</a>
-                <a href="https://laracasts.com">Laracasts</a>
-                <a href="https://laravel-news.com">News</a>
-                <a href="https://forge.laravel.com">Forge</a>
-                <a href="https://github.com/laravel/laravel">GitHub</a>
-            </div>
+<div id="ChatApp">
+    <ul class="list-group chatlist">
+        <li class="list-group-item" v-for="message in messages">@{{ message.type+" "+message.content }} <span
+                    class="float-right">@{{ message.time }}</span></li>
+    </ul>
+    <div class="container-fluid message">
+        <div class="Chat col-md-12">
+            <form v-on:submit.prevent="send" class="Chat--focused input-group">
+                <input v-model="message" type="text" class="form-control Chat__textArea"
+                       placeholder="Send your message!">
+                <span class="input-group-btn">
+                    <button class="btn btn-secondary Chat__submitButton" type="submit">Send</button>
+                </span>
+            </form>
         </div>
     </div>
+</div>
+
+
+<script src="{{ asset('plugins/vue.js/vue.min.js') }}"></script>
+<script src="{{ asset('plugins/vue.js/vue-resource.min.js') }}"></script>
+<script src="{{ asset('plugins/socket.io/socket.io.min.js') }}"></script>
+<script language="JavaScript">
+    var socket_port = {{ env('SOCKET_PORT') }};
+    var socket_host = 'http://192.168.10.10';
+    var socket_channel = 'private-chat-channel';
+
+    var socket = io(socket_host + ":" + socket_port);
+
+    var chatApp = new Vue({
+        el: '#ChatApp',
+        data: {
+            message: '',
+            messages: []
+        },
+        mounted: function () {
+            this.$nextTick(function () {
+                console.log("Setting socket on " + socket_host + ":" + socket_port + " with channel " + socket_channel + "...");
+
+                socket.on(socket_channel, function (event) {
+                    console.log(event);
+
+                    this.messages.push(event);
+
+                    // Scroll down on DOM Update after Push
+                    this.$nextTick(function () {
+                        var container = this.$el.querySelector(".chatlist");
+                        console.log("scrollToBottom", container.scrollTop, container.clientHeight, container.scrollHeight);
+                        container.scrollTop = container.scrollHeight;
+                    });
+                }.bind(this));
+            });
+        },
+        methods: {
+            send: function (event) {
+                var message_obj = {
+                    type: "UserMessage",
+                    content: this.message,
+                    time: '',
+                    _token: '{{ csrf_token() }}'
+                };
+                this.$http.post('{{ url("/chat/send_message") }}', message_obj).then(function (response) {
+                    console.log("socket.on.send_message", response);
+                })
+                ;
+                // Emit commented to send messages via Laravel
+                // socket.emit(socket_channel, message_obj);
+                this.message = '';
+            }
+        }
+    });
+</script>
 </body>
 </html>

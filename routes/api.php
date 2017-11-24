@@ -29,6 +29,9 @@ Route::group([
     Route::post('refresh', 'AuthController@refresh');
     Route::post('me', 'AuthController@me');
 
+
+
+
     // Refresh token
     //$api->patch('/tokens/{token}',  TokenController::class . '@refresh');
 });
@@ -37,6 +40,10 @@ Route::group([
     'middleware' => ['auth:api', 'admin'],
     'namespace' => 'Api',
 ], function () {
+
+
+
+
     Route::get('statistics', 'HomeController@statistics');
 
     Route::resource('user', 'UserController', ['except' => ['create', 'show']]);
@@ -85,6 +92,24 @@ Route::group([
     Route::post('ad', 'AdController@store')->middleware('auth:api');
     Route::post('order', 'OrderController@store')->middleware('auth:api');
 
+    Route::group(['prefix' => 'chat'], function () {
+        Route::get('/', function () {
+
+            event(new \App\Events\Message("UserJoined", "", date('Y-m-d H:i:s')));
+
+            return view('welcome');
+        });
+
+        Route::post('send_message', function (\Illuminate\Http\Request $request) {
+
+            //print_r([$request->type, $request->content]);
+            event(new App\Events\Message($request->type, $request->content, date('Y-m-d H:i:s')));
+
+            return response()->json([
+                'status' => 'success'
+            ]);
+        });
+    });
 
     // File Upload
     Route::post('file/upload', 'UploadController@fileUpload')->middleware('auth:api');

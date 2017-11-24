@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\CoinHelpers;
 use App\Http\Requests\AdRequest;
 
 use App\Repositories\AdRepository;
@@ -10,6 +11,8 @@ use App\Repositories\TagRepository;
 
 class AdController extends Controller
 {
+
+    use CoinHelpers;
     /**
      * @var \App\Repositories\DiscussionRepository
      */
@@ -47,9 +50,13 @@ class AdController extends Controller
      */
     public function create()
     {
-        $tags = $this->tag->all();
 
-        return view('ad.create', compact('tags'));
+
+        $coins=CoinHelpers::get();
+
+
+
+        return view('ad.create', compact('coins'));
     }
 
     /**
@@ -101,15 +108,12 @@ class AdController extends Controller
      */
     public function edit($id)
     {
-        $discussion = $this->discussion->getById($id);
+        $ad = $this->ad->getById($id);
 
-        $this->authorize('update', $discussion);
+        $this->authorize('update', $ad);
 
-        $tags = $this->tag->all();
 
-        $selectTags = $this->discussion->listTagsIdsForDiscussion($discussion);
-
-        return view('discussion.edit', compact('discussion', 'tags', 'selectTags'));
+        return view('ad.edit', compact('ad'));
     }
 
     /**

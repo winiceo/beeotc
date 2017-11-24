@@ -7,8 +7,15 @@ Auth::routes();
 Route::group(['prefix' => 'crm'], function () {
     Voyager::routes();
 });
+
+
+Route::get('email-verification/error', 'Auth\RegisterController@getVerificationError')->name('email-verification.error');
+
 Route::group(['as' => 'bee.'], function () {
     event(new Routing());
+
+
+
 
     Route::post('password/change', 'UserController@changePassword')->middleware('auth');
 
@@ -21,8 +28,29 @@ Route::group(['as' => 'bee.'], function () {
     });
 
 
+    Route::group(['prefix' => 'chat'], function () {
+        Route::get('/', function () {
+
+            event(new \App\Events\Message("UserJoined", "", date('Y-m-d H:i:s')));
+
+            return view('welcome');
+        });
+
+        Route::post('send_message', function (\Illuminate\Http\Request $request) {
+
+            //print_r([$request->type, $request->content]);
+            event(new App\Events\Message($request->type, $request->content, date('Y-m-d H:i:s')));
+
+            return response()->json([
+                'status' => 'success'
+            ]);
+        });
+    });
+
+
     Route::get('/', 'IndexController@index');
     Route::get('/test', 'TestController@test')->name('test');
+    Route::get('/mail', 'TestController@mail')->name('test');
     Route::get('/init', 'InitController@init');
 
 // Search
@@ -30,6 +58,20 @@ Route::group(['as' => 'bee.'], function () {
 
 // Discussion
     Route::resource('discussion', 'DiscussionController', ['except' => 'destroy']);
+
+
+
+    Route::get('email-verification/check/{token}', 'Auth\RegisterController@getVerification')->name('email-verification.check');
+
+    //邮箱验证成功
+    Route::get('emails/verification-result/success', 'Auth\RegisterController@verificationSuccess')->name('email-verification.check');
+
+
+    Route::get('/emails/verfication','Auth\RegisterController@verification');
+    //邮箱验证失败
+    Route::get('/emails/verification-result/failure', 'Auth\RegisterController@verificationFailure')->name('email-verification.check');
+
+
 
 // User
     Route::group(['prefix' => 'user'], function () {
@@ -81,6 +123,10 @@ Route::group(['as' => 'bee.'], function () {
         Route::get('create', 'AdController@create')->name('ad.create');
         Route::get('store', 'AdController@store');
         Route::get('detail/{id}', 'AdController@detail');
+
+        Route::get('edit/{id}','AdController@edit')->name('ad.edit');
+        Route::get('delete/{id}','AdController@delete')->name('ad.delete');
+
     });
 
 //Route::get('ad/create', 'AdController@create')->name('ad.create');

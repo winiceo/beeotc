@@ -2,78 +2,44 @@
 
 @section('content')
     <div class="container">
-        <div class="dicussion row">
-            <div class="col-md-9 col-md-offset-1">
-                <form class="form-horizontal" action="{{ url('discussion', ['id' => $discussion->id]) }}" method="POST">
-                    {{ method_field('PUT') }}
-                    {{ csrf_field() }}
-
-                    <div class="form-group{{ $errors->has('title') ? ' has-error' : '' }}">
-                        <label for="title" class="col-sm-2 control-label">{{ lang('Discuss Title') }}</label>
-                        <div class="col-sm-10">
-                            <input type="text" id="title" name="title" class="form-control" value="{{ $discussion->title }}">
-
-                            @if ($errors->has('title'))
-                                <span class="help-block">
-                                    <strong>{{ $errors->first('title') }}</strong>
-                                </span>
-                            @endif
-                        </div>
+        <div class=" ">
+            <div class="usncont">
+                <div class="usnc_right">
+                    <h1>创建一个广告</h1>
+                    <div class="leftmoney">
+                        如果您经常交易虚拟币，可以发布自己的虚拟币交易广告。
+                        <br>如果您只想购买或出售一次，我们建议您直接从购买或出售列表中下单交易。
+                        <br>
+                        发布一则交易广告是免费的。
+                        <br>
+                        发布交易广告的 BEE Network 用户每笔完成的交易需要缴纳 0.5% 的费用。<br>
+                        您必须在交易广告或交易聊天中提供您的付款详细信息，发起交易后，价格会锁定，除非定价中有明显的错误。<br>
+                        所有交流必须在 BEE Network 上进行，请注意高风险有欺诈风险的付款方式。<br>
+                        <a href="/User/nameauth.html" style="color:#108ee9;">身份验证</a>成功后您的广告才会显示在交易列表中。
                     </div>
-                    <div class="form-group{{ $errors->has('tags') ? ' has-error' : '' }}">
-                        <label class="col-sm-2 control-label">{{ lang('Discuss Tag') }}</label>
-                        <div class="col-sm-10">
-                            <select class="select" multiple="multiple" name="tags[]" style="width: 100%">
-                                @foreach($tags as $tag)
-                                    @if(in_array($tag->id, $selectTags))
-                                        <option value="{{ $tag->id }}" selected>{{ $tag->tag }}</option>
-                                    @else
-                                        <option value="{{ $tag->id }}">{{ $tag->tag }}</option>
-                                    @endif
-                                @endforeach
-                            </select>
 
-                            @if ($errors->has('tags'))
-                                <span class="help-block">
-                                    <strong>{{ $errors->first('tags') }}</strong>
-                                </span>
-                            @endif
-                        </div>
-                    </div>
-                    <div class="form-group{{ $errors->has('content') ? ' has-error' : '' }}">
-                        <label for="content" class="col-sm-2 control-label">{{ lang('Discuss Content') }}</label>
-                        <div class="col-sm-10">
-                            <parse-textarea content="{{ json_decode($discussion->content)->raw }}"></parse-textarea>
 
-                            @if ($errors->has('content'))
-                                <span class="help-block">
-                                    <strong>{{ $errors->first('content') }}</strong>
-                                </span>
-                            @endif
-                        </div>
-                    </div>
-                
-                    <div class="form-group">
-                        <div class="col-sm-12">
-                            <button type="submit" class="btn btn-success pull-right" onClick="this.form.submit(); this.disabled=true;">{{ lang('Edit Discussion') }}</button>
-                        </div>
-                    </div>
-                </form>
+
+                    <ad-create coins='@json($coins)'></ad-create>
+
+
+                </div>
             </div>
-        </div>
-    </div>
+        </div>    </div>
 @endsection
 
 @section('scripts')
-<script type="text/javascript">
-    $('.select').select2();
-</script>
+    <script type="text/javascript">
+
+
+
+    </script>
 @endsection
 
 @section('styles')
-<style>
-    .dicussion {
-        margin-top: 40px;
-    }
-</style>
+    <style>
+        .dicussion {
+            margin-top: 40px;
+        }
+    </style>
 @endsection

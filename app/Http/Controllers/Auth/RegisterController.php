@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\User;
-use Validator;
+use Jrean\UserVerification\Facades\UserVerification;
+use Jrean\UserVerification\Traits\VerifiesUsers;
+ use Validator;
 use Identicon\Identicon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -24,12 +26,25 @@ class RegisterController extends Controller
 
     use RegistersUsers;
 
+    use VerifiesUsers;
+
+
     /**
      * Where to redirect users after login / registration.
      *
      * @var string
      */
-    protected $redirectTo = '/';
+    protected $redirectTo = '/emails/verfication';
+
+
+
+    // 验证失败后的跳转地址
+    //public $redirectIfVerificationFails = '/emails/verification-result/failure';
+    // 检测到用户已经验证过后的跳转地址
+   /// public $redirectIfVerified = '/emails/verification-result/success';
+    // 验证成功后的跳转地址
+    //public $redirectAfterVerification = '/';
+
 
     /**
      * Create a new controller instance.
@@ -38,7 +53,7 @@ class RegisterController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest');
+        $this->middleware('guest',['except' => ['getVerification', 'getVerificationError']]);
     }
 
     /**
@@ -68,7 +83,7 @@ class RegisterController extends Controller
             'name'     => $data['name'],
             'email'    => $data['email'],
             'password' => bcrypt($data['password']),
-            'status'   => true,
+            'status'   => 0,
             'avatar'   => (new Identicon())->getImageDataUri($data['name'], 256),
         ]);
     }
@@ -83,8 +98,36 @@ class RegisterController extends Controller
     {
         $this->validator($request->all())->validate();
 
-        $this->guard()->login($this->create($request->all()));
+
+        $user = $this->create($request->all());
+
+        $this->guard()->login($user);
+
+        UserVerification::generate($user);
+
+        UserVerification::send($user, 'My Custom E-mail Subject','zshdiy@163.com','asdfsdf');
 
         return redirect()->to($this->redirectTo);
+    }
+
+
+    public function verificationSuccess(){
+        $message='邮箱已验证通过';
+        return view('mail.success', compact('message'));
+    }
+
+
+    public function verificationFailure(){
+        $message='验证失败';
+        return view('mail.failure', compact('message'));
+    }
+
+
+    public function verification(){
+
+        $user=Auth::user();
+
+        return view('mail.verification', compact('user'));
+
     }
 }

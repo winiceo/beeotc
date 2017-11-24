@@ -1,5 +1,8 @@
 @extends('layouts.app')
 @section('styles')
+
+    <link rel="stylesheet" href="{{ asset('lib/layui/css/layui.css') }}">
+
     <style>
         .usernewout .usncont .usnc_right{width:1140px;padding: 0 30px 20px 30px;}
         .ad_left{width:100%;}
@@ -56,6 +59,7 @@
                             <span>交易金额:&nbsp;&nbsp; 2000.00CNY</span>
                         </div>
                         <!-- 新加左边区域开始 -->
+                        <!-- 新加左边区域开始 -->
                         <div style="width: 700px;float:left;height: 500px;border:1px solid #d9d9d9;padding-bottom: 10px;position:relative;">
                             <div id="chat_content" style="width: 780px;height: 465px; overflow-y:scroll;overflow-x:hidden;">
                             </div>
@@ -67,7 +71,7 @@
                                     <input type="text" id="saycontent" placeholder="说点什么吧..." style="width:590px;height:32px;line-height:32px;outline:none;font-size:14px;border:none;margin-top: 7px;">
                                 </div>
                                 <input type="hidden" id="chat_num" value="0">
-                                <div class="chatsubmit" onclick="upChat();" style="width:60px;text-align:center;float:right;">
+                                <div class="chatsubmit" id='chatsubmit'  style="width:60px;text-align:center;float:right;">
                                     <img src="/images/fs.png" alt="" width="35" style="margin-top: 5px;">
                                 </div>
                             </div>
@@ -111,4 +115,290 @@
             </div>
         </div>
     </div>
+@endsection
+
+
+@section('scripts')
+
+    <script src="{{ asset('lib/layui/layui.js') }}"></script>
+
+    <script type="text/javascript">
+
+
+        layui.use(['layer', 'form'], function() {
+            alert(3333)
+            //提交聊天
+            var chatordertoken = "c831992617e6f645c566601b71d20e4a";
+             $("#chatsubmit").click(function  () {
+                var content = $("#saycontent").val();
+                if (content == "" || content == null) {
+                    layer.alert("发送内容不能为空！");
+                }
+                var ordertype = "1";
+                var orderid = "{{$order->id}}}";
+                var status = 1;
+                $.post("/api/chat/sendmessage", {
+                    content: content,
+                    chatpic: "",
+                    ordertype: ordertype,
+                    orderid: orderid,
+                    token: chatordertoken,
+                    status: status
+                }, function (data) {
+                    if (data.status == 1) {
+                        $("#saycontent").val('');
+                        chatordertoken = data.url;
+                    } else {
+                        layer.msg(data.info, {icon: 2});
+                        chatordertoken = data.url;
+                    }
+                }, "json");
+            })
+
+            //获取聊天记录
+            var userid = "1";
+            var t;
+
+            function getChat() {
+                var chatnum = $("#chat_num").val();
+                var orderid = "51";
+                var ordertype = "1";
+                var status = 1;
+                $.getJSON("/chat/getmessage?orderid=" + orderid + "&ordertype=" + ordertype + "&chatnum=" + chatnum + "&status=" + status + "&t=" + Math.random(), function (data) {
+                    if (data) {
+                        var chatcontent = "";
+                        for (var i = 0; i < data.length; i++) {
+                            if (data[i].touid == userid) {
+                                if (data[i].addon) {
+                                    chatcontent += '<div style="margin-top: 10px;width:735px;overflow: hidden;margin-left:15px;"><div style="float:left;width:50px;" class="left"><img src="' + data[i].fromuser + '" style="width:35px;border-radius: 50%;height: 35px;"/></div><div style="float: left;width:auto;border-radius: 0 4px 4px 4px;;background: #108ee9;color:#fff;font-size: 12px;line-height: 35px;text-align: right;padding:0 10px;" class="left">' + data[i].content + '<img src="' + data[i].addon + '"/></div></div>';
+                                } else {
+                                    chatcontent += '<div style="margin-top: 10px;width:735px;overflow: hidden;"><div style="float:left;width:50px;margin-left:15px;" class="left"><img src="' + data[i].fromuser + '" style="width:35px;border-radius: 50%;height: 35px;float:right;"/></div><div style="float: left;width:auto;border-radius: 0 4px 4px 4px;background: #108ee9;color:#fff;font-size: 12px;line-height: 35px;text-align: right;padding:0 10px;" class="left">' + data[i].content + '</div></div>';
+                                }
+                                chatnum++;
+                            } else {
+                                if (data[i].addon) {
+                                    chatcontent += '<div id="chat_content" style="width: 735px;"><div style="margin-top: 10px;width:735px;overflow: hidden;"><div style="float: right;width:50px;" class="right"><img src="' + data[i].fromuser + '" style="float: right;width:auto;border-radius: 4px 0 4px 4px;background: #108ee9;color:#fff;font-size: 12px;line-height: 35px;text-align: right;padding:0 10px;"/></div><div style="float: right;width:auto;border-radius: 4px 0 4px 4px;background: #108ee9;color:#fff;font-size: 12px;line-height: 35px;text-align: right;padding:0 10px;" class="right">' + data[i].content + '<img src="' + data[i].addon + '"/></div></div></div>';
+                                } else {
+                                    chatcontent += '<div id="chat_content" style="width: 735px;"><div style="margin-top: 10px;width:735x;overflow: hidden;"><div style="float: right;width:50px;" class="right"><img src="' + data[i].fromuser + '" style="width:35px;border-radius: 50%;height: 35px;float:right"/></div><div style="float: right;width:auto;border-radius: 4px 0 4px 4px;background: #108ee9;color:#fff;font-size: 12px;line-height: 35px;text-align: right;padding:0 10px;" class="right">' + data[i].content + '</div></div></div>';
+                                }
+                                chatnum++;
+                            }
+                        }
+                        $("#chat_num").val(chatnum);
+                        $("#chat_content").append(chatcontent);
+                    }
+                });
+                t = setTimeout(function () {
+                    getChat()
+                }, 2000);
+            }
+
+            $(document).ready(function () {
+                getChat();
+                markread();
+            });
+
+            //标记已读
+            function markread() {
+                $.post("/Order/markRead.html", {
+                    orderid: "51",
+                    ordertype: "1"
+                }, function (data) {
+
+                }, "json");
+                setTimeout(function () {
+                    markread()
+                }, 3000);
+            }
+
+            var type = 1;
+            var id = 51;
+            var xdctoken = 'c831992617e6f645c566601b71d20e4a';
+            var bjtoken = 'c831992617e6f645c566601b71d20e4a';
+            var sfbtoken = 'c831992617e6f645c566601b71d20e4a';
+            var ddsstoken = 'c831992617e6f645c566601b71d20e4a';
+            var pjtoken = 'c831992617e6f645c566601b71d20e4a';
+
+            function cancle() {
+                $.post("/Order/ordercancle_ajax.html", {
+                    type: type,
+                    id: id,
+                    token: xdctoken,
+
+                }, function (data) {
+                    layer.closeAll('loading');
+                    if (data.status == 1) {
+
+                        layer.alert(data.info, function (index) {
+                            self.location.reload();
+                        });
+
+                    } else {
+                        xdctoken = data.url;
+                        layer.msg(data.info, {icon: 2});
+
+                    }
+                }, "json");
+            }
+
+            function uptrade() {
+                $.post("/Order/uptrade_ajax.html", {
+                    type: type,
+                    id: id,
+                    token: bjtoken,
+
+                }, function (data) {
+                    layer.closeAll('loading');
+                    if (data.status == 1) {
+
+                        layer.alert(data.info, function (index) {
+                            self.location.reload();
+                        });
+
+                    } else {
+                        bjtoken = data.url;
+                        layer.msg(data.info, {icon: 2});
+
+                    }
+                }, "json");
+            }
+
+            function sfbtc() {
+                layer.config({
+                    extend: 'extend/layer.ext.js'
+                });
+                layer.ready(function () {
+                    layer.prompt({
+                        title: '输入交易密码，并确认',
+                        formType: 1
+                    }, function (val) {
+                        if (val) {
+
+                            $.post("/Order/sfbtc_ajax.html", {
+                                type: type,
+                                id: id,
+                                token: sfbtoken,
+                                paypassword: val
+
+                            }, function (data) {
+                                layer.closeAll('loading');
+                                if (data.status == 1) {
+
+                                    layer.alert(data.info, function (index) {
+                                        self.location.reload();
+                                    });
+
+                                } else {
+                                    sfbtoken = data.url;
+                                    layer.msg(data.info, {icon: 2});
+
+                                }
+                            }, "json");
+                        }
+                        ;
+                    });
+                });
+            }
+
+            //重启交易
+            function chongqi() {
+                $.post("/Order/chongqi_ajax.html", {
+                    type: type,
+                    id: id,
+                    token: bjtoken,
+
+                }, function (data) {
+                    layer.closeAll('loading');
+                    if (data.status == 1) {
+
+                        layer.alert(data.info, function (index) {
+                            self.location.reload();
+                        });
+
+                    } else {
+                        bjtoken = data.url;
+                        layer.msg(data.info, {icon: 2});
+
+                    }
+                }, "json");
+            }
+
+            function tijiaopj() {
+
+                var pj = $("input[type='radio']:checked").val();
+                if (!pj) {
+                    layer.alert("请选择评价类型");
+                    return;
+                }
+                if (pj != 1 && pj != 2 && pj != 3) {
+                    layer.alert("评价类型只能选择好评中评差评");
+                    return;
+                }
+
+                $.post("/Order/comment_ajax.html", {
+                    type: type,
+                    id: id,
+                    pj: pj,
+                    token: pjtoken
+                }, function (data) {
+                    layer.closeAll('loading');
+                    if (data.status == 1) {
+
+                        layer.alert(data.info, function (index) {
+                            self.location.reload();
+                        });
+
+                    } else {
+                        layer.msg(data.info, {icon: 2});
+                        pjtoken = data.url;
+                    }
+                }, "json");
+            }
+
+            $("#shensu").click(function () {
+                if ($(this).html() == "申诉") {
+                    $("#shensu").html("收起");
+                    $("#reason").show();
+                } else if ($(this).html() == "收起") {
+                    $("#shensu").html("申诉");
+                    $("#reason").hide();
+                }
+            });
+
+            function tijiaoreason() {
+                var sutype = $('#sutype').val();
+                var cont = $('#content').val();
+                var sutp = $("#sutp").val();
+                if (cont == '') {
+                    layer.alert('请输入申诉内容');
+                    return;
+                }
+                var formData = new FormData($("form")[0]);
+                formData.append("token", ddsstoken);
+                $.ajax({
+                    url: "/Order/shensu_ajax.html",
+                    type: 'POST',
+                    data: formData,
+                    dataType: 'json',
+                    async: false,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        layer.closeAll('loading');
+                        if (data.status == 1) {
+                            layer.alert(data.info, function (index) {
+                                self.location.reload();
+                            });
+                        } else {
+                            ddsstoken = data.url;
+                            layer.msg(data.info, {icon: 2});
+                        }
+                    }
+                });
+            }
+
+        })
+</script>
+
 @endsection

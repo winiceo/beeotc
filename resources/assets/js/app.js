@@ -61,7 +61,6 @@ Vue.component(
 );
 
 
-
 const router = new VueRouter({
     mode: 'history',
     base: __dirname,

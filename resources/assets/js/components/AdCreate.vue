@@ -4,15 +4,20 @@
    
     <el-form-item label="交易币种">
         <el-select v-model="form.crypto_currency" placeholder="交易币种">
-            <el-option label="比特币" value="btc"></el-option>
+            
+            <el-option v-for='(coin, index) in coin_type'
+              :key="coin.value"
+              :label="coin.label"
+              :value="coin.value"
+              ></el-option>
 
         </el-select>
     </el-form-item>
 
        <el-form-item label="交易类型">
         <el-radio-group v-model="form.trade_type">
-            <el-radio label="ONLINE_SELL">在线出售比特币</el-radio>
-            <el-radio label="ONLINE_BUY">在线购买比特币</el-radio>
+            <el-radio label="0">在线出售比特币</el-radio>
+            <el-radio label="1">在线购买比特币</el-radio>
         </el-radio-group>
     </el-form-item>
 
@@ -23,11 +28,12 @@
         </el-select>
     </el-form-item>
 
-    <el-form-item label="所在国家">
-        <el-select v-model="form.currency" placeholder="所在国家">
+    <el-form-item label="货币">
+        <el-select v-model="form.currency" placeholder="货币">
             <el-option label="人民币" value="CNY"></el-option>
 
         </el-select>
+        您希望交易付款的货币类型。
     </el-form-item>
 
      <el-form-item label="溢价">
@@ -76,12 +82,24 @@
 </el-form>
 </template>
 <script>
+
+
     export default {
+
+        props: {
+            coins: {
+                type: String,
+                default() {
+                    return ''
+                }
+            }
+        },
         data() {
             return {
+                coin_type:[],
                 form: {
-                    crypto_currency: '',
-                    trade_type: '',
+                    crypto_currency: 1,
+                    trade_type: "0",
                     country_code: '',
                     currency: '',
                     margin: '',
@@ -94,6 +112,10 @@
                     message:'',
                 }
             }
+        },
+        mounted(){
+            this.coin_type=JSON.parse(this.coins)
+            
         },
         methods: {
             onSubmit() {

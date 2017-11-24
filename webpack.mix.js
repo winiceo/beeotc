@@ -33,10 +33,10 @@ mix.webpackConfig({
         ]
     },
 })
+mix.js('resources/assets/js/home.js', 'public/js') 
 
 mix.js('resources/assets/js/app.js', 'public/js')
     .sass('resources/assets/sass/app.scss', 'public/css')
-    .js('resources/assets/js/home.js', 'public/js')
     .js('resources/assets/js/leven.js', 'public/js')
     .sass('resources/assets/sass/home.scss', 'public/css')
     .version();

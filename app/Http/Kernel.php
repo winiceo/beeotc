@@ -61,5 +61,8 @@ class Kernel extends HttpKernel
 
         'cors' => \Barryvdh\Cors\HandleCors::class,
 
+        'isVerified' => \Jrean\UserVerification\Middleware\IsVerified::class,
+
+
     ];
 }

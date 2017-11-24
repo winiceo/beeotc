@@ -1,0 +1,32 @@
+{
+  apps: [
+    {
+      // Application #2
+      "name": "artisan-queue-listen",
+      "script": "artisan",
+      "args": [
+        "queue:listen",
+        "--tries=1",
+        "--sleep=1",
+        "--timeout=120"
+      ],
+      "exec_interpreter": "php",
+      "exec_mode": "fork_mode",
+      "max_memory_restart": "1G",
+      "watch": false,
+      "merge_logs": true,
+      "cwd": "/genv/beeotc/"
+    },
+    {
+      name: "bee_socket",
+      script: "socket.js",
+      cwd: "/genv/beeotc",
+      env: {
+        COMMON_VARIABLE: "true"
+      },
+      env_production: {
+        NODE_ENV: "production"
+      }
+    }
+  ]
+}

@@ -24,6 +24,8 @@
     "iview": "^2.7.3",
     "jquery": "^3.2",
     "laravel-mix": "^1.0",
+    "less": "^2.7.3",
+    "less-loader": "^4.0.5",
     "lodash": "^4.17.4",
     "marked": "^0.3.6",
     "path-to-regexp": "^1.7.0",
@@ -41,7 +43,12 @@
     "vuex": "^2.1.1"
   },
   "dependencies": {
+    "dotenv": "^2.0.0",
     "element-ui": "^2.0.5",
-    "moment": "^2.19.2"
+    "express": "~4.14.0",
+    "ioredis": "^2.4.3",
+    "moment": "^2.19.2",
+    "pm2": "^2.7.2",
+    "socket.io": "~1.7.2"
   }
 }
