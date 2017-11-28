@@ -14,19 +14,7 @@ Route::get('email-verification/error', 'Auth\RegisterController@getVerificationE
 Route::group(['as' => 'bee.'], function () {
     event(new Routing());
 
-
-
-
     Route::post('password/change', 'UserController@changePassword')->middleware('auth');
-
-// Github Auth Route
-    Route::group(['prefix' => 'auth/github'], function () {
-        Route::get('/', 'Auth\AuthController@redirectToProvider');
-        Route::get('callback', 'Auth\AuthController@handleProviderCallback');
-        Route::get('register', 'Auth\AuthController@create');
-        Route::post('register', 'Auth\AuthController@store');
-    });
-
 
     Route::group(['prefix' => 'chat'], function () {
         Route::get('/', function () {
@@ -87,6 +75,8 @@ Route::group(['as' => 'bee.'], function () {
             Route::get('blocking', 'UserController@blocking');
 
             Route::get('wallet', 'WalletController@index');
+            Route::get('wallet/deposit/{id}', 'WalletController@depoist');
+            Route::get('wallet/withdraw/{id}', 'WalletController@withdraw');
 
             Route::get('profile', 'UserController@edit');
             Route::get('ad', 'UserAdController@index');

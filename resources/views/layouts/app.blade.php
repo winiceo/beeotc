@@ -23,7 +23,12 @@
         window.Laravel = <?php echo json_encode([
             'csrfToken' => csrf_token(),
         ]); ?>
+
+
+       // window.app=@json($app);
     </script>
+
+
 
 
 </head>

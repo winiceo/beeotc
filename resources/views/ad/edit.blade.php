@@ -20,7 +20,7 @@
 
 
 
-                    <ad-create coins='@json($coins)'></ad-create>
+                    <edit-create coins='@json($coins)' adid="{{$ad->id}}"  ></edit-create>
 
 
                 </div>

@@ -60,7 +60,7 @@
                                 以太币
                             @endif
                         </td>
-                        <td><a href="{{route('bee.ad.edit',$order->id)}}">编辑</a> <a href="#" onclick='ground({{$order->id}})'>下架</a></td>
+                        <td><a href="{{url('/ad/edit',["id"=>$order->id])}}">编辑</a> <a href="#" onclick='ground({{$order->id}})'>下架</a></td>
                     </tr>
                     @endforeach
 

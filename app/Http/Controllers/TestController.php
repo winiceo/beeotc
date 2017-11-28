@@ -10,7 +10,9 @@ use App\Repositories\ArticleRepository;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Jrean\UserVerification\Facades\UserVerification;
-use TCG\Voyager\Models\MenuItem;
+ use TCG\Voyager\Models\MenuItem;
+use Webpatser\Uuid\Uuid;
+use Webpatser\Uuid\UuidServiceProvider;
 
 class TestController extends Controller
 {
@@ -37,6 +39,13 @@ class TestController extends Controller
 
 
     public function test(Test $ad){
+
+
+        $data =Uuid::generate();
+
+
+        dump( $data->string);
+        exit;
 
         $ams = DB::select('select * from admin_menus ');
 

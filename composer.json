@@ -22,8 +22,10 @@
         "league/fractal": "^0.17.0",
         "naux/sendcloud": "^1.1",
         "predis/predis": "^1.1",
+        "ramsey/uuid": "^3.7",
         "tcg/voyager": "^1.0",
         "tymon/jwt-auth": "1.0.0-rc.1",
+        "webpatser/laravel-uuid": "^3.0",
         "yzalis/identicon": "^1.2"
     },
     "require-dev": {

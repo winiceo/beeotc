@@ -92,6 +92,12 @@
                 default() {
                     return ''
                 }
+            },
+            ad:{
+                type: String,
+                default() {
+                    return ''
+                }
             }
         },
         data() {

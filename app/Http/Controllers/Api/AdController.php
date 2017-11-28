@@ -15,30 +15,16 @@ class AdController extends ApiController
      */
     protected $ad;
 
-    /**
-     * @var \App\Repositories\TagRepository
-     */
-    protected $tag;
 
-    public function __construct(AdRepository $ad, TagRepository $tag)
+
+    public function __construct(AdRepository $ad )
     {
         $this->middleware('auth')->except(['index', 'show']);
 
         $this->ad = $ad;
-        $this->tag = $tag;
+
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        $discussions = $this->discussion->page(config('blog.discussion.number'), config('blog.discussion.sort'), config('blog.discussion.sortColumn'));
-
-        return view('discussion.index', compact('discussions'));
-    }
 
     /**
      * Show the form for creating a new resource.
@@ -47,9 +33,9 @@ class AdController extends ApiController
      */
     public function create()
     {
-        $tags = $this->tag->all();
 
-        return view('ad.create', compact('tags'));
+
+        return view('ad.create' );
     }
 
     /**
@@ -85,44 +71,9 @@ class AdController extends ApiController
         return view('ad.detail', compact('ad'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
-        $discussion = $this->discussion->getById($id);
-
-        $this->authorize('update', $discussion);
-
-        $tags = $this->tag->all();
-
-        $selectTags = $this->discussion->listTagsIdsForDiscussion($discussion);
-
-        return view('discussion.edit', compact('discussion', 'tags', 'selectTags'));
+        return $this->response->item($this->ad->getById($id));
     }
 
-    /**
-     * Update the discussion by id.
-     * 
-     * @param  DiscussionRequest $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(DiscussionRequest $request, $id)
-    {
-        $discussion = $this->discussion->getById($id);
-
-        $this->authorize('update', $discussion);
-
-        $data = array_merge($request->all(), [
-            'last_user_id' => \Auth::id()
-        ]);
-
-        $this->discussion->update($id, $data);
-
-        return redirect()->to("discussion/{$id}");
-    }
 }

@@ -43,6 +43,9 @@ Vue.component('wallet-add', require('./components/WalletAdd.vue'));
 Vue.component('ad-create', require('./components/AdCreate.vue'));
 Vue.component('order-create', require('./components/OrderCreate.vue'));
 
+Vue.component('edit-create', require('./views/web/ad/edit.vue'));
+
+
 // Vue.component(
 //     'chat',
 //     require('components/Chat.vue')

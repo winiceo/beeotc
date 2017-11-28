@@ -126,7 +126,7 @@
 
 
         layui.use(['layer', 'form'], function() {
-            alert(3333)
+
             //提交聊天
             var chatordertoken = "c831992617e6f645c566601b71d20e4a";
              $("#chatsubmit").click(function  () {
@@ -164,7 +164,7 @@
                 var orderid = "51";
                 var ordertype = "1";
                 var status = 1;
-                $.getJSON("/chat/getmessage?orderid=" + orderid + "&ordertype=" + ordertype + "&chatnum=" + chatnum + "&status=" + status + "&t=" + Math.random(), function (data) {
+                $.getJSON("/api/chat/getmessage?orderid=" + orderid + "&ordertype=" + ordertype + "&chatnum=" + chatnum + "&status=" + status + "&t=" + Math.random(), function (data) {
                     if (data) {
                         var chatcontent = "";
                         for (var i = 0; i < data.length; i++) {

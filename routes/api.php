@@ -90,7 +90,14 @@ Route::group([
 
 
     Route::post('ad', 'AdController@store')->middleware('auth:api');
+
+    Route::get('ad/{id}', 'AdController@edit')->middleware('auth:api');
+
     Route::post('order', 'OrderController@store')->middleware('auth:api');
+
+
+    Route::post('finance/withdraw','FinanceController@withdraw')->middleware('auth:api');
+
 
     Route::group(['prefix' => 'chat'], function () {
         Route::get('/', function () {
