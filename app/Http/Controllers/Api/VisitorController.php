@@ -22,7 +22,10 @@ class VisitorController extends ApiController
      */
     public function index()
     {
-        return $this->response->collection($this->visitor->page());
+
+        $token=3333;
+        return $this->setMsg('登录成功')->setData(compact('token'))->toJson();
+
     }
 
 }

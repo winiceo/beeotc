@@ -3225,7 +3225,10 @@ exports.default = {
     },
     data: function data() {
         return {
+
+            cryptoCurrency: 1,
             coin_type: [],
+            coin_lable: '',
             form: {
                 crypto_currency: 1,
                 trade_type: "0",
@@ -3242,13 +3245,34 @@ exports.default = {
             }
         };
     },
+
+    watch: {
+        // 如果 `question` 发生改变，这个函数就会运行
+        cryptoCurrency: function cryptoCurrency(val) {
+
+            this.coin_lable = this.coin_type[val - 1].label;
+            this.form.crypto_currency = val;
+        }
+    },
+    computed: {},
     mounted: function mounted() {
         this.coin_type = JSON.parse(this.coins);
+        this.coin_lable = this.coin_type[this.form.crypto_currency - 1].label;
     },
 
     methods: {
+        reset_price: function reset_price() {
+
+            var sum = parseFloat(window.App.price) + parseFloat(window.App.price * this.form.margin / 100);
+
+            this.form.price = sum.toFixed(2);
+        },
         onSubmit: function onSubmit() {
             this.$http.post('/ad', this.form).then(function (response) {
+
+                if (response.data.code == 200) {
+                    window.location.href = '/trade';
+                }
                 console.log(response);
 
                 toastr.success('You publish the comment success!');
@@ -3896,12 +3920,12 @@ exports.default = {
 
 
     watch: {
-        'form.amount': function formAmount(val, oldVal) {
-            this.change_amount();
-        },
-        'form.qty': function formQty(val, oldVal) {
-            this.change_qty();
-        }
+        //            'form.amount': function(val, oldVal){
+        //                this.change_amount();
+        //            },
+        //            'form.qty': function(val, oldVal){
+        //                this.change_qty();
+        //            }
     },
     mounted: function mounted() {},
     created: function created() {},
@@ -79558,6 +79582,12 @@ var render = function() {
                 "el-input",
                 {
                   attrs: { placeholder: "输入您想出售的金额" },
+                  on: { change: _vm.change_amount },
+                  nativeOn: {
+                    keyup: function($event) {
+                      _vm.change_amount($event)
+                    }
+                  },
                   model: {
                     value: _vm.form.amount,
                     callback: function($$v) {
@@ -79585,15 +79615,9 @@ var render = function() {
                 "el-input",
                 {
                   attrs: { placeholder: "输入您想出售的比特币" },
-                  on: {
-                    change: _vm.change_qty,
+                  on: { change: _vm.change_qty },
+                  nativeOn: {
                     keyup: function($event) {
-                      if (
-                        !("button" in $event) &&
-                        _vm._k($event.keyCode, "up", 38, $event.key)
-                      ) {
-                        return null
-                      }
                       _vm.change_qty($event)
                     }
                   },
@@ -80033,11 +80057,11 @@ var render = function() {
             {
               attrs: { placeholder: "交易币种" },
               model: {
-                value: _vm.form.crypto_currency,
+                value: _vm.cryptoCurrency,
                 callback: function($$v) {
-                  _vm.$set(_vm.form, "crypto_currency", $$v)
+                  _vm.cryptoCurrency = $$v
                 },
-                expression: "form.crypto_currency"
+                expression: "cryptoCurrency"
               }
             },
             _vm._l(_vm.coin_type, function(coin, index) {
@@ -80068,11 +80092,11 @@ var render = function() {
             },
             [
               _c("el-radio", { attrs: { label: "0" } }, [
-                _vm._v("在线出售比特币")
+                _vm._v("在线出售" + _vm._s(_vm.coin_lable))
               ]),
               _vm._v(" "),
               _c("el-radio", { attrs: { label: "1" } }, [
-                _vm._v("在线购买比特币")
+                _vm._v("在线购买比特币" + _vm._s(_vm.coin_lable))
               ])
             ],
             1
@@ -80133,6 +80157,12 @@ var render = function() {
         { attrs: { label: "溢价" } },
         [
           _c("el-input", {
+            on: { change: _vm.reset_price },
+            nativeOn: {
+              keyup: function($event) {
+                _vm.reset_price($event)
+              }
+            },
             model: {
               value: _vm.form.margin,
               callback: function($$v) {
@@ -80150,6 +80180,7 @@ var render = function() {
         { attrs: { label: "价格" } },
         [
           _c("el-input", {
+            attrs: { readonly: true },
             model: {
               value: _vm.form.price,
               callback: function($$v) {

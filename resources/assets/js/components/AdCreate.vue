@@ -3,7 +3,7 @@
 <el-form ref="form" :model="form" label-width="80px">
    
     <el-form-item label="交易币种">
-        <el-select v-model="form.crypto_currency" placeholder="交易币种">
+        <el-select v-model="cryptoCurrency" placeholder="交易币种">
             
             <el-option v-for='(coin, index) in coin_type'
               :key="coin.value"
@@ -16,8 +16,8 @@
 
        <el-form-item label="交易类型">
         <el-radio-group v-model="form.trade_type">
-            <el-radio label="0">在线出售比特币</el-radio>
-            <el-radio label="1">在线购买比特币</el-radio>
+            <el-radio label="0">在线出售{{coin_lable}}</el-radio>
+            <el-radio label="1">在线购买比特币{{coin_lable}}</el-radio>
         </el-radio-group>
     </el-form-item>
 
@@ -37,11 +37,11 @@
     </el-form-item>
 
      <el-form-item label="溢价">
-        <el-input v-model="form.margin"></el-input>
+        <el-input v-model="form.margin" @change='reset_price' @keyup.native='reset_price'></el-input>
     </el-form-item>
 
     <el-form-item label="价格">
-        <el-input v-model="form.price"></el-input>
+        <el-input v-model="form.price" :readonly=true></el-input>
     </el-form-item>
 
     <el-form-item label="最低价">
@@ -102,7 +102,10 @@
         },
         data() {
             return {
+
+                cryptoCurrency:1,
                 coin_type:[],
+                coin_lable:'',
                 form: {
                     crypto_currency: 1,
                     trade_type: "0",
@@ -119,14 +122,38 @@
                 }
             }
         },
-        mounted(){
-            this.coin_type=JSON.parse(this.coins)
+          watch: {
+            // 如果 `question` 发生改变，这个函数就会运行
+             cryptoCurrency: function (val) {
+              
+              this.coin_lable=this.coin_type[val-1].label
+              this.form.crypto_currency=val
+            }
+          },
+        computed: {
+           
             
         },
+        mounted(){
+            this.coin_type=JSON.parse(this.coins)
+            this.coin_lable=this.coin_type[this.form.crypto_currency-1].label
+
+        },
         methods: {
+            reset_price(){
+
+             var sum = parseFloat(window.App.price)+parseFloat(window.App.price * this.form.margin/100);
+              
+                this.form.price= sum.toFixed(2);
+            },
             onSubmit() {
                this.$http.post('/ad', this.form)
                     .then((response) => {
+
+                   
+                       if(response.data.code==200){
+                       window.location.href='/trade'
+                       }
                         console.log(response)
 
                         toastr.success('You publish the comment success!')

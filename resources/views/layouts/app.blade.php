@@ -18,6 +18,8 @@
     <link href="{{ asset('static/app.css') }}" rel="stylesheet">
 
     <script>
+
+        window.App=@json(leven());
         window.Language = '{{ config('app.locale') }}';
 
         window.Laravel = <?php echo json_encode([

@@ -53,7 +53,10 @@ class AdController extends ApiController
         ]);
 
         $ad=$this->ad->store($data);
-       return   response()->json($ad);
+
+        return $this->setMsg('创建成功')->setData(compact('ad'))->toJson();
+
+
 
 
     }

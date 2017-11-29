@@ -10,7 +10,7 @@
         <el-row :gutter="20">
             <el-col :span="10">
 
-                <el-input placeholder="输入您想出售的金额" v-model="form.amount"  >
+                <el-input placeholder="输入您想出售的金额" v-model="form.amount"  @change="change_amount"  @keyup.native="change_amount" >
                     <template slot="append">CNY</template>
                 </el-input>
             </el-col>
@@ -19,7 +19,7 @@
 
             </el-col>
             <el-col :span="10">
-                <el-input placeholder="输入您想出售的比特币" v-model="form.qty"   @change="change_qty"  @keyup.up="change_qty"  >
+                <el-input placeholder="输入您想出售的比特币" v-model="form.qty"   @change="change_qty"  @keyup.native="change_qty"  >
                     <template slot="append">BTC</template>
                 </el-input>
 
@@ -104,12 +104,12 @@
         },
 
         watch: {
-            'form.amount': function(val, oldVal){
-                this.change_amount();
-            },
-            'form.qty': function(val, oldVal){
-                this.change_qty();
-            }
+//            'form.amount': function(val, oldVal){
+//                this.change_amount();
+//            },
+//            'form.qty': function(val, oldVal){
+//                this.change_qty();
+//            }
         },
         mounted() {
            

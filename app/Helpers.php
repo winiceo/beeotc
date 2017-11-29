@@ -69,3 +69,24 @@ if(!function_exists('lang')) {
         return trans('trade.'.$text, $parameters);
     }
 }
+if(!function_exists('leven')) {
+
+
+// 设置 配置文件;
+    function leven($key = NULL, $value = NULL)
+    {
+        static $_config = array();
+        //如果是数组,写入配置数组,以全字母大写的形式返回;
+        if (is_array($key)) {
+            return $_config = array_merge($_config,  ($key));
+        }
+        $key =  ($key);
+        if (!is_null($value)) {
+            return $_config[$key] = $value;
+        }
+        if (empty($key)) {
+            return $_config;
+        }
+        return isset($_config[$key]) ? $_config[$key] : NULL;
+    }
+}

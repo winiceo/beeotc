@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Article;
 use App\Discussion;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use App\Tools\FileManager\BaseManager;
 use App\Tools\FileManager\UpyunManager;
@@ -21,10 +22,17 @@ class AppServiceProvider extends ServiceProvider
         $lang = config('app.locale') != 'zh_cn' ? config('app.locale') : 'zh';
         \Carbon\Carbon::setLocale($lang);
 
+        Blade::directive('leven', function ($expression) {
+            return "<?php echo leven($expression); ?>";
+        });
+
         Relation::morphMap([
             'discussions' => Discussion::class,
             'articles'    => Article::class,
         ]);
+
+
+
     }
 
     /**

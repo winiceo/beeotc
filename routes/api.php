@@ -86,6 +86,8 @@ Route::group([
 Route::group([
     'namespace' => 'Api',
 ], function () {
+
+    Route::get('test','VisitorController@index');
     Route::post('user/address', 'AddressController@store')->middleware('auth:api');
 
 
