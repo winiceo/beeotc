@@ -16,11 +16,12 @@ class SearchTrade
     public static function get(Request $request, int $perPage = 20): Paginator
     {
 
+
         return Ad::with("user")
             ->where(function ($query) use ($request) {
 
 
-                $trade_type = $request->input('trade_type', 1);
+                $trade_type = $request->input('trade_type', 0);
                 $query->where('trade_type', $trade_type);
 
             })

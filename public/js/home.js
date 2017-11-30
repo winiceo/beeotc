@@ -3420,6 +3420,212 @@ Object.defineProperty(exports, "__esModule", {
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 var now = new Date();
@@ -3427,6 +3633,8 @@ var now = new Date();
 exports.default = {
     data: function data() {
         return {
+            status: App.ORDER_STATUS,
+            user: App.user,
             showSelBox: 0,
             im_token: App.im_token,
             order_im_token: App.order_im_token,
@@ -3435,7 +3643,13 @@ exports.default = {
             content: '',
             order: App.order,
             callbacks: {},
-            imageUri: null
+            imageUri: null,
+            steps: [],
+            step_active: 1,
+            system: 0,
+            comment: '',
+            complaint: "",
+            show_complaint: false
         };
     },
 
@@ -3460,7 +3674,33 @@ exports.default = {
             });
         }
     },
+    computed: {
+        showpay: function showpay() {
+            var buyer = this.user.id == this.order.user.id;
+            return buyer && this.order.status == this.status.CREATED;
+        },
+        showcancel: function showcancel() {
+            var buyer = this.user.id == this.order.user.id;
+            return buyer && (this.order.status == this.status.PAY || this.order.status == this.status.CREATED);
+        },
+        showcomplaint: function showcomplaint() {
+            var buyer = this.user.id == this.order.user.id;
+            // alert(this.order.status==this.status.PAY)
+            return buyer && this.order.status == this.status.PAY;
+        },
+        showcomment: function showcomment() {
+            var buyer = this.user.id == this.order.user.id;
+            return buyer && this.order.status == this.status.RELEASE;
+        },
+        showrelease: function showrelease() {
+
+            var seller = this.user.id == this.order.ad_user_id;
+            return seller && this.order.status == this.status.PAY;
+        }
+
+    },
     created: function created() {
+
         var _vm = this;
         this.callbacks = {
 
@@ -3468,7 +3708,11 @@ exports.default = {
                 _vm.$http.post('/chat/message/history', { order_id: App.order.id }).then(function (response) {
 
                     var messages = response.data.data.data.data.reverse();
-
+                    if (messages.length == 0) {
+                        _vm.system = 1;
+                        _vm.content = '系统消息: 买家拍下未付款<br>买家已拍下，等待买家付款';
+                        _vm.sendMessage();
+                    }
                     messages.forEach(function (message) {
                         _vm.callbacks.receiveNewMessage(JSON.parse(message.message));
                     });
@@ -3497,12 +3741,19 @@ exports.default = {
                     item.avatar = _vm.order_im_token.avatar;
                 }
                 item.time = message.sentTime;
+                item.system = 0;
+
+                if (message.content.extra.system) {
+                    item.system = message.content.extra.system;
+                }
                 console.log(message);
+                console.log(item);
                 if (message.messageType == "ImageMessage") {
                     item.content = "<img src=" + message.content.imageUri + " class='msgimg'>";
                 } else if (message.messageType == "TextMessage") {
                     item.content = message.content.content;
                 }
+                _vm.order.status = message.content.extra.status;
 
                 _vm.messages.push(item);
             },
@@ -3519,6 +3770,80 @@ exports.default = {
     },
 
     methods: {
+        pay: function pay() {
+            var _vm = this;
+            this.$http.post('/chat/order/pay', { orderid: this.order.id }).then(function (res) {
+                var data = res.data;
+                if (data.code == 200) {
+                    _vm.order.status = _vm.status.PAY;
+                    _vm.system = 1;
+                    _vm.content = '系统消息: 买家标记已付款，等待卖家确认收款后释放';
+                    _vm.sendMessage();
+                }
+            }).catch(function (err) {
+                console.log(err);
+            });
+        },
+        cancel: function cancel() {
+            var _vm = this;
+            this.$http.post('/chat/order/cancel', { orderid: this.order.id }).then(function (res) {
+                var data = res.data;
+                if (data.code == 200) {
+
+                    _vm.order.status = _vm.status.CLOSE;
+                    _vm.system = 1;
+                    _vm.content = '系统消息:  买家关闭了交易';
+                    _vm.sendMessage();
+                }
+            }).catch(function (err) {
+                console.log(err);
+            });
+        },
+        release: function release() {
+            var _vm = this;
+            this.$http.post('/chat/order/release', { orderid: this.order.id }).then(function (res) {
+                var data = res.data;
+                if (data.code == 200) {
+
+                    _vm.order.status = _vm.status.RELEASE;
+                    _vm.system = 1;
+                    _vm.content = '系统消息: 卖家已放行';
+                    _vm.sendMessage();
+                }
+            }).catch(function (err) {
+                console.log(err);
+            });
+        },
+        save_comment: function save_comment() {
+            var _vm = this;
+            this.$http.post('/chat/order/comment', { orderid: this.order.id }).then(function (res) {
+                var data = res.data;
+                if (data.code == 200) {
+
+                    _vm.order.status = _vm.status.COMMENT;
+                    _vm.system = 1;
+                    _vm.content = '系统消息: 买家已评论';
+                    _vm.sendMessage();
+                }
+            }).catch(function (err) {
+                console.log(err);
+            });
+        },
+        save_complaint: function save_complaint() {
+            var _vm = this;
+            this.$http.post('/chat/order/complaint', { orderid: this.order.id }).then(function (res) {
+                var data = res.data;
+                if (data.code == 200) {
+
+                    _vm.order.status = _vm.status.COMPLAINT;
+                    _vm.system = 1;
+                    _vm.content = '系统消息:买家已审诉';
+                    _vm.sendMessage();
+                }
+            }).catch(function (err) {
+                console.log(err);
+            });
+        },
         uploadSuccess: function uploadSuccess(file) {
 
             this.selfForm.shareImg = file;
@@ -3556,7 +3881,9 @@ exports.default = {
             var content = {
                 content: this.content,
                 extra: {
-                    "order_id": App.order.id
+                    "order_id": this.order.id,
+                    "system": this.system,
+                    "status": this.order.status
                 }
             };
 
@@ -3566,12 +3893,15 @@ exports.default = {
                 content.imageUri = this.imageUri;
                 msg = new RongIMLib.ImageMessage(content);
             }
+            _vm.content = '';
 
             this.instance.sendMessage(conversationtype, this.order_im_token.userId, msg, {
                 onSuccess: function onSuccess(message) {
+
                     _vm.callbacks.receiveNewMessage(message);
                     //callbacks.receiveNewMessage(message)
-                    _vm.content = '';
+
+                    _vm.system = 0;
 
                     _vm.$http.post('/chat/message/send', message).then(function (res) {}).catch(function (err) {
                         console.log(err);
@@ -4206,7 +4536,7 @@ exports.default = {
                 console.log(data);
 
                 if (data.code == 200) {
-                    _this.$message('data.msg');
+                    _this.$message(data.msg);
                     window.location.href = '/order/info/' + data.data.order.id;
                 } else {
                     _this.$message(data.msg);
@@ -79655,140 +79985,665 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "chat" }, [
-    _c(
-      "section",
-      {
-        directives: [
-          {
-            name: "scroll-bottom",
-            rawName: "v-scroll-bottom",
-            value: _vm.messages,
-            expression: "messages"
-          }
+  return _c(
+    "el-container",
+    [
+      _c(
+        "el-header",
+        { staticStyle: { height: "100px" } },
+        [
+          _c(
+            "el-row",
+            { attrs: { gutter: 20 } },
+            [
+              _c("el-col", [
+                _c("div", { staticClass: "user_info" }, [
+                  _c("div", [
+                    _c(
+                      "ul",
+                      { staticClass: "ul_add" },
+                      [
+                        _c("li", { staticClass: "li_new" }, [
+                          _c("img", {
+                            attrs: { src: "/images/px.png", alt: "" }
+                          }),
+                          _vm._v(" "),
+                          _c("br"),
+                          _vm._v(
+                            "\n                                    已拍下\n                                "
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("li", { staticClass: "li_new1" }, [_vm._v("→")]),
+                        _vm._v(" "),
+                        _vm.order.status == _vm.status.CREATED
+                          ? [
+                              _c("li", { staticClass: "li_new" }, [
+                                _c("img", {
+                                  attrs: { src: "/images/fk1.png", alt: "" }
+                                }),
+                                _vm._v(" "),
+                                _c("br"),
+                                _vm._v(
+                                  "待付款\n                                    "
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("li", { staticClass: "li_new1" }, [
+                                _vm._v("→")
+                              ]),
+                              _vm._v(" "),
+                              _c("li", { staticClass: "li_new" }, [
+                                _c("img", {
+                                  attrs: { src: "/images/sh1.png", alt: "" }
+                                }),
+                                _vm._v(" "),
+                                _c("br"),
+                                _vm._v(
+                                  "待收货\n                                    "
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("li", { staticClass: "li_new1" }, [
+                                _vm._v("→")
+                              ]),
+                              _vm._v(" "),
+                              _c("li", { staticClass: "li_new" }, [
+                                _c("img", {
+                                  attrs: { src: "/images/pj1.png", alt: "" }
+                                }),
+                                _vm._v(" "),
+                                _c("br"),
+                                _vm._v(
+                                  "待评价\n                                    "
+                                )
+                              ])
+                            ]
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.order.status == _vm.status.PAY
+                          ? [
+                              _c("li", { staticClass: "li_new" }, [
+                                _c("img", {
+                                  attrs: { src: "/images/fk.png", alt: "" }
+                                }),
+                                _vm._v(" "),
+                                _c("br"),
+                                _vm._v(
+                                  "已付款\n                                    "
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("li", { staticClass: "li_new1" }, [
+                                _vm._v("→")
+                              ]),
+                              _vm._v(" "),
+                              _c("li", { staticClass: "li_new" }, [
+                                _c("img", {
+                                  attrs: { src: "/images/sh1.png", alt: "" }
+                                }),
+                                _vm._v(" "),
+                                _c("br"),
+                                _vm._v(
+                                  "待放行\n                                    "
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("li", { staticClass: "li_new1" }, [
+                                _vm._v("→")
+                              ]),
+                              _vm._v(" "),
+                              _c("li", { staticClass: "li_new" }, [
+                                _c("img", {
+                                  attrs: { src: "/images/pj1.png", alt: "" }
+                                }),
+                                _vm._v(" "),
+                                _c("br"),
+                                _vm._v(
+                                  "待评价\n                                    "
+                                )
+                              ])
+                            ]
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.order.status == _vm.status.RELEASE
+                          ? [
+                              _c("li", { staticClass: "li_new" }, [
+                                _c("img", {
+                                  attrs: { src: "/images/fk.png", alt: "" }
+                                }),
+                                _vm._v(" "),
+                                _c("br"),
+                                _vm._v(
+                                  "已付款\n                                    "
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("li", { staticClass: "li_new1" }, [
+                                _vm._v("→")
+                              ]),
+                              _vm._v(" "),
+                              _c("li", { staticClass: "li_new" }, [
+                                _c("img", {
+                                  attrs: { src: "/images/sh.png", alt: "" }
+                                }),
+                                _vm._v(" "),
+                                _c("br"),
+                                _vm._v(
+                                  "已放行\n                                    "
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("li", { staticClass: "li_new1" }, [
+                                _vm._v("→")
+                              ]),
+                              _vm._v(" "),
+                              _c("li", { staticClass: "li_new" }, [
+                                _c("img", {
+                                  attrs: { src: "/images/pj1.png", alt: "" }
+                                }),
+                                _vm._v(" "),
+                                _c("br"),
+                                _vm._v(
+                                  "待评价\n                                    "
+                                )
+                              ])
+                            ]
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.order.status == _vm.status.COMMENT
+                          ? [
+                              _c("li", { staticClass: "li_new" }, [
+                                _c("img", {
+                                  attrs: { src: "/images/fk.png", alt: "" }
+                                }),
+                                _vm._v(" "),
+                                _c("br"),
+                                _vm._v(
+                                  "已付款\n                                    "
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("li", { staticClass: "li_new1" }, [
+                                _vm._v("→")
+                              ]),
+                              _vm._v(" "),
+                              _c("li", { staticClass: "li_new" }, [
+                                _c("img", {
+                                  attrs: { src: "/images/sh.png", alt: "" }
+                                }),
+                                _vm._v(" "),
+                                _c("br"),
+                                _vm._v(
+                                  "已放行\n                                    "
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("li", { staticClass: "li_new1" }, [
+                                _vm._v("→")
+                              ]),
+                              _vm._v(" "),
+                              _c("li", { staticClass: "li_new" }, [
+                                _c("img", {
+                                  attrs: { src: "/images/pj.png", alt: "" }
+                                }),
+                                _vm._v(" "),
+                                _c("br"),
+                                _vm._v(
+                                  "已评价\n                                    "
+                                )
+                              ])
+                            ]
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.order.status == _vm.status.CLOSE
+                          ? [
+                              _c("li", { staticClass: "li_new" }, [
+                                _c("img", {
+                                  attrs: { src: "/images/pj.png", alt: "" }
+                                }),
+                                _vm._v(" "),
+                                _c("br"),
+                                _vm._v(
+                                  "已关闭\n                                    "
+                                )
+                              ])
+                            ]
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.order.status == _vm.status.COMPLAINT
+                          ? [
+                              _c("li", { staticClass: "li_new" }, [
+                                _c("img", {
+                                  attrs: { src: "/images/pj.png", alt: "" }
+                                }),
+                                _vm._v(" "),
+                                _c("br"),
+                                _vm._v(
+                                  "审诉中\n                                    "
+                                )
+                              ])
+                            ]
+                          : _vm._e()
+                      ],
+                      2
+                    ),
+                    _vm._v(" "),
+                    _c("p", { staticClass: "p_container" }, [
+                      _c("span", { staticStyle: { "font-size": "20px" } }, [
+                        _vm._v("已拍下  |  ")
+                      ]),
+                      _vm._v(
+                        "订单将在托管中保存60分钟，逾期未付款将自动取消\n                            "
+                      )
+                    ])
+                  ])
+                ])
+              ])
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "el-row",
+            { attrs: { gutter: 20 } },
+            [
+              _c("el-col", [
+                _vm._v("\n                已拍下  |  "),
+                _vm._v(
+                  "订单将在托管中保存60分钟，逾期未付款将自动取消\n            "
+                )
+              ])
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "el-row",
+            { attrs: { gutter: 20 } },
+            [
+              _c("el-col", [
+                _c("div", { staticClass: "table_div" }, [
+                  _c(
+                    "span",
+                    {
+                      staticStyle: { "font-weight": "bold", color: "#108ee9" }
+                    },
+                    [_vm._v("订单信息")]
+                  ),
+                  _vm._v(" "),
+                  _c("span", [_vm._v("交易价格:   54550.88CNY ")]),
+                  _vm._v(" "),
+                  _c("span", [_vm._v("交易数量:   0.03666301BTC ")]),
+                  _vm._v(" "),
+                  _c("span", [_vm._v("交易金额:   2000.00CNY")])
+                ])
+              ])
+            ],
+            1
+          )
         ],
-        staticClass: "chatlist",
-        class:
-          _vm.showSelBox > 0 ? "chatlist-bottom-collapse" : "chatlist-bottom"
-      },
-      [
-        _c(
-          "ul",
-          [
-            _vm._l(_vm.messages, function(item) {
-              return [
-                item.self
-                  ? _c("li", { staticClass: "chat-mine" }, [
-                      _c("div", { staticClass: "chat-user" }, [
-                        _c("img", { attrs: { src: item.avatar } })
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "time" }, [
-                        _c(
-                          "cite",
-                          [
-                            _c("timeago", {
-                              attrs: { since: item.time, locale: "zh-CN" }
-                            })
-                          ],
-                          1
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _c("div", {
-                        staticClass: "chat-text",
-                        domProps: { innerHTML: _vm._s(item.content) }
-                      })
-                    ])
-                  : _vm._e(),
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "el-container",
+        [
+          _c("el-main", [
+            _c("div", { staticClass: "wechat" }, [
+              _c("div", { staticClass: "chat  " }, [
+                _c(
+                  "section",
+                  {
+                    directives: [
+                      {
+                        name: "scroll-bottom",
+                        rawName: "v-scroll-bottom",
+                        value: _vm.messages,
+                        expression: "messages"
+                      }
+                    ],
+                    staticClass: "chatlist",
+                    class:
+                      _vm.showSelBox > 0
+                        ? "chatlist-bottom-collapse"
+                        : "chatlist-bottom"
+                  },
+                  [
+                    _c(
+                      "ul",
+                      [
+                        _vm._l(_vm.messages, function(item) {
+                          return [
+                            item.system == 1
+                              ? _c("li", { staticClass: "chat-mine" }, [
+                                  _c("div", {
+                                    staticClass: "chat-text-system",
+                                    domProps: {
+                                      innerHTML: _vm._s(item.content)
+                                    }
+                                  })
+                                ])
+                              : _vm._e(),
+                            _vm._v(" "),
+                            item.self && !item.system
+                              ? _c("li", { staticClass: "chat-mine" }, [
+                                  _c("div", { staticClass: "chat-user" }, [
+                                    _c("img", { attrs: { src: item.avatar } })
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "time" }, [
+                                    _c(
+                                      "cite",
+                                      [
+                                        _c("timeago", {
+                                          attrs: {
+                                            since: item.time,
+                                            locale: "zh-CN"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    )
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("div", {
+                                    staticClass: "chat-text",
+                                    domProps: {
+                                      innerHTML: _vm._s(item.content)
+                                    }
+                                  })
+                                ])
+                              : _vm._e(),
+                            _vm._v(" "),
+                            !item.self && !item.system
+                              ? _c("li", [
+                                  _c("div", { staticClass: "chat-user" }, [
+                                    _c("img", { attrs: { src: item.avatar } })
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "time" }, [
+                                    _c(
+                                      "cite",
+                                      [
+                                        _c("timeago", {
+                                          attrs: {
+                                            since: item.time,
+                                            locale: "zh-CN"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    )
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("div", {
+                                    staticClass: "chat-text",
+                                    domProps: {
+                                      innerHTML: _vm._s(item.content)
+                                    }
+                                  })
+                                ])
+                              : _vm._e()
+                          ]
+                        })
+                      ],
+                      2
+                    )
+                  ]
+                ),
                 _vm._v(" "),
-                !item.self
-                  ? _c("li", [
-                      _c("div", { staticClass: "chat-user" }, [
-                        _c("img", { attrs: { src: item.avatar } })
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "time" }, [
+                _c(
+                  "section",
+                  { staticClass: "foot" },
+                  [
+                    _c(
+                      "el-input",
+                      {
+                        staticClass: "input-with-select",
+                        attrs: { placeholder: "请输入内容" },
+                        nativeOn: {
+                          keyup: function($event) {
+                            _vm.onKeyup($event)
+                          }
+                        },
+                        model: {
+                          value: _vm.content,
+                          callback: function($$v) {
+                            _vm.content = $$v
+                          },
+                          expression: "content"
+                        }
+                      },
+                      [
                         _c(
-                          "cite",
-                          [
-                            _c("timeago", {
-                              attrs: { since: item.time, locale: "zh-CN" }
-                            })
-                          ],
-                          1
+                          "el-upload",
+                          {
+                            staticClass: "avatar-uploader",
+                            attrs: {
+                              slot: "prepend",
+                              action: "",
+                              "show-file-list": false,
+                              "on-success": _vm.uploadSuccess,
+                              "before-upload": _vm.beforeUpload
+                            },
+                            slot: "prepend"
+                          },
+                          [_c("i", { staticClass: "el-icon-picture" })]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "el-button",
+                          {
+                            attrs: { slot: "append", type: "success" },
+                            on: { click: _vm.sendMessage },
+                            slot: "append"
+                          },
+                          [_vm._v("发送")]
                         )
-                      ]),
-                      _vm._v(" "),
-                      _c("div", {
-                        staticClass: "chat-text",
-                        domProps: { innerHTML: _vm._s(item.content) }
-                      })
-                    ])
-                  : _vm._e()
-              ]
-            })
-          ],
-          2
-        )
-      ]
-    ),
-    _vm._v(" "),
-    _c(
-      "section",
-      { staticClass: "foot" },
-      [
-        _c(
-          "el-input",
-          {
-            staticClass: "input-with-select",
-            attrs: { placeholder: "请输入内容" },
-            nativeOn: {
-              keyup: function($event) {
-                _vm.onKeyup($event)
-              }
-            },
-            model: {
-              value: _vm.content,
-              callback: function($$v) {
-                _vm.content = $$v
-              },
-              expression: "content"
-            }
-          },
-          [
-            _c(
-              "el-upload",
-              {
-                staticClass: "avatar-uploader",
-                attrs: {
-                  slot: "prepend",
-                  action: "",
-                  "show-file-list": false,
-                  "on-success": _vm.uploadSuccess,
-                  "before-upload": _vm.beforeUpload
-                },
-                slot: "prepend"
-              },
-              [_c("i", { staticClass: "el-icon-picture" })]
-            ),
-            _vm._v(" "),
-            _c(
-              "el-button",
-              {
-                attrs: { slot: "append", type: "success" },
-                on: { click: _vm.sendMessage },
-                slot: "append"
-              },
-              [_vm._v("发送")]
-            )
-          ],
-          1
-        )
-      ],
-      1
-    )
-  ])
+                      ],
+                      1
+                    )
+                  ],
+                  1
+                )
+              ])
+            ])
+          ]),
+          _vm._v(" "),
+          _c("el-aside", { attrs: { width: "400px" } }, [
+            _c("div", { staticClass: "ad_right" }, [
+              _c("div", { staticClass: "form-title pt-30" }, [
+                _c("span", { staticClass: "form-name" }, [_vm._v("交易操作")])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "line mt-20 mb-20" }),
+              _vm._v(" "),
+              _c("p", { staticClass: "p_new" }, [
+                _c("span", { staticClass: "span_new" }, [_vm._v("订单编号")]),
+                _vm._v("\n                    15111641502253593 ")
+              ]),
+              _vm._v(" "),
+              _c("p", { staticClass: "p_new" }, [
+                _c("span", { staticClass: "span_new" }, [
+                  _vm._v("付款方式"),
+                  _c("br")
+                ]),
+                _vm._v("\n                    现金存款 ")
+              ]),
+              _vm._v(" "),
+              _c("p", { staticClass: "p_new" }, [
+                _c("span", { staticClass: "span_new" }, [
+                  _vm._v("买家留言"),
+                  _c("br")
+                ])
+              ]),
+              _vm._v(" "),
+              _c("p", { staticClass: "p_new" }, [
+                _c("span", { staticClass: "span_new" }, [_vm._v("交易条款")]),
+                _c("br"),
+                _vm._v("交易")
+              ]),
+              _vm._v(" "),
+              _c(
+                "div",
+                [
+                  _c("p", { staticClass: "p_new" }, [
+                    _c("span", { staticClass: "span_new" }, [
+                      _vm._v("交易提醒")
+                    ]),
+                    _c("br"),
+                    _vm._v(
+                      "\n                        1.对方的币已经被托管锁定，您需要在规定时间内完成付款并点击“标记为付款完成”，否则交易将被自动取消。"
+                    ),
+                    _c("br"),
+                    _vm._v(
+                      "\n                        2.转账时请在留言里面附上订单编号，否则对方可能无法识别您的付款。"
+                    ),
+                    _c("br"),
+                    _vm._v(
+                      "\n                        3.若您已经付款，如果对方未响应，不确认或者交易条款发生纠纷，您可以申诉此交易，申诉期内，币将有平台托管。\n                    "
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "el-button",
+                    {
+                      directives: [
+                        {
+                          name: "show",
+                          rawName: "v-show",
+                          value: _vm.showpay,
+                          expression: "showpay"
+                        }
+                      ],
+                      attrs: { type: "success" },
+                      on: { click: _vm.pay }
+                    },
+                    [_vm._v("标记已付款完成")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "el-button",
+                    {
+                      directives: [
+                        {
+                          name: "show",
+                          rawName: "v-show",
+                          value: _vm.showcancel,
+                          expression: "showcancel"
+                        }
+                      ],
+                      attrs: { type: "info" },
+                      on: { click: _vm.cancel }
+                    },
+                    [_vm._v("取消交易")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "el-button",
+                    {
+                      directives: [
+                        {
+                          name: "show",
+                          rawName: "v-show",
+                          value: _vm.showrelease,
+                          expression: "showrelease"
+                        }
+                      ],
+                      attrs: { type: "success" },
+                      on: { click: _vm.release }
+                    },
+                    [_vm._v("放行")]
+                  ),
+                  _vm._v(" "),
+                  _vm.showcomment
+                    ? [
+                        _c("el-input", {
+                          attrs: {
+                            type: "textarea",
+                            autosize: { minRows: 2, maxRows: 4 },
+                            placeholder: "请输入内容"
+                          },
+                          model: {
+                            value: _vm.comment,
+                            callback: function($$v) {
+                              _vm.comment = $$v
+                            },
+                            expression: "comment"
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c(
+                          "el-button",
+                          {
+                            attrs: { type: "primary" },
+                            on: { click: _vm.save_comment }
+                          },
+                          [_vm._v("评价")]
+                        )
+                      ]
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.showcomplaint
+                    ? _c(
+                        "el-button",
+                        {
+                          attrs: { type: "primary" },
+                          on: {
+                            click: function($event) {
+                              _vm.show_complaint = true
+                            }
+                          }
+                        },
+                        [_vm._v("审诉")]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.show_complaint
+                    ? [
+                        _c("el-input", {
+                          attrs: {
+                            type: "textarea",
+                            autosize: { minRows: 2, maxRows: 4 },
+                            placeholder: "请输入内容"
+                          },
+                          model: {
+                            value: _vm.complaint,
+                            callback: function($$v) {
+                              _vm.complaint = $$v
+                            },
+                            expression: "complaint"
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c(
+                          "el-button",
+                          {
+                            attrs: { type: "primary" },
+                            on: { click: _vm.save_complaint }
+                          },
+                          [_vm._v("审诉")]
+                        )
+                      ]
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _c("p", { staticClass: "p_new" }, [
+                    _vm._v(
+                      "交易遇到问题？如果对方未响应，不确认或者对交易条款发生纠纷，您可以申诉此交易，申诉期内，比特币将由平台托管。\n                    "
+                    )
+                  ])
+                ],
+                2
+              )
+            ])
+          ])
+        ],
+        1
+      )
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true

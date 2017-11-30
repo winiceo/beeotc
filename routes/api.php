@@ -96,7 +96,7 @@ Route::group([
 
     Route::get('ad/{id}', 'AdController@edit')->middleware('auth:api');
 
-    Route::post('order', 'OrderController@store')->middleware('auth:api');
+    Route::post('order', 'OrderController@order_create')->middleware('auth:api');
 
 
     Route::post('finance/withdraw','FinanceController@withdraw')->middleware('auth:api');
@@ -105,6 +105,11 @@ Route::group([
     Route::group(['prefix' => 'chat'], function () {
         Route::post('message/send',  'ChatController@send')->middleware('auth:api');
         Route::post('message/history',  'ChatController@history')->middleware('auth:api');
+        Route::post('order/pay',  'OrderController@order_pay')->middleware('auth:api');
+        Route::post('order/cancel',  'OrderController@order_cancel')->middleware('auth:api');
+        Route::post('order/release',  'OrderController@order_release')->middleware('auth:api');
+        Route::post('order/comment',  'OrderController@order_comment')->middleware('auth:api');
+        Route::post('order/complaint',  'OrderController@order_complaint')->middleware('auth:api');
 
 
     });

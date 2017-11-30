@@ -3,14 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests;
+use App\Models\Order;
 use App\Models\Test;
 use App\Repositories\AdRepository;
+use App\Service\OrderService;
 use Illuminate\Http\Request;
 use App\Repositories\ArticleRepository;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Jrean\UserVerification\Facades\UserVerification;
- use TCG\Voyager\Models\MenuItem;
+
+use TCG\Voyager\Models\MenuItem;
 use Webpatser\Uuid\Uuid;
 use Webpatser\Uuid\UuidServiceProvider;
 
@@ -35,10 +39,34 @@ class TestController extends Controller
         UserVerification::send($user, 'My Custom E-mail Subject','zshdiy@163.com','zshdiy');
 
     }
+    public function test(Request $request)
+    {
+        $params = $request->all();
+        $user = Auth::user();
+        $order=Order::where('user_id', 29)
+            ->where('id',29)
+            ->first();
+
+
+        if($order){
+            $order->status=Config::get('constants.ORDER_STATUS.CANCEL');
+            $order->save();
+
+           $orderService=new  OrderService($order);
+           $message=[
+                "content"=>"系统消息: 买家关闭了交易",
+                "extra"=>["order_id"=>$order->id]
+           ];
+           $orderService->buySendMessage($message);
+        }
+
+
+        //dump($ret);
+    }
 
 
 
-    public function test(Test $ad){
+        public function test1(Test $ad){
 
 
         $data =Uuid::generate();

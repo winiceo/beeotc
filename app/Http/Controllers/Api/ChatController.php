@@ -22,6 +22,7 @@ class ChatController extends ApiController
 
     }
 
+
     public function send(Request $request, Chat $chat)
     {
         $message = $request->all();

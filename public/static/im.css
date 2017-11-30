@@ -1,3 +1,9 @@
+.wechat{
+    width: 100%;float:right;
+    height: 700px;border:1px solid #d9d9d9;
+    padding-bottom: 0px;position:relative;
+    margin-left:50px;
+}
 .chat {
     position: relative;
     overflow: hidden;
@@ -128,6 +134,11 @@ cite i {
     position: absolute;
     left: 3px;
 }
+.chat-text-system{
+    text-align: center;
+    color:gray;
+    size:16px;
+}
 /*
 .chat-text:after {
     content: '';
@@ -243,3 +254,10 @@ cite i {
     right: 0px;
     top: 8px;
 }
+
+
+.ul_add{display: inline-block;margin:0 auto;overflow: hidden;}
+.ul_add li{float: left;width:33px;font-size: 16px;color:rgba(0,0,0,0.7);text-align: center;}
+.ul_add .li_new{width:150px;height: 80px;}
+.ul_add .li_new1{line-height:40px;font-weight: bold;}
+.ul_add .li_new img{width: 40px;}

@@ -182,8 +182,8 @@
                         console.log(data)
 
                         if (data.code ==200) {
-                            this.$message('data.msg');
-                            window.location.href = '/order/info/' + data.data.order.id;
+                            this.$message(data.msg);
+                             window.location.href = '/order/info/' + data.data.order.id;
                         }else{
                             this.$message(data.msg);
                         }

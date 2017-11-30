@@ -7,6 +7,7 @@ use App\Repositories\OrderRepository;
 use App\User;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 
 class OrderController extends Controller
 {
@@ -15,7 +16,12 @@ class OrderController extends Controller
     public function __construct(OrderRepository $order)
     {
         $this->order = $order;
+        $this->status=Config::get('constants.ORDER_STATUS');
+        leven("ORDER_STATUS",$this->status);
+        ;
     }
+
+
 
 
     /**
@@ -32,6 +38,7 @@ class OrderController extends Controller
         leven('access_token', $token);
         $order = $this->order->getById($id);
         leven("order", $order);
+        leven("user",$user);
 
 
         $ad_user = User::findOrFail($order->ad_user_id);
