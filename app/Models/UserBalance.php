@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class UserWalletCharge extends Model
+class UserBalance extends Model
 {
     //
 
-    protected $table='user_wallet_charge';
+    protected $table='user_balances';
 }

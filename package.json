@@ -49,6 +49,7 @@
     "ioredis": "^2.4.3",
     "moment": "^2.19.2",
     "pm2": "^2.7.2",
-    "socket.io": "~1.7.2"
+    "socket.io": "~1.7.2",
+    "vue-timeago": "^3.4.0"
   }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Ad;
 use App\Http\Requests;
 use App\Queries\SearchAds;
+use App\Queries\SearchTrade;
 use App\Repositories\AdRepository;
 use Illuminate\Http\Request;
 use App\Repositories\ArticleRepository;
@@ -17,24 +18,19 @@ class TradeController extends Controller
     {
         $this->ad = $ad;
     }
-    public function index()
-    {
-        $ads = $this->ad->with('User')->page(config('trade.ad.number'), config('trade.ad.sort'), config('trade.ad.sortColumn'));
 
-
-
-
-        return view('trade.index', compact('ads'));
-    }
 
     /**
      * Display the articles resource.
      * 
      * @return mixed
      */
-    public function overview()
+    public function overview(Request $request)
     {
-        $ads = $this->ad->page(config('trade.ad.number'), config('trade.ad.sort'), config('trade.ad.sortColumn'));
+       // $ads = $this->ad->page(config('trade.ad.number'), config('trade.ad.sort'), config('trade.ad.sortColumn'));
+        $ads=SearchTrade::get($request);
+        leven($request->all());
+
 
 
         return view('trade.index', compact('ads'));

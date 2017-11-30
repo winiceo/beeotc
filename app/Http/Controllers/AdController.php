@@ -70,8 +70,7 @@ class AdController extends Controller
     public function detail($id)
     {
         $ad = $this->ad->getById($id);
-
-
+        leven('ad',$ad);
 
         return view('ad.detail', compact('ad'));
     }

@@ -5,13 +5,14 @@
     <div class="usnc_right">
         <h1>安全中心</h1>
         <div class="safetopbox">
-            <form action="/User/upuserinfo.html" method="post" id="frm" name="frm" enctype="multipart/form-data">
+            <form action="/user/info" method="post" id="frm" name="frm" enctype="multipart/form-data">
+                {{ csrf_field() }}
                 <div class="safetop_info">
                     <div class="img">
-                        <img src="/Public/Home/images/hportrait/20171024/s_59eefae5d3680.jpg" onclick="select()"
+                        <img src="{{$user->avatar}}" onclick="select()"
                              name="image"> <input id="file" style="display:none" type="file" name="file"
                                                   onchange="upimg()" accept="image/*" title="修改头像">
-                        <p class="name">adadczsa</p>
+                        <p class="name">{{$user->name}}</p>
                     </div>
                 </div>
                 <div class="test">
@@ -40,7 +41,10 @@
                     <textarea class="area" style="color: rgba(0,0,0,0.7);"
                               onblur="if(this.value == '')this.value='简介，在您的公共资料上展示您的介绍信息。纯文本，不超过200个字';"
                               onclick="if(this.value == '简介，在您的公共资料上展示您的介绍信息。纯文本，不超过200个字')this.value='';" id="area">简介，在您的公共资料上展示您的介绍信息。纯文本，不超过200个字</textarea>
-                    <img src="/Public/Home/images/save.jpg" alt="" onclick="jj()" class="save">
+
+
+                    <button class="btn btn-primary" type="button" onclick="jj()">保存</button>
+
                 </div>
             </form>
         </div>

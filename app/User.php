@@ -3,7 +3,7 @@
 namespace App;
 
 use App\Models\Address;
-use App\Models\UserWalletCharge;
+use App\Models\UserBalance;
 use Jcc\LaravelVote\Vote;
 use App\Traits\FollowTrait;
 use App\Scopes\StatusScope;
@@ -85,7 +85,7 @@ class User extends \TCG\Voyager\Models\User implements JWTSubject
 
     public function wallets()
     {
-        return $this->hasMany(UserWalletCharge::class)->orderBy('created_at', 'desc');
+        return $this->hasMany(UserBalance::class)->orderBy('created_at', 'desc');
     }
 
     /**

@@ -84,7 +84,8 @@ class RegisterController extends Controller
             'email'    => $data['email'],
             'password' => bcrypt($data['password']),
             'status'   => 0,
-            'avatar'   => (new Identicon())->getImageDataUri($data['name'], 256),
+            'avatar'   =>  '/images/user_avatar.png',
+            //'avatar'   => (new Identicon())->getImageDataUri($data['name'], 256),
         ]);
     }
 

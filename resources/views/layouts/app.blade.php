@@ -50,7 +50,8 @@
 
     @include('particals.footer')
 </div>
-
+<script src="{{ asset('lib/RongIMLib-2.2.9.js') }}"></script>
+<script src="{{ asset('lib/im.js') }}"></script>
 <!-- Scripts -->
 <script src="{{ mix('js/home.js') }}"></script>
 

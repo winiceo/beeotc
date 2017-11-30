@@ -3368,6 +3368,226 @@ exports.default = {
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}],\"es2015\",\"stage-2\"],\"plugins\":[\"transform-object-rest-spread\"]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0&bustCache!./resources/assets/js/components/Chat.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+var now = new Date();
+
+exports.default = {
+    data: function data() {
+        return {
+            showSelBox: 0,
+            im_token: App.im_token,
+            order_im_token: App.order_im_token,
+            messages: [],
+            instance: null,
+            content: '',
+            order: App.order,
+            callbacks: {},
+            imageUri: null
+        };
+    },
+
+    filters: {
+        // 将日期过滤为 hour:minutes
+        time: function time(date) {
+            return 33;
+            // if (typeof date === 'string') {
+            //     date = new Date(date);
+            // }
+            // return date.getHours() + ':' + date.getMinutes();
+        }
+    },
+    directives: {
+        // 发送消息后滚动到底部
+        'scroll-bottom': function scrollBottom(el, bindings, vnode) {
+
+            // vnode.context is the scope where the directive is rendered.
+            var vm = vnode.context;
+            vm.$nextTick(function () {
+                el.scrollTop = el.scrollHeight - el.clientHeight;
+            });
+        }
+    },
+    created: function created() {
+        var _vm = this;
+        this.callbacks = {
+
+            getHistory: function getHistory() {
+                _vm.$http.post('/chat/message/history', { order_id: App.order.id }).then(function (response) {
+
+                    var messages = response.data.data.data.data.reverse();
+
+                    messages.forEach(function (message) {
+                        _vm.callbacks.receiveNewMessage(JSON.parse(message.message));
+                    });
+                    //toastr.success('You publish the comment success!')
+                }).catch(function (_ref) {
+                    //this.isSubmiting = false
+                    //stack_error(response)
+
+                    var response = _ref.response;
+                });
+            },
+            receiveNewMessage: function receiveNewMessage(message) {
+                //console.log(message)
+                //alert([message.content.extra.order_id,_vm.order.id])
+                // var chatcontent = "";
+                if (message.content.extra.order_id != _vm.order.id) {
+                    return false;
+                }
+                var item = {};
+
+                if (message.senderUserId == _vm.im_token.userId) {
+                    item.self = true;
+                    item.avatar = _vm.im_token.avatar;
+                } else {
+                    item.self = false;
+                    item.avatar = _vm.order_im_token.avatar;
+                }
+                item.time = message.sentTime;
+                console.log(message);
+                if (message.messageType == "ImageMessage") {
+                    item.content = "<img src=" + message.content.imageUri + " class='msgimg'>";
+                } else if (message.messageType == "TextMessage") {
+                    item.content = message.content.content;
+                }
+
+                _vm.messages.push(item);
+            },
+
+            getInstance: function getInstance(ist) {
+                _vm.instance = ist;
+
+                return ist;
+            }
+        };
+
+        BeeChat.init(this.callbacks);
+        this.callbacks.getHistory();
+    },
+
+    methods: {
+        uploadSuccess: function uploadSuccess(file) {
+
+            this.selfForm.shareImg = file;
+        },
+        beforeUpload: function beforeUpload(file) {
+            var vm = this;
+            var isJPG = file.type === 'image/jpeg';
+            var isLt2M = file.size / 1024 / 1024 < 2;
+
+            if (!isLt2M) {
+                this.$message.error('上传头像图片大小不能超过 2MB!');
+            }
+            var formData = new FormData();
+
+            formData.append('upchatpic', file);
+            formData.append('orderid', this.order.id);
+
+            this.$http.post('/chat/upload', formData).then(function (json) {
+                var data = json.data;
+                if (data.code == 0) {
+                    vm.imageUri = data.file;
+                    vm.sendMessage();
+                }
+            });
+            return false;
+        },
+        onKeyup: function onKeyup(e) {
+            if (e.ctrlKey && e.keyCode === 13 && this.content.length) {
+                this.sendMessage();
+                this.content = '';
+            }
+        },
+        sendMessage: function sendMessage() {
+            var _vm = this;
+            var content = {
+                content: this.content,
+                extra: {
+                    "order_id": App.order.id
+                }
+            };
+
+            var conversationtype = RongIMLib.ConversationType.PRIVATE; // 私聊
+            var msg = new RongIMLib.TextMessage(content);
+            if (this.imageUri) {
+                content.imageUri = this.imageUri;
+                msg = new RongIMLib.ImageMessage(content);
+            }
+
+            this.instance.sendMessage(conversationtype, this.order_im_token.userId, msg, {
+                onSuccess: function onSuccess(message) {
+                    _vm.callbacks.receiveNewMessage(message);
+                    //callbacks.receiveNewMessage(message)
+                    _vm.content = '';
+
+                    _vm.$http.post('/chat/message/send', message).then(function (res) {}).catch(function (err) {
+                        console.log(err);
+                    });
+                },
+                onError: function onError(errorCode, message) {
+                    console.log("发送文字消息失败");
+                    console.log(errorCode);
+                }
+            });
+        }
+    }
+};
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}],\"es2015\",\"stage-2\"],\"plugins\":[\"transform-object-rest-spread\"]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0&bustCache!./resources/assets/js/components/Comment.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -3889,6 +4109,7 @@ Object.defineProperty(exports, "__esModule", {
 //
 //
 //
+//
 
 
 exports.default = {
@@ -3909,6 +4130,7 @@ exports.default = {
     data: function data() {
         return {
             form: {
+
                 qty: '',
                 amount: '',
                 order_desc: ''
@@ -3975,14 +4197,23 @@ exports.default = {
             }
         },
         onSubmit: function onSubmit() {
-            this.form.ad_id = this.adId;
+            var _this = this;
+
+            this.form.ad_id = App.ad.id;
 
             this.$http.post('/order', this.form).then(function (response) {
-                console.log(response);
+                var data = response.data;
+                console.log(data);
 
-                window.location.href = '/order/info/' + response.data.id;
+                if (data.code == 200) {
+                    _this.$message('data.msg');
+                    window.location.href = '/order/info/' + data.data.order.id;
+                } else {
+                    _this.$message(data.msg);
+                }
 
-                toastr.success('You publish the comment success!');
+                //
+
             }).catch(function (_ref) {
                 var response = _ref.response;
             });
@@ -79417,6 +79648,160 @@ if (false) {
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-3f23c80f\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0&bustCache!./resources/assets/js/components/Chat.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "chat" }, [
+    _c(
+      "section",
+      {
+        directives: [
+          {
+            name: "scroll-bottom",
+            rawName: "v-scroll-bottom",
+            value: _vm.messages,
+            expression: "messages"
+          }
+        ],
+        staticClass: "chatlist",
+        class:
+          _vm.showSelBox > 0 ? "chatlist-bottom-collapse" : "chatlist-bottom"
+      },
+      [
+        _c(
+          "ul",
+          [
+            _vm._l(_vm.messages, function(item) {
+              return [
+                item.self
+                  ? _c("li", { staticClass: "chat-mine" }, [
+                      _c("div", { staticClass: "chat-user" }, [
+                        _c("img", { attrs: { src: item.avatar } })
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "time" }, [
+                        _c(
+                          "cite",
+                          [
+                            _c("timeago", {
+                              attrs: { since: item.time, locale: "zh-CN" }
+                            })
+                          ],
+                          1
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("div", {
+                        staticClass: "chat-text",
+                        domProps: { innerHTML: _vm._s(item.content) }
+                      })
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                !item.self
+                  ? _c("li", [
+                      _c("div", { staticClass: "chat-user" }, [
+                        _c("img", { attrs: { src: item.avatar } })
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "time" }, [
+                        _c(
+                          "cite",
+                          [
+                            _c("timeago", {
+                              attrs: { since: item.time, locale: "zh-CN" }
+                            })
+                          ],
+                          1
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("div", {
+                        staticClass: "chat-text",
+                        domProps: { innerHTML: _vm._s(item.content) }
+                      })
+                    ])
+                  : _vm._e()
+              ]
+            })
+          ],
+          2
+        )
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "section",
+      { staticClass: "foot" },
+      [
+        _c(
+          "el-input",
+          {
+            staticClass: "input-with-select",
+            attrs: { placeholder: "请输入内容" },
+            nativeOn: {
+              keyup: function($event) {
+                _vm.onKeyup($event)
+              }
+            },
+            model: {
+              value: _vm.content,
+              callback: function($$v) {
+                _vm.content = $$v
+              },
+              expression: "content"
+            }
+          },
+          [
+            _c(
+              "el-upload",
+              {
+                staticClass: "avatar-uploader",
+                attrs: {
+                  slot: "prepend",
+                  action: "",
+                  "show-file-list": false,
+                  "on-success": _vm.uploadSuccess,
+                  "before-upload": _vm.beforeUpload
+                },
+                slot: "prepend"
+              },
+              [_c("i", { staticClass: "el-icon-picture" })]
+            ),
+            _vm._v(" "),
+            _c(
+              "el-button",
+              {
+                attrs: { slot: "append", type: "success" },
+                on: { click: _vm.sendMessage },
+                slot: "append"
+              },
+              [_vm._v("发送")]
+            )
+          ],
+          1
+        )
+      ],
+      1
+    )
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-3f23c80f", module.exports)
+  }
+}
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-467dc58b\",\"hasScoped\":true,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0&bustCache!./resources/assets/js/components/dashboard/Modal.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -80981,6 +81366,189 @@ module.exports = function listToStyles (parentId, list) {
   return styles
 }
 
+
+/***/ }),
+
+/***/ "./node_modules/vue-timeago/dist/vue-timeago.js":
+/***/ (function(module, exports, __webpack_require__) {
+
+(function (global, factory) {
+   true ? module.exports = factory() :
+  typeof define === 'function' && define.amd ? define(factory) :
+  (global.VueTimeago = factory());
+}(this, (function () { 'use strict';
+
+var MINUTE = 60;
+var HOUR = MINUTE * 60;
+var DAY = HOUR * 24;
+var WEEK = DAY * 7;
+var MONTH = DAY * 30;
+var YEAR = DAY * 365;
+
+function pluralOrSingular(data, locale) {
+  if (data === 'just now') {
+    return locale
+  }
+  var count = Math.round(data);
+  if (Array.isArray(locale)) {
+    return count > 1
+      ? locale[1].replace(/%s/, count)
+      : locale[0].replace(/%s/, count)
+  }
+  return locale.replace(/%s/, count)
+}
+
+function formatTime(time) {
+  var d = new Date(time);
+  return d.toLocaleString()
+}
+
+function install(
+  Vue,
+  ref
+) {
+  if ( ref === void 0 ) ref = {};
+  var name = ref.name; if ( name === void 0 ) name = 'timeago';
+  var locale = ref.locale; if ( locale === void 0 ) locale = 'en-US';
+  var locales = ref.locales; if ( locales === void 0 ) locales = null;
+
+  if (!locales || Object.keys(locales).length === 0) {
+    throw new TypeError('Expected locales to have at least one locale.')
+  }
+
+  var VueTimeago = {
+    props: {
+      since: {
+        required: true
+      },
+      locale: String,
+      maxTime: Number,
+      autoUpdate: Number,
+      format: Function
+    },
+    data: function data() {
+      return {
+        now: new Date().getTime()
+      }
+    },
+    computed: {
+      currentLocale: function currentLocale() {
+        var current = locales[this.locale || locale];
+        if (!current) {
+          return locales[locale]
+        }
+        return current
+      },
+      sinceTime: function sinceTime() {
+        return new Date(this.since).getTime()
+      },
+      timeForTitle: function timeForTitle() {
+        var seconds = this.now / 1000 - this.sinceTime / 1000;
+
+        if (this.maxTime && seconds > this.maxTime) {
+          return null
+        }
+
+        return this.format
+          ? this.format(this.sinceTime)
+          : formatTime(this.sinceTime)
+      },
+      timeago: function timeago() {
+        var seconds = this.now / 1000 - this.sinceTime / 1000;
+
+        if (this.maxTime && seconds > this.maxTime) {
+          clearInterval(this.interval);
+          return this.format
+            ? this.format(this.sinceTime)
+            : formatTime(this.sinceTime)
+        }
+
+        var ret =
+          seconds <= 5
+            ? pluralOrSingular('just now', this.currentLocale[0])
+            : seconds < MINUTE
+              ? pluralOrSingular(seconds, this.currentLocale[1])
+              : seconds < HOUR
+                ? pluralOrSingular(seconds / MINUTE, this.currentLocale[2])
+                : seconds < DAY
+                  ? pluralOrSingular(seconds / HOUR, this.currentLocale[3])
+                  : seconds < WEEK
+                    ? pluralOrSingular(seconds / DAY, this.currentLocale[4])
+                    : seconds < MONTH
+                      ? pluralOrSingular(seconds / WEEK, this.currentLocale[5])
+                      : seconds < YEAR
+                        ? pluralOrSingular(
+                            seconds / MONTH,
+                            this.currentLocale[6]
+                          )
+                        : pluralOrSingular(
+                            seconds / YEAR,
+                            this.currentLocale[7]
+                          );
+
+        return ret
+      }
+    },
+    mounted: function mounted() {
+      if (this.autoUpdate) {
+        this.update();
+      }
+    },
+    render: function render(h) {
+      return h(
+        'time',
+        {
+          attrs: {
+            datetime: new Date(this.since),
+            title: this.timeForTitle
+          }
+        },
+        this.timeago
+      )
+    },
+    watch: {
+      autoUpdate: function autoUpdate(newAutoUpdate) {
+        this.stopUpdate();
+        // only update when it's not falsy value
+        // which means you cans set it to 0 to disable auto-update
+        if (newAutoUpdate) {
+          this.update();
+        }
+      }
+    },
+    methods: {
+      update: function update() {
+        var this$1 = this;
+
+        var period = this.autoUpdate * 1000;
+        this.interval = setInterval(function () {
+          this$1.now = new Date().getTime();
+        }, period);
+      },
+      stopUpdate: function stopUpdate() {
+        clearInterval(this.interval);
+        this.interval = null;
+      }
+    },
+    beforeDestroy: function beforeDestroy() {
+      this.stopUpdate();
+    }
+  };
+
+  Vue.component(name, VueTimeago);
+}
+
+return install;
+
+})));
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-timeago/locales/zh-TW.json":
+/***/ (function(module, exports) {
+
+module.exports = ["剛剛","%s 秒前","%s 分鐘前","%s 小時前","%s 天前","%s 週前","%s 月前","%s 年前"]
 
 /***/ }),
 
@@ -91804,6 +92372,55 @@ module.exports = Component.exports
 
 /***/ }),
 
+/***/ "./resources/assets/js/components/Chat.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__("./node_modules/vue-loader/lib/component-normalizer.js")
+/* script */
+var __vue_script__ = __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}],\"es2015\",\"stage-2\"],\"plugins\":[\"transform-object-rest-spread\"]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0&bustCache!./resources/assets/js/components/Chat.vue")
+/* template */
+var __vue_template__ = __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-3f23c80f\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0&bustCache!./resources/assets/js/components/Chat.vue")
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/Chat.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-3f23c80f", Component.options)
+  } else {
+    hotAPI.reload("data-v-3f23c80f", Component.options)
+' + '  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+
 /***/ "./resources/assets/js/components/Comment.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -92302,6 +92919,10 @@ var _elementUi2 = _interopRequireDefault(_elementUi);
 
 __webpack_require__("./node_modules/element-ui/lib/theme-chalk/index.css");
 
+var _vueTimeago = __webpack_require__("./node_modules/vue-timeago/dist/vue-timeago.js");
+
+var _vueTimeago2 = _interopRequireDefault(_vueTimeago);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 window.$ = window.jQuery = __webpack_require__("./node_modules/jquery/dist/jquery.js");
@@ -92319,11 +92940,32 @@ window.toastr = __webpack_require__("./node_modules/toastr/build/toastr.min.js")
 Vue.use(_vueI18n2.default);
 Vue.use(_http2.default);
 
+// Vue.directive('scroll-bottom', {
+//       // in the bind function, the 3rd argument is vnode (the VDOM) created by Vue.
+//       bind(el, bindings, vnode) {
+//       	alert(333)
+//           // vnode.context is the scope where the directive is rendered.
+//           const vm = vnode.context
+//           vm.$nextTick(() => {
+//               el.scrollTop = el.scrollHeight - el.clientHeight;
+//           });
+
+//       }
+//   });
 Vue.config.lang = window.Language;
 
 var i18n = new _vueI18n2.default({
     locale: Vue.config.lang,
     messages: _lang2.default
+});
+
+Vue.use(_vueTimeago2.default, {
+    name: 'timeago', // component name, `timeago` by default
+    locale: 'zh-TW',
+    locales: {
+        // you will need json-loader in webpack 1
+        'zh-TW': __webpack_require__("./node_modules/vue-timeago/locales/zh-TW.json")
+    }
 });
 Vue.use(_elementUi2.default);
 Vue.component('comment', __webpack_require__("./resources/assets/js/components/Comment.vue"));
@@ -92339,11 +92981,7 @@ Vue.component('order-create', __webpack_require__("./resources/assets/js/compone
 
 Vue.component('edit-create', __webpack_require__("./resources/assets/js/views/web/ad/edit.vue"));
 
-// Vue.component(
-//     'chat',
-//     require('components/Chat.vue')
-// );
-
+Vue.component('vue-chat', __webpack_require__("./resources/assets/js/components/Chat.vue"));
 
 new Vue({
     i18n: i18n

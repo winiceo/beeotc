@@ -90,6 +90,7 @@ Route::group([
     Route::get('test','VisitorController@index');
     Route::post('user/address', 'AddressController@store')->middleware('auth:api');
 
+    Route::post('chat/upload', 'ChatController@store')->middleware('auth:api');
 
     Route::post('ad', 'AdController@store')->middleware('auth:api');
 
@@ -102,22 +103,10 @@ Route::group([
 
 
     Route::group(['prefix' => 'chat'], function () {
-        Route::get('/', function () {
+        Route::post('message/send',  'ChatController@send')->middleware('auth:api');
+        Route::post('message/history',  'ChatController@history')->middleware('auth:api');
 
-            event(new \App\Events\Message("UserJoined", "", date('Y-m-d H:i:s')));
 
-            return view('welcome');
-        });
-
-        Route::post('send_message', function (\Illuminate\Http\Request $request) {
-
-            //print_r([$request->type, $request->content]);
-            event(new App\Events\Message($request->type, $request->content, date('Y-m-d H:i:s')));
-
-            return response()->json([
-                'status' => 'success'
-            ]);
-        });
     });
 
     // File Upload

@@ -17,15 +17,15 @@
                         <div>
                             <div class="user_info">
                                 <a href="javascript:void(0)">
-                                    <img class="tou" src="/Public/Home/images/hportrait/20171115/s_5a0bf4ab92c27.jpg">
+                                    <img class="tou" src="{{asset('images/user_avatar.png')}}">
                                 </a>
                                 <div class="aduser_names">
                                     <span>{{$ad->user->name}}</span>
-                                    <span><a href="javascript:;" onclick="chatwindow();"><img src="/Public/Home/news/images/chat.png" style="width: 20px;"></a></span>
-                                    <div style="float: right;">
-                                        <input class="input2_new" id="trust" type="button" value="取消信任">
-                                        <input style="margin-right: 0;" class="input1_new" id="ban" type="button" value="屏蔽此用户">
-                                    </div>
+                                    {{--<span><a href="javascript:;" onclick="chatwindow();"><img src="/Public/Home/news/images/chat.png" style="width: 20px;"></a></span>--}}
+                                    {{--<div style="float: right;">--}}
+                                        {{--<input class="input2_new" id="trust" type="button" value="取消信任">--}}
+                                        {{--<input style="margin-right: 0;" class="input1_new" id="ban" type="button" value="屏蔽此用户">--}}
+                                    {{--</div>--}}
                                 </div>
                                 <div class="poster">
 								<span class="infos" style="padding-left: 0;">

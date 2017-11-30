@@ -251,6 +251,7 @@ return [
         'Image' => Intervention\Image\Facades\Image::class,
 
         'UserVerification' => Jrean\UserVerification\Facades\UserVerification::class,
+        'Avatar'    => Laravolt\Avatar\Facade::class,
 
     ],
 

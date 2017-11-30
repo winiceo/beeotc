@@ -51,5 +51,13 @@ class AppServiceProvider extends ServiceProvider
 
             return new BaseManager();
         });
+
+        $this->app->singleton('rcloud', function ($app) {
+            $config = [
+                'app_key' => env('RONG_CLOUD_APP_KEY'),
+                'app_secret' => env('RONG_CLOUD_APP_SECRET')
+            ];
+            return new \App\Im\RongCloud($config['app_key'],$config['app_secret']);
+        });
     }
 }

@@ -17,22 +17,11 @@ Route::group(['as' => 'bee.'], function () {
     Route::post('password/change', 'UserController@changePassword')->middleware('auth');
 
     Route::group(['prefix' => 'chat'], function () {
-        Route::get('/', function () {
+        Route::get('/upload', 'ChatController@upload');
 
-            event(new \App\Events\Message("UserJoined", "", date('Y-m-d H:i:s')));
+        Route::post('upload', 'ChatController@store');
 
-            return view('welcome');
-        });
 
-        Route::post('send_message', function (\Illuminate\Http\Request $request) {
-
-            //print_r([$request->type, $request->content]);
-            event(new App\Events\Message($request->type, $request->content, date('Y-m-d H:i:s')));
-
-            return response()->json([
-                'status' => 'success'
-            ]);
-        });
     });
 
 
@@ -64,6 +53,8 @@ Route::group(['as' => 'bee.'], function () {
 // User
     Route::group(['prefix' => 'user'], function () {
         Route::get('/', 'UserController@index');
+        Route::get('/avatar/{id}', 'UserInfoController@avatar');
+
 
         Route::group(['middleware' => 'auth'], function () {
 
@@ -86,6 +77,11 @@ Route::group(['as' => 'bee.'], function () {
             Route::post('follow/{id}', 'UserController@doFollow');
             Route::get('notification', 'UserController@notifications');
             Route::post('notification', 'UserController@markAsRead');
+
+            //更新用户资料
+            Route::post('info', 'UserInfoController@update');
+
+
         });
 
         Route::group(['prefix' => '{username}'], function () {

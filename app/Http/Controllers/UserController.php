@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\UserWalletCharge;
+use App\Models\UserBalance;
 use Auth;
 use Hash;
 use Image;
@@ -29,7 +29,7 @@ class UserController extends Controller
     {
         $user = $this->user->getById(Auth::id());
 
-        $wallets= UserWalletCharge:: where('user_id', $user->id)
+        $wallets= UserBalance:: where('user_id', $user->id)
             ->orderBy('id', 'asc')
 
             ->get();
