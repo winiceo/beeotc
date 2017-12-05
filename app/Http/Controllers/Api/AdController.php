@@ -19,7 +19,7 @@ class AdController extends ApiController
 
     public function __construct(AdRepository $ad )
     {
-        $this->middleware('auth')->except(['index', 'show']);
+        //$this->middleware('auth') ;
 
         $this->ad = $ad;
 
@@ -76,7 +76,9 @@ class AdController extends ApiController
 
     public function edit($id)
     {
-        return $this->response->item($this->ad->getById($id));
+        echo 33;
+        exit;
+        return $this->response->json($this->ad->getById($id));
     }
 
 }

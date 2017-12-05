@@ -82,6 +82,13 @@ Route::group(['as' => 'bee.'], function () {
             Route::post('info', 'UserInfoController@update');
 
 
+            //用户订单
+            Route::get('orders', 'OrderController@overview');
+
+
+
+
+
         });
 
         Route::group(['prefix' => '{username}'], function () {

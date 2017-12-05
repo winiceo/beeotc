@@ -103,27 +103,7 @@
                                 <p class="p mb-20">
                                     2222222222222							</p>
                             </div>
-                            <div>
-                                <h4 style="color: rgba(0,0,0,0.7);font-weight: 700;font-size: 20px;line-height: 22px;margin-top:40px;margin-bottom: 10px;">wangyujie123正在进行中的广告</h4>
-                                <table class="table_new">
-                                    <tbody><tr>
-                                        <th width="150px" style="text-indent: 15px;">付款方式</th>
-                                        <th width="200px">交易限额</th>
-                                        <th width="200px">价格</th>
-                                        <th width="115px">操作</th>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-indent: 15px;">现金存款</td>
-                                        <td>1000-20000 CNY</td>
-                                        <td>52280.64 CNY/BTC</td>
-                                        <td><a href="/Newad/advdetail/type/1/id/6.html" style="color:#108ee9;display: inline-block;width:72px;height:26px;border:1px solid #108ee9;line-height: 26px;text-align: center;border-radius: 4px;">购买</a></td>
-                                    </tr>								<tr>
-                                        <td style="text-indent: 15px;">现金存款</td>
-                                        <td>3000-50000 CNY</td>
-                                        <td>52280.64 CNY/BTC</td>
-                                        <td><a href="/Newad/advdetail/type/0/id/5.html" style="color:#108ee9;display: inline-block;width:72px;height:26px;border:1px solid #108ee9;line-height: 26px;text-align: center;border-radius: 4px;">出售</a></td>
-                                    </tr>							</tbody></table>
-                            </div>
+
                             <div class="form-title pt-30" style="margin-bottom: 20px;padding-bottom: 10px;border-bottom:1px solid #d6dbdd;">
                                 <span class="form-name" style="color:rgba(0,0,0,0.7);">交易须知</span>
                             </div>

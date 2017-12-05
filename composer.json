@@ -10,6 +10,7 @@
     "require": {
         "php": ">=7.0.0",
         "artdarek/avatarer": "^2.0",
+        "bacon/bacon-qr-code": "^1.0",
         "barryvdh/laravel-cors": "^0.10.0",
         "fideloper/proxy": "~3.3",
         "intervention/image": "^2.3",
@@ -23,11 +24,14 @@
         "laravolt/avatar": "^2.0",
         "league/fractal": "^0.17.0",
         "naux/sendcloud": "^1.1",
+        "overtrue/easy-sms": "^0.0.10",
+        "pragmarx/google2fa": "^2.0",
         "predis/predis": "^1.1",
         "ramsey/uuid": "^3.7",
         "tcg/voyager": "^1.0",
         "tymon/jwt-auth": "1.0.0-rc.1",
         "webpatser/laravel-uuid": "^3.0",
+        "yunpian/yunpian-php-sdk": "^1.0",
         "yzalis/identicon": "^1.2"
     },
     "require-dev": {

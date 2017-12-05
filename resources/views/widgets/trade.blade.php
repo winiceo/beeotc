@@ -5,10 +5,10 @@
                 <a href="/trade?trade_type=0"
                    @if(leven('trade_type')==0)
                          class="on_new"
-                        @endif>出售广告</a>
+                        @endif>购买</a>
                 <a href="/trade?trade_type=1" @if(leven('trade_type')==1)
                         class="on_new"
-                        @endif>购买广告</a>
+                        @endif>出售</a>
             </div>
             {{--<div class="select_div">--}}
             {{--<form action="/Trade/index.html" method="get">--}}
@@ -98,7 +98,7 @@
                             <td style="padding-left:40px;"><img
                                         style="height:35px;vertical-align: middle;margin-right:10px;width:35px;border-radius: 50%;"
                                         src="{{asset('images/user_avatar.png')}}">{{$ad->user->name}}</td>
-                            <td>{{  $ad->crypto_currency }}</td>
+                            <td>{{ $ad->coin_name }}</td>
                             <td>{{$ad->country_code}}</td>
 
                             <td>

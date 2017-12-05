@@ -3230,7 +3230,7 @@ exports.default = {
             coin_type: [],
             coin_lable: '',
             form: {
-                crypto_currency: 1,
+                coin_type: 1,
                 trade_type: "0",
                 country_code: '',
                 currency: '',
@@ -3251,13 +3251,13 @@ exports.default = {
         cryptoCurrency: function cryptoCurrency(val) {
 
             this.coin_lable = this.coin_type[val - 1].label;
-            this.form.crypto_currency = val;
+            this.form.coin_type = val;
         }
     },
     computed: {},
     mounted: function mounted() {
         this.coin_type = JSON.parse(this.coins);
-        this.coin_lable = this.coin_type[this.form.crypto_currency - 1].label;
+        this.coin_lable = this.coin_type[this.form.coin_type - 1].label;
     },
 
     methods: {
@@ -3706,11 +3706,12 @@ exports.default = {
 
             getHistory: function getHistory() {
                 _vm.$http.post('/chat/message/history', { order_id: App.order.id }).then(function (response) {
-
-                    var messages = response.data.data.data.data.reverse();
+                    console.log(response);
+                    var messages = response.data.data.data.reverse();
                     if (messages.length == 0) {
                         _vm.system = 1;
                         _vm.content = '系统消息: 买家拍下未付款<br>买家已拍下，等待买家付款';
+
                         _vm.sendMessage();
                     }
                     messages.forEach(function (message) {
@@ -3760,13 +3761,12 @@ exports.default = {
 
             getInstance: function getInstance(ist) {
                 _vm.instance = ist;
-
+                this.getHistory();
                 return ist;
             }
         };
 
         BeeChat.init(this.callbacks);
-        this.callbacks.getHistory();
     },
 
     methods: {
@@ -3893,21 +3893,27 @@ exports.default = {
                 content.imageUri = this.imageUri;
                 msg = new RongIMLib.ImageMessage(content);
             }
+
             _vm.content = '';
+
+            console.log(this.order_im_token.userId);
+            console.log(msg);
 
             this.instance.sendMessage(conversationtype, this.order_im_token.userId, msg, {
                 onSuccess: function onSuccess(message) {
-
+                    alert(1);
+                    console.log(message);
+                    _vm.system = 0;
                     _vm.callbacks.receiveNewMessage(message);
                     //callbacks.receiveNewMessage(message)
 
-                    _vm.system = 0;
 
                     _vm.$http.post('/chat/message/send', message).then(function (res) {}).catch(function (err) {
                         console.log(err);
                     });
                 },
                 onError: function onError(errorCode, message) {
+                    alert(2);
                     console.log("发送文字消息失败");
                     console.log(errorCode);
                 }
@@ -4355,6 +4361,63 @@ exports.default = {
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}],\"es2015\",\"stage-2\"],\"plugins\":[\"transform-object-rest-spread\"]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0&bustCache!./resources/assets/js/components/Notice.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+//
+//
+//
+//
+//
+//
+//
+
+
+var now = new Date();
+
+exports.default = {
+    data: function data() {
+        return {};
+    },
+
+
+    computed: {},
+    created: function created() {
+
+        var _vm = this;
+        this.callbacks = {
+
+            receiveNewMessage: function receiveNewMessage(message) {
+                //console.log(message)
+                //alert([message.content.extra.order_id,_vm.order.id])
+                // var chatcontent = "";
+                if (message.content.extra.order_id != _vm.order.id) {
+                    return false;
+                }
+                alert(message);
+            },
+
+            getInstance: function getInstance(ist) {
+                _vm.instance = ist;
+
+                return ist;
+            }
+        };
+
+        BeeChat.init(this.callbacks);
+    },
+
+    methods: {}
+};
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}],\"es2015\",\"stage-2\"],\"plugins\":[\"transform-object-rest-spread\"]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0&bustCache!./resources/assets/js/components/OrderCreate.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -4707,6 +4770,35 @@ exports.default = {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -4732,30 +4824,69 @@ Object.defineProperty(exports, "__esModule", {
 
 
 exports.default = {
-    data: function data() {
-        return {
-            form: {
-                wallet_name: '',
-                coin_type: '',
-                wallet_address: ''
-
+    props: {
+        coins: {
+            type: String,
+            default: function _default() {
+                return '';
             }
-        };
+        }
+    },
+    data: function data() {
+        var _ref;
+
+        return _ref = {
+            coin_type: [],
+            coin_lable: '',
+            formLabelWidth: '120px',
+            dialogFormVisible: false
+        }, _defineProperty(_ref, 'coin_type', 1), _defineProperty(_ref, 'form', {
+            wallet_name: '',
+            coin_type: 1,
+            wallet_address: '',
+            mobile: '',
+            mobile_code: ''
+
+        }), _ref;
+    },
+    mounted: function mounted() {
+        this.coin_type = JSON.parse(this.coins);
+        // this.coin_lable=this.coin_type[this.form.coin_type-1].label
     },
 
     methods: {
-        onSubmit: function onSubmit() {
-            var _this = this;
-
-            this.$http.post('/user/address', this.form).then(function (response) {
+        save_address: function save_address() {
+            var _vm = this;
+            this.$http.post('/user/safe/check', this.form).then(function (response) {
                 console.log(response);
+                _vm.dialogFormVisible = true;
+            }).catch(function (_ref2) {
+                var response = _ref2.response;
+            });
+        },
+        send_mobile_code: function send_mobile_code() {
 
-                toastr.success('You publish the comment success!');
-            }).catch(function (_ref) {
-                var response = _ref.response;
+            var _vm = this;
+            this.$http.post('/sms/send', this.form).then(function (response) {
+                console.log(response);
+                _vm.dialogFormVisible = true;
+            }).catch(function (_ref3) {
+                var response = _ref3.response;
+            });
+        },
+        save: function save() {
 
-                _this.isSubmiting = false;
-                stack_error(response);
+            var _vm = this;
+            this.$http.post('/user/address', this.form).then(function (response) {
+                var data = response.data;
+                if (data.code == 200) {
+                    _vm.$message.error(data.msg);
+                    window.location.href = '/user/wallet';
+                } else {
+                    _vm.$message.error(data.msg);
+                }
+            }).catch(function (_ref4) {
+                var response = _ref4.response;
             });
         }
     }
@@ -5156,7 +5287,7 @@ exports.default = {
             var _this = this;
 
             console.log(this.route);
-            this.$http.get('ad/' + this.adid + '/edit').then(function (response) {
+            this.$http.get('ad/' + this.adid + '').then(function (response) {
                 _this.ad = response.data.data;
             });
         }
@@ -80796,6 +80927,27 @@ if (false) {
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-5b8bffcf\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0&bustCache!./resources/assets/js/components/Notice.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("el-container", [_vm._v("\n        adfafd\n")])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-5b8bffcf", module.exports)
+  }
+}
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-61f55083\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0&bustCache!./resources/assets/js/components/OrderCreate.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -81336,7 +81488,7 @@ var render = function() {
               ]),
               _vm._v(" "),
               _c("el-radio", { attrs: { label: "1" } }, [
-                _vm._v("在线购买比特币" + _vm._s(_vm.coin_lable))
+                _vm._v("在线购买" + _vm._s(_vm.coin_lable))
               ])
             ],
             1
@@ -81769,73 +81921,194 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c(
-    "el-form",
-    {
-      ref: "form",
-      attrs: { inline: true, model: _vm.form, "label-width": "80px" }
-    },
+    "div",
     [
       _c(
-        "el-form-item",
-        { attrs: { label: "币种" } },
+        "el-form",
+        {
+          ref: "form",
+          attrs: { inline: true, model: _vm.form, "label-width": "80px" }
+        },
         [
           _c(
-            "el-select",
-            {
-              attrs: { placeholder: "请选择币钟" },
-              model: {
-                value: _vm.form.coin_type,
-                callback: function($$v) {
-                  _vm.$set(_vm.form, "coin_type", $$v)
+            "el-form-item",
+            { attrs: { label: "币种" } },
+            [
+              _c(
+                "el-select",
+                {
+                  attrs: { placeholder: "请选择币钟" },
+                  model: {
+                    value: _vm.form.coin_type,
+                    callback: function($$v) {
+                      _vm.$set(_vm.form, "coin_type", $$v)
+                    },
+                    expression: "form.coin_type"
+                  }
                 },
-                expression: "form.coin_type"
-              }
-            },
-            [_c("el-option", { attrs: { label: "比特币", value: "BTC" } })],
+                _vm._l(_vm.coin_type, function(coin, index) {
+                  return _c("el-option", {
+                    key: coin.value,
+                    attrs: { label: coin.label, value: coin.value }
+                  })
+                })
+              )
+            ],
             1
+          ),
+          _vm._v(" "),
+          _c(
+            "el-form-item",
+            { attrs: { label: "名称" } },
+            [
+              _c("el-input", {
+                model: {
+                  value: _vm.form.wallet_name,
+                  callback: function($$v) {
+                    _vm.$set(_vm.form, "wallet_name", $$v)
+                  },
+                  expression: "form.wallet_name"
+                }
+              })
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "el-form-item",
+            { attrs: { label: "地址" } },
+            [
+              _c("el-input", {
+                model: {
+                  value: _vm.form.wallet_address,
+                  callback: function($$v) {
+                    _vm.$set(_vm.form, "wallet_address", $$v)
+                  },
+                  expression: "form.wallet_address"
+                }
+              })
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "el-button",
+            { attrs: { type: "primary" }, on: { click: _vm.save_address } },
+            [_vm._v("添加")]
           )
         ],
         1
       ),
       _vm._v(" "),
       _c(
-        "el-form-item",
-        { attrs: { label: "名称" } },
-        [
-          _c("el-input", {
-            model: {
-              value: _vm.form.wallet_name,
-              callback: function($$v) {
-                _vm.$set(_vm.form, "wallet_name", $$v)
-              },
-              expression: "form.wallet_name"
+        "el-dialog",
+        {
+          attrs: { title: "安全验证", visible: _vm.dialogFormVisible },
+          on: {
+            "update:visible": function($event) {
+              _vm.dialogFormVisible = $event
             }
-          })
+          }
+        },
+        [
+          _c(
+            "el-form",
+            { attrs: { model: _vm.form } },
+            [
+              _c(
+                "el-form-item",
+                {
+                  attrs: { label: "手机号", "label-width": _vm.formLabelWidth }
+                },
+                [
+                  _c(
+                    "el-input",
+                    {
+                      attrs: { placeholder: "请输入内容" },
+                      model: {
+                        value: _vm.form.mobile,
+                        callback: function($$v) {
+                          _vm.$set(_vm.form, "mobile", $$v)
+                        },
+                        expression: "form.mobile"
+                      }
+                    },
+                    [
+                      _c(
+                        "template",
+                        { slot: "append" },
+                        [
+                          _c(
+                            "el-button",
+                            {
+                              attrs: { type: "primary" },
+                              on: { click: _vm.send_mobile_code }
+                            },
+                            [_vm._v("发送验证码")]
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    2
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "el-form-item",
+                {
+                  attrs: { label: "验证码", "label-width": _vm.formLabelWidth }
+                },
+                [
+                  _c("el-input", {
+                    attrs: { "auto-complete": "off" },
+                    model: {
+                      value: _vm.form.mobile_code,
+                      callback: function($$v) {
+                        _vm.$set(_vm.form, "mobile_code", $$v)
+                      },
+                      expression: "form.mobile_code"
+                    }
+                  })
+                ],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              staticClass: "dialog-footer",
+              attrs: { slot: "footer" },
+              slot: "footer"
+            },
+            [
+              _c(
+                "el-button",
+                {
+                  on: {
+                    click: function($event) {
+                      _vm.dialogFormVisible = false
+                    }
+                  }
+                },
+                [_vm._v("取 消")]
+              ),
+              _vm._v(" "),
+              _c(
+                "el-button",
+                { attrs: { type: "primary" }, on: { click: _vm.save } },
+                [_vm._v("确 定")]
+              )
+            ],
+            1
+          )
         ],
         1
-      ),
-      _vm._v(" "),
-      _c(
-        "el-form-item",
-        { attrs: { label: "地址" } },
-        [
-          _c("el-input", {
-            model: {
-              value: _vm.form.wallet_address,
-              callback: function($$v) {
-                _vm.$set(_vm.form, "wallet_address", $$v)
-              },
-              expression: "form.wallet_address"
-            }
-          })
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c(
-        "el-button",
-        { attrs: { type: "primary" }, on: { click: _vm.onSubmit } },
-        [_vm._v("添加")]
       )
     ],
     1
@@ -93378,6 +93651,55 @@ module.exports = Component.exports
 
 /***/ }),
 
+/***/ "./resources/assets/js/components/Notice.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__("./node_modules/vue-loader/lib/component-normalizer.js")
+/* script */
+var __vue_script__ = __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}],\"es2015\",\"stage-2\"],\"plugins\":[\"transform-object-rest-spread\"]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0&bustCache!./resources/assets/js/components/Notice.vue")
+/* template */
+var __vue_template__ = __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-5b8bffcf\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0&bustCache!./resources/assets/js/components/Notice.vue")
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/Notice.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-5b8bffcf", Component.options)
+  } else {
+    hotAPI.reload("data-v-5b8bffcf", Component.options)
+' + '  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+
 /***/ "./resources/assets/js/components/OrderCreate.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -93835,6 +94157,8 @@ Vue.component('ad-create', __webpack_require__("./resources/assets/js/components
 Vue.component('order-create', __webpack_require__("./resources/assets/js/components/OrderCreate.vue"));
 
 Vue.component('edit-create', __webpack_require__("./resources/assets/js/views/web/ad/edit.vue"));
+
+Vue.component('notice', __webpack_require__("./resources/assets/js/components/Notice.vue"));
 
 Vue.component('vue-chat', __webpack_require__("./resources/assets/js/components/Chat.vue"));
 

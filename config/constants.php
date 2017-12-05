@@ -10,11 +10,11 @@ return [
     'ORDER_STATUS' =>  [
         "CREATED"=>0,
         "PAY"=>1,
-        "RELEASE"=>3,
-        "CANCEL"=>5,
-        "FINISH"=>7,
-        "COMMENT"=>10,
-        "COMPLAINT"=>11,
+        "RELEASE"=>2,
+        "COMMENT"=>3,
+        "COMPLAINT"=>4,
+        "CANCEL"=>8,
+        "FINISH"=>9,
 
     ]
 

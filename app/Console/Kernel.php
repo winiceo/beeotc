@@ -19,6 +19,8 @@ class Kernel extends ConsoleKernel
         Commands\PackageArchiveCommand::class,
         Commands\PackageLinkCommand::class,
         Commands\PackageHandlerCommand::class,
+
+        Commands\CheckOrder::class,
     ];
 
     /**
@@ -31,6 +33,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
+        $schedule->command('check:order')->everyMinute();
     }
 
     /**

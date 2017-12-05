@@ -234,9 +234,9 @@
                                             <div class="shiftto">
                                                 <p class="walletadres">您 将用{{$address->wallet_address}}向下边的地址充值</p>
                                                 <p class="walletadres">这是您的钱包地址，请将您的 <b>比特币(BTC)</b> 充值此地址：</p>
-                                                <p id="wallet">HJnmdRprDRsYyUYpqqNaW1qdPkCXXjG5xu</p>
+                                                <p id="wallet">{{$wallet_address->address}}</p>
                                                 <div id="qrcode-wallet">
-                                                    <div id="codeaa"></div>
+                                                    <div id="codeaa" style="width:200px;height:200px"></div>
                                                     <p>比特币(BTC)钱包地址</p>
                                                 </div>
                                             </div>
@@ -266,9 +266,9 @@
 
         $('#codeaa').qrcode({
             render: "table", //table方式
-            width: 120, //宽度
-            height: 120, //高度
-            text: "HJnmdRprDRsYyUYpqqNaW1qdPkCXXjG5xu" //任意内容
+            width: 220, //宽度
+            height: 220, //高度
+            text: "{{$wallet_address->address}}" //任意内容
         }); //任意字符串
 
 

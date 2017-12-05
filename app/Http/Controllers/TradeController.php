@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\CoinHelpers;
 use App\Models\Ad;
 use App\Http\Requests;
 use App\Queries\SearchAds;
@@ -29,9 +30,14 @@ class TradeController extends Controller
     {
        // $ads = $this->ad->page(config('trade.ad.number'), config('trade.ad.sort'), config('trade.ad.sortColumn'));
         $ads=SearchTrade::get($request);
+
+        $coins=CoinHelpers::getIds();
+
+        foreach ($ads as $k=>$v){
+            $ads[$k]["coin_name"]=$coins[$v['coin_type']]["name"];
+        }
+
         leven($request->all());
-
-
 
         return view('trade.index', compact('ads'));
     }

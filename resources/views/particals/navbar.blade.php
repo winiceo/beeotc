@@ -40,6 +40,7 @@
                 <li><a href="{{ url('register') }}">{{ lang('Register') }}</a></li>
             @else
                 <li class="notification">
+                   
                     <a href="{{ url('user/notification') }}"><i class="ion-android-notifications">
                             <span class="new"
                                   @if (Auth::user()->unreadNotifications->count() > 0)
@@ -48,6 +49,10 @@
                             >
                             </span>
                         </i></a>
+                </li>
+
+                <li class="notification">
+                    <a href="{{ url('user/orders') }}"> 我的订单</a>
                 </li>
 
 

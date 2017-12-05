@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Article;
 use App\Discussion;
+use App\Helpers\CoinHelpers;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use App\Tools\FileManager\BaseManager;
@@ -12,6 +13,9 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 
 class AppServiceProvider extends ServiceProvider
 {
+
+    use CoinHelpers;
+
     /**
      * Bootstrap any application services.
      *
@@ -24,6 +28,9 @@ class AppServiceProvider extends ServiceProvider
 
         Blade::directive('leven', function ($expression) {
             return "<?php echo leven($expression); ?>";
+        });
+        Blade::directive('coin', function ($expression) {
+            return "<?php echo ($expression/100000000); ?>";
         });
 
         Relation::morphMap([

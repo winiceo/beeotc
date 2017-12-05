@@ -2,7 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Order;
+use App\Models\UserBalance;
 use App\Repositories\VisitorRepository;
+use App\Service\OrderService;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Redis;
 
 class VisitorController extends ApiController
 {
@@ -23,9 +28,9 @@ class VisitorController extends ApiController
     public function index()
     {
 
-        $token=3333;
-        return $this->setMsg('登录成功')->setData(compact('token'))->toJson();
 
+
+         OrderService::check_order();
     }
 
 }

@@ -62,15 +62,9 @@ class User extends \TCG\Voyager\Models\User implements JWTSubject
         return $this->hasMany(Address::class)->orderBy('created_at', 'desc');
     }
 
-
-    /**
-     * Get the discussions for the user.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function discussions()
+    public function balances()
     {
-        return $this->hasMany(Discussion::class)->orderBy('created_at', 'desc');
+        return $this->hasMany(UserBalance::class)->orderBy('created_at', 'asc');
     }
 
     /**

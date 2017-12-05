@@ -38,7 +38,7 @@ class Ad extends Model
      */
     protected $fillable = [
         'user_id',
-        'crypto_currency',
+        'coin_type',
         'trade_type',
         'country_code',
         'margin',

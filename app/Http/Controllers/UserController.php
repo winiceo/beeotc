@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\UserBalance;
 use Auth;
 use Hash;
+
+use Illuminate\Support\Facades\View;
 use Image;
 use Validator;
 use Illuminate\Http\Request;
@@ -18,6 +20,19 @@ class UserController extends Controller
     public function __construct(UserRepository $user)
     {
         $this->user = $user;
+
+
+    }
+    public function getViewShare(){
+        $user = $this->user->getById(Auth::id());
+
+        $wallets= UserBalance:: where('user_id', $user->id)
+            ->orderBy('id', 'asc')
+
+            ->get();
+
+
+       View::share('wallets',$wallets);
     }
 
     /**
@@ -29,12 +44,8 @@ class UserController extends Controller
     {
         $user = $this->user->getById(Auth::id());
 
-        $wallets= UserBalance:: where('user_id', $user->id)
-            ->orderBy('id', 'asc')
-
-            ->get();
-
-        return view('user.index', compact('user',   'wallets'));
+        $this->getViewShare();
+        return view('user.index', compact('user'));
 
 
     }
@@ -225,6 +236,7 @@ class UserController extends Controller
     public function security(){
 
         $user = $this->user->getById(Auth::id());
+
 
         return view('user.security', compact('user'));
     }

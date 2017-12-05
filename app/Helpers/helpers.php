@@ -112,3 +112,8 @@ function filterUrlStringLength(string $data, int $length = 0): string
 
     return $value;
 }
+
+//生成验证码
+function generate_code($length = 6) {
+    return rand(pow(10,($length-1)), pow(10,$length)-1);
+}

@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use Image;
-use Illuminate\Http\Request;
+
 use App\Http\Requests\UserRequest;
 use App\Repositories\UserRepository;
+use Symfony\Component\HttpFoundation\Request;
 
 class UserController extends ApiController
 {
@@ -28,25 +29,7 @@ class UserController extends ApiController
         return $this->response->collection($this->user->page());
     }
 
-    /**
-     * Update User Status By User ID
-     *
-     * @param $id
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function status($id, Request $request)
-    {
-        $input = $request->all();
 
-        if (auth()->user()->id == $id || $this->user->getById($id)->is_admin) {
-            return $this->response->withUnauthorized('You can\'t change status for yourself and other Administrators!');
-        }
-
-        $this->user->update($id, $input);
-
-        return $this->response->withNoContent();
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -128,5 +111,11 @@ class UserController extends ApiController
         $this->user->destroy($id);
 
         return $this->response->withNoContent();
+    }
+
+    //添加钱包地址时安全检测
+    public function safeCheck(){
+
+        return $this->setMsg("")->setData([])->toJson();
     }
 }

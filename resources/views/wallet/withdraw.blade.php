@@ -61,7 +61,8 @@
         #neworder{background-color: rgb(255, 0, 0);font-size: 12px;display: inline-block;width: 16px;height: 16px;text-align: center;line-height: 16px;vertical-align: middle;border-radius: 50%;margin-top: -3px;margin-left: 5px;display: none;color:#fff;}
         .select_index_DD{width: auto;padding:0 10px;}
         .usernewout .usncont .usnc_right {
-            width: 1078px;
+            width: 1278px;
+
         }
     </style>
 
@@ -76,14 +77,11 @@
                     <div class="div_list" style="display:block;">
                         <div class="usnc_right">
                             <div class="rech_box">
-                                <div class="rech_bd nmt" style="text-align: center;padding-top: 30px;">
+                                <div class="  nmt" style="text-align: center;padding-top: 30px;">
                                     <ul>
                                         <li>
                                             <div class="rechmid">
-                                                <div class="rechipt_box">
-                                                    <label>提现地址：</label>
-                                                    <input type="text" name="coin_type" readonly value="{{$address->wallet_address}}"></p>
-                                                 </div>
+
 
                                                 <div class="rechipt_box">
                                                     <label>提现地址：</label>
@@ -95,39 +93,6 @@
                                                         <input type="text" value="" class="rechipt" id="amount">
                                                     </div>
                                                 </div>
-                                                <div class="rechipt_box" style="display:none;">
-                                                    <label>验证方式：</label>
-                                                    <div class="iptbox">
-                                                        <select id="chkstyle" class="rechipt" style="width:358px;">
-                                                            <option value="email">邮箱验证</option>
-                                                            <!-- <option value="">请选择验证方式</option>
-                                                            <option value="mobile">手机号码验证</option> -->
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="rechipt_box" id="mobile_div" style="display:none;">
-                                                    <label>短信验证码：</label>
-                                                    <div class="iptbox">
-                                                        <input type="text" id="mobile_verify" value="" class="rechipt halfipt">
-                                                        <input type="button" id="regBtn" onclick="SendCode()" value="获取手机验证码" class="yzmbut">
-                                                        <p class="attention">* 接收短信的手机</p>
-                                                    </div>
-                                                </div>
-                                                <div class="rechipt_box" id="email_div" style="display:block;">
-                                                    <label>邮箱验证码：</label>
-                                                    <div class="iptbox">
-                                                        <input type="text" id="email_verify" value="" class="rechipt halfipt" maxlength="6">
-                                                        <input type="button" id="regBtn" onclick="EmCode()" value="获取邮箱验证码" class="yzmbut">
-                                                        <p class="attention" style="color:#108ee9;">* 接收验证码的邮箱8888888888@qq.com</p>												  </div>
-                                                </div>
-                                                {{--<div class="rechipt_box">--}}
-                                                    {{--<label>交易密码：</label>--}}
-                                                    {{--<div class="iptbox">--}}
-                                                        {{--<input type="password" value="" class="rechipt" id="paypassword" style="background-image: url(&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGP6zwAAAgcBApocMXEAAAAASUVORK5CYII=&quot;);" autocomplete="off">--}}
-                                                        {{--<p class="attention" style="color:#108ee9;">*--}}
-                                                            {{--<a href="/Login/findpaypwd.html" class="orange" style="color:#108ee9;">忘记交易密码</a>													</p>--}}
-                                                    {{--</div>--}}
-                                                {{--</div>--}}
                                                 <div class="rechipt_box" style="margin-left: 116px;">
                                                     <div class="iptbox">
                                                         <input type="button" value="提交提现申请" class="rechbut savebtn" >

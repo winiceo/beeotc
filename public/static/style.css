@@ -415,7 +415,7 @@ ul.roll{width:250px;margin-top:16px;float:left;}
 
 /*******************新提现******************************/
 .usernewout .usncont .usnc_right .rech_bd .rechmid .rechipt_box .rechipt.halfipt{width:190px;}
-.usernewout .usncont .usnc_right .rech_bd .rechmid .rechipt_box .yzmbut{width:170px;height:32px;border:none;background:#f6f6f6;font-size:14px;color:rgba(0,0,0,0.7);cursor:pointer;float:right;outline:none;}
+.usernewout .usncont .usnc_right .rech_bd .rechmid .rechipt_box .yzmbut{width:170px;height:32px;border:none;background:#f6f6f6;font-size:14px;color:rgba(0,0,0,0.7);cursor:pointer; outline:none;}
 
 /*********************转出虚拟币******************************************/
 .usernewout .usncont .usnc_right .leftmoney{width:918px;height:auto;overflow:hidden;margin:20px auto;color:rgba(0,0,0,.7);font-size:14px;line-height:2.14;}

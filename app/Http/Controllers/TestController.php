@@ -41,6 +41,14 @@ class TestController extends Controller
     }
     public function test(Request $request)
     {
+
+        //$getCode=\Redis::command('hset', ['safe_check', 17629726688,'33333']);
+        $getCode=\Redis::command('hget', ['safe_check', '17629726688']);
+
+        dump($getCode);
+        exit;
+
+
         $params = $request->all();
         $user = Auth::user();
         $order=Order::where('user_id', 29)

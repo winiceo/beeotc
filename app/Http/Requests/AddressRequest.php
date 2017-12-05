@@ -25,7 +25,9 @@ class AddressRequest extends FormRequest
     {
         return [
             'coin_type' => 'required',
-            'wallet_address' => 'required'
+            'wallet_address' => 'required',
+            'mobile' => 'required',
+            'mobile_code' => 'required',
 
         ];
     }

@@ -1,10 +1,14 @@
 @extends('wallet.layout')
 
 @section('userright')
+     <div class="usnc_right">
+        <div style="padding-top: 20px;">
+            <wallet-add coins='@json($coins)'></wallet-add>
+        </div>
 
-    <div class="usnc_right">
+        @include('wallet.particals.blance', ['balances' => $user->wallets()->get()])
 
-        <wallet-add></wallet-add>
+
         <div class="recharge_list nmt">
 
 

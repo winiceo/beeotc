@@ -17,7 +17,7 @@
        <el-form-item label="交易类型">
         <el-radio-group v-model="form.trade_type">
             <el-radio label="0">在线出售{{coin_lable}}</el-radio>
-            <el-radio label="1">在线购买比特币{{coin_lable}}</el-radio>
+            <el-radio label="1">在线购买{{coin_lable}}</el-radio>
         </el-radio-group>
     </el-form-item>
 
@@ -107,7 +107,7 @@
                 coin_type:[],
                 coin_lable:'',
                 form: {
-                    crypto_currency: 1,
+                    coin_type: 1,
                     trade_type: "0",
                     country_code: '',
                     currency: '',
@@ -127,7 +127,7 @@
              cryptoCurrency: function (val) {
               
               this.coin_lable=this.coin_type[val-1].label
-              this.form.crypto_currency=val
+              this.form.coin_type=val
             }
           },
         computed: {
@@ -136,7 +136,7 @@
         },
         mounted(){
             this.coin_type=JSON.parse(this.coins)
-            this.coin_lable=this.coin_type[this.form.crypto_currency-1].label
+            this.coin_lable=this.coin_type[this.form.coin_type-1].label
 
         },
         methods: {

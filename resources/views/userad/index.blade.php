@@ -17,36 +17,32 @@
                 <tbody><tr>
                     <th width="100px">编号</th>
                     <th width="150px">广告类型</th>
-                    <th width="100px">国家</th>
+
                     <th width="150px">价格</th>
                     <th width="100px">溢价比例</th>
                     <th width="230px">创建时间</th>
                     <th width="110px">状态</th>
                     <th width="130px">操作</th>
                 </tr>
-                <tr><td colspan="8" align="center">暂无数据</td></tr>
+
                 @forelse($orders as $order)
 
 
                     <tr>
                         <td style="padding-left:40px;"> {{  $order->id }}</td>
                         <td>
-                            @if($order->trade_type=='ONLINE_SELL')
+                            @if($order->trade_type==0)
                                 购买
-                            @elseif($order->trade_type=='ONLINE_BUY')
+                            @elseif($order->trade_type==1)
                                 出售
                             @endif
 
-                                @if($order->crypto_currency=='1')
-                                    比特币
-                                @elseif($order->crypto_currency=='2')
-                                    以太币
-                                @endif
+                           {{$order->coin_name}}
 
 
 
                         </td>
-                        <td>{{$order->country_code}}</td>
+
 
                         <td>
                             {{$order->price}}
@@ -54,11 +50,7 @@
                         <td>{{$order->margin}}% </td>
                         <td>{{$order->created_at}}</td>
                         <td>
-                            @if($order->crypto_currency=='1')
-                                比特币
-                            @elseif($order->crypto_currency=='2')
-                                以太币
-                            @endif
+
                         </td>
                         <td><a href="{{url('/ad/edit',["id"=>$order->id])}}">编辑</a> <a href="#" onclick='ground({{$order->id}})'>下架</a></td>
                     </tr>

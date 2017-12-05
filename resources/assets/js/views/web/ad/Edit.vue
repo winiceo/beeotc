@@ -33,7 +33,7 @@ export default {
     methods: {
         loadAd() {
             console.log(this.route)
-            this.$http.get('ad/' + this.adid + '/edit')
+            this.$http.get('ad/' + this.adid + '')
                 .then((response) => {
                     this.ad = response.data.data
                 })

@@ -8,6 +8,7 @@
 @endsection
 @section('content')
     <div style="padding:100px;">
+
     <vue-chat></vue-chat>
     </div>
 @endsection

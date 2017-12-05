@@ -3,7 +3,7 @@
 @section('content')
     <div class="">
         <div class="usernewout">
-            @include('user.particals.blance')
+
 
             <div class="usncont">
                 <!--左侧菜单-->

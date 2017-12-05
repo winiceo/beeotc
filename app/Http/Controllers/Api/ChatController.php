@@ -42,7 +42,9 @@ class ChatController extends ApiController
 
             })->orderBy('id', 'desc')
             ->paginate(20);
-        return $this->setMsg('')->setData(compact('data'))->toJson();
+
+
+        return $this->setMsg('')->setData($data)->toJson();
 
     }
 

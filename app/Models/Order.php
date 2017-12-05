@@ -31,7 +31,7 @@ class Order extends Model
     protected $table = 'orders';
     protected $fillable = [
         'id', 'order_code', 'ad_id', 'ad_code', 'ad_user_id', 'user_id', 'ad_price', 'amount', 'qty', 'payterm',
-        'finish_time', 'status', 'order_desc', 'buyer_estimate', 'seller_estimate', 'created_at', 'updated_at'
+        'finish_time', 'status', 'order_desc', 'buyer_estimate', 'seller_estimate', 'created_at', 'updated_at','coin_type'
     ];
     protected $guarded = [];
 
@@ -41,4 +41,11 @@ class Order extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function advertiser(){
+
+        return $this->hasOne('App\User', 'id', 'ad_user_id');
+
+    }
+
 }

@@ -17,4 +17,16 @@ trait CoinHelpers
 
         return $coin;
     }
+
+    public static function getIds()
+    {
+        $coins=CoinHelpers::get();
+        $temp=[];
+        foreach ($coins as $coin){
+            $temp[$coin['value']]=$coin;
+        }
+        return $temp;
+    }
+
+
 }

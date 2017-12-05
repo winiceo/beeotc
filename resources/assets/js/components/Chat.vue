@@ -328,11 +328,12 @@
                 getHistory: function () {
                     _vm.$http.post('/chat/message/history', {order_id: App.order.id})
                         .then((response) => {
-
-                            var messages = response.data.data.data.data.reverse();
+                            console.log(response)
+                            var messages = response.data.data.data.reverse();
                             if(messages.length==0){
                                 _vm.system=1
                                 _vm.content='系统消息: 买家拍下未付款<br>买家已拍下，等待买家付款'
+                                
                                 _vm.sendMessage()
                             }    
                             messages.forEach(function (message) {
@@ -388,14 +389,14 @@
 
                 getInstance: function (ist) {
                     _vm.instance = ist;
-
+                    this.getHistory();
                     return ist
                 }
             }
 
 
             BeeChat.init(this.callbacks)
-            this.callbacks.getHistory();
+           
 
         },
         methods: { 
@@ -539,15 +540,21 @@
                     content.imageUri = this.imageUri;
                     msg = new RongIMLib.ImageMessage(content);
                 }
+               
                 _vm.content = '';
+
+                console.log(this.order_im_token.userId)
+                                console.log(msg)
 
                 this.instance.sendMessage(conversationtype, this.order_im_token.userId, msg, {
                     onSuccess: function (message) {
-                     
+                        alert(1)
+                        console.log(message)
+                      _vm.system=0;
                         _vm.callbacks.receiveNewMessage(message)
                         //callbacks.receiveNewMessage(message)
                         
-                        _vm.system=0;
+                       
 
                         _vm.$http.post('/chat/message/send', message)
                             .then(function (res) {
@@ -560,6 +567,7 @@
 
                     },
                     onError: function (errorCode, message) {
+                         alert(2)
                         console.log("发送文字消息失败");
                         console.log(errorCode);
                     }

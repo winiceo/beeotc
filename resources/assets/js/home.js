@@ -68,6 +68,7 @@ Vue.component('order-create', require('./components/OrderCreate.vue'));
 
 Vue.component('edit-create', require('./views/web/ad/edit.vue'));
 
+Vue.component('notice', require('./components/Notice.vue'));
 
 Vue.component(
     'vue-chat',

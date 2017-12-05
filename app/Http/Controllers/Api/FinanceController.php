@@ -41,7 +41,7 @@ class FinanceController extends ApiController
 
 
         $data = array_merge($request->all(), [
-            'user_id' => 22,
+            'user_id' => \Auth::user()->id,
             'order_code'=>$code
 
         ]);

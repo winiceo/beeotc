@@ -49,18 +49,11 @@ class AddressRepository
         return $model;
     }
 
-    /**
-     * Get addresss by the addressable_id and addressable_type
-     * 
-     * @param  int $addressableId
-     * @param  string $addressableType
-     * @return array
-     */
-    public function getByaddressable($addressableId, $addressableType)
+    public function getByaddress($address)
     {
-        return $this->model->where('addressable_id', $addressableId)
-                    ->where('addressable_type', $addressableType)
-                    ->get();
+        return $this->model->where('wallet_address', $address)
+
+                    ->first();
     }
 
     /**

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\CoinHelpers;
 use App\Http\Requests\AdRequest;
 
+use App\Queries\SearchAds;
 use App\Queries\SearchOrder;
 use App\Repositories\AdRepository;
 use App\Repositories\DiscussionRepository;
@@ -36,8 +38,14 @@ class UserAdController extends Controller
 
 
 
-        $orders= SearchOrder::get($request,$user->id);
+        $orders= SearchAds::get($request,$user->id);
+        $coins=CoinHelpers::getIds();
 
+
+        foreach ($orders as $k=>$v){
+
+           $orders[$k]->coin_name=$coins[$v->coin_type]['name'];
+        }
 
 
 

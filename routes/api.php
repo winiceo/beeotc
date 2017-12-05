@@ -4,6 +4,61 @@ use Illuminate\Contracts\Routing\Registrar as RouteContract;
 
 
 Route::group([
+    'namespace' => 'Api',
+], function () {
+    Route::post('sms/send',  'NoticeController@sendSms');
+    Route::get('test','VisitorController@index');
+
+    Route::post('chat/upload', 'ChatController@store')->middleware('auth:api');
+
+    Route::post('ad', 'AdController@store')->middleware('auth:api');
+
+//    Route::get('ad/{id}', 'AdController@edit')->middleware('auth:api');
+    Route::get('ad/{id}', 'AdController@edit')->middleware('auth:api');
+
+    Route::any('order', 'OrderController@order_create')->middleware('auth:api');
+
+
+    Route::post('finance/withdraw','FinanceController@withdraw')->middleware('auth:api');
+
+
+    Route::group(['prefix' => 'chat'], function () {
+        Route::post('message/send',  'ChatController@send')->middleware('auth:api');
+        Route::post('message/history',  'ChatController@history')->middleware('auth:api');
+        Route::post('order/pay',  'OrderController@order_pay')->middleware('auth:api');
+        Route::post('order/cancel',  'OrderController@order_cancel')->middleware('auth:api');
+        Route::post('order/release',  'OrderController@order_release')->middleware('auth:api');
+        Route::post('order/comment',  'OrderController@order_comment')->middleware('auth:api');
+        Route::post('order/complaint',  'OrderController@order_complaint')->middleware('auth:api');
+    });
+
+
+    Route::group(['prefix' => 'user'], function () {
+        Route::post('safe/check',  'UserController@safeCheck')->middleware('auth:api');
+        Route::post('address', 'AddressController@store')->middleware('auth:api');
+
+    });
+
+    // File Upload
+    Route::post('file/upload', 'UploadController@fileUpload')->middleware('auth:api');
+    // Edit Avatar
+    Route::post('crop/avatar', 'UserController@cropAvatar')->middleware('auth:api');
+
+    // Comment
+    Route::get('commentable/{commentableId}/comment', 'CommentController@show')->middleware('api');
+    Route::post('comments', 'CommentController@store')->middleware('auth:api');
+    Route::delete('comments/{id}', 'CommentController@destroy')->middleware('auth:api');
+    Route::post('comments/vote/{type}', 'MeController@postVoteComment')->middleware('auth:api');
+    Route::get('tags', 'TagController@getList');
+});
+
+
+
+
+
+
+
+Route::group([
     'middleware' => ['cors'],
     'prefix' => 'admin',
     'namespace' => 'Api'], function ( ) {
@@ -81,48 +136,4 @@ Route::group([
     Route::post('file/delete', 'UploadController@deleteFile');
 
     Route::get('system', 'SystemController@getSystemInfo');
-});
-
-Route::group([
-    'namespace' => 'Api',
-], function () {
-
-    Route::get('test','VisitorController@index');
-    Route::post('user/address', 'AddressController@store')->middleware('auth:api');
-
-    Route::post('chat/upload', 'ChatController@store')->middleware('auth:api');
-
-    Route::post('ad', 'AdController@store')->middleware('auth:api');
-
-    Route::get('ad/{id}', 'AdController@edit')->middleware('auth:api');
-
-    Route::post('order', 'OrderController@order_create')->middleware('auth:api');
-
-
-    Route::post('finance/withdraw','FinanceController@withdraw')->middleware('auth:api');
-
-
-    Route::group(['prefix' => 'chat'], function () {
-        Route::post('message/send',  'ChatController@send')->middleware('auth:api');
-        Route::post('message/history',  'ChatController@history')->middleware('auth:api');
-        Route::post('order/pay',  'OrderController@order_pay')->middleware('auth:api');
-        Route::post('order/cancel',  'OrderController@order_cancel')->middleware('auth:api');
-        Route::post('order/release',  'OrderController@order_release')->middleware('auth:api');
-        Route::post('order/comment',  'OrderController@order_comment')->middleware('auth:api');
-        Route::post('order/complaint',  'OrderController@order_complaint')->middleware('auth:api');
-
-
-    });
-
-    // File Upload
-    Route::post('file/upload', 'UploadController@fileUpload')->middleware('auth:api');
-    // Edit Avatar
-    Route::post('crop/avatar', 'UserController@cropAvatar')->middleware('auth:api');
-
-    // Comment
-    Route::get('commentable/{commentableId}/comment', 'CommentController@show')->middleware('api');
-    Route::post('comments', 'CommentController@store')->middleware('auth:api');
-    Route::delete('comments/{id}', 'CommentController@destroy')->middleware('auth:api');
-    Route::post('comments/vote/{type}', 'MeController@postVoteComment')->middleware('auth:api');
-    Route::get('tags', 'TagController@getList');
 });

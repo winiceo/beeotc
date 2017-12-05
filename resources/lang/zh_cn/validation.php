@@ -65,7 +65,7 @@ return [
     'numeric'              => ':attribute 必须是数字',
     'present'              => ':attribute 字段必须存在',
     'regex'                => ':attribute 格式是无效的',
-    'required'             => ':attribute 字段是必须的',
+    'required'             => ':attribute 不能为空',
     'required_if'          => ':attribute 字段是必须的当 :other 是 :value',
     'required_unless'      => ':attribute 字段是必须的，除非 :other 是在 :values 中',
     'required_with'        => ':attribute 字段是必须的当 :values 是存在的',
@@ -128,6 +128,8 @@ return [
         'meta_description' => '主要描述',
         'link'         => '链接',
         'tags'         => '标签',
+        'mobile'=>'手机号',
+        'mobile_code'=>'验证码',
     ],
 
 ];

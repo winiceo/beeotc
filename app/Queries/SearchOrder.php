@@ -22,7 +22,7 @@ class SearchOrder
 
 
                 $coin = $request->input('coin', 1);
-                $query->where('crypto_currency', $coin);
+                $query->where('coin_type', $coin);
 
 
                 $trade_type = $request->input('type', 0);
