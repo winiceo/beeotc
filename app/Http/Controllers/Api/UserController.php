@@ -1,121 +1,177 @@
 <?php
 
 namespace App\Http\Controllers\Api;
+ use App\Model\User;
+use App\Service\UserService;
+use App\Service\UserWalletService;
+  use Illuminate\Foundation\Auth\RegistersUsers;
+ use Illuminate\Http\Request;
+ use Illuminate\Http\Response;
+ use Illuminate\Support\Facades\Validator;
 
-use Image;
 
-use App\Http\Requests\UserRequest;
-use App\Repositories\UserRepository;
-use Symfony\Component\HttpFoundation\Request;
-
-class UserController extends ApiController
+ class UserController extends ApiController
 {
-    protected $user;
 
-    public function __construct(UserRepository $user)
+     public function jwtGenerator(User $user, $credentials)
     {
-        parent::__construct();
+        $token = [
+            "iss" => "http://pf.local",
+            "iat" => time(),
+            "nbf" => time(),
+            'exp' => strtotime("+12 month"),
+            "data" => [
+                'id' => $user->id,
+                'credentials'=>$credentials
+            ],
+        ];
 
-        $this->user = $user;
+        $jwt = JWT::encode($token, $this->container->get('secret-key'));
+
+        return $jwt;
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function index()
+
+
+    public function login(Request $request, Response $response)
     {
-        return $this->response->collection($this->user->page());
+
+        if ($request->isPost()) {
+            $credentials = [
+                'username' => $request->getParam('username'),
+                'password' => $request->getParam('password')
+            ];
+            $remember = $request->getParam('remember') ? true : false;
+
+            try {
+                if ($this->auth->authenticate($credentials, $remember)) {
+                    $this->flash('success', 'You are now logged in.');
+                    $data=[
+                        "user"=>$this->auth->getUser(),
+                        "token"=>$this->jwtGenerator($this->auth->getUser(),$credentials)
+                    ];
+
+                    return $this->json($response,$data);
+
+
+                    //return $this->redirect($response, 'home');
+                } else {
+                    $this->error( '用户名或密码错误');
+                }
+            } catch (ThrottlingException $e) {
+                $this->error('频率受限');
+            }
+        }
+        return $this->fail($response);
+
+
     }
 
 
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\UserRequest  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function store(UserRequest $request)
+    public function register(Request $request, Response $response)
     {
-        $data = array_merge($request->all(), [
-            'password' => bcrypt($request->get('password')),
-            'confirm_code' => str_random(64)
+
+
+
+        dump($request->all());
+        $validator = Validator::make($request->all(), [
+            'username' => 'required',
+            'password' => 'required|unique:posts|min:6|max:255',
+
         ]);
 
-        $this->user->store($data);
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            echo $errors->first('email');
 
-        return $this->response->withNoContent();
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function edit($id)
-    {
-        return $this->response->item($this->user->getById($id));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function update(Request $request, $id)
-    {
-        $this->user->update($id, $request->all());
-
-        return $this->response->withNoContent();
-    }
-
-    /**
-     * Crop Avatar
-     * 
-     * @param  Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function cropAvatar(Request $request)
-    {
-        $currentImage = $request->get('image');
-        $data = $request->get('data');
-
-        $image = Image::make($currentImage['relative_url']);
-
-        $image->crop((int) $data['width'], (int) $data['height'], (int) $data['x'], (int) $data['y']);
-
-        $image->save($currentImage['relative_url']);
-
-        $this->user->saveAvatar(auth()->user()->id, $currentImage['url']);
-
-        return $this->response->json($currentImage);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function destroy($id)
-    {
-        if (auth()->user()->id == $id || $this->user->getById($id)->is_admin) {
-            return $this->response->withUnauthorized('You can\'t delete for yourself and other Administrators!');
         }
 
-        $this->user->destroy($id);
 
-        return $this->response->withNoContent();
+
+        event(new Registered($user = $this->create($request->all())));
+
+        $this->guard()->login($user);
+
+
+        dump($user);
+        exit;
+
+//        return $this->registered($request, $user)
+//            ?: redirect($this->redirectPath());
+
+
+
+
+        if ($request->isPost()) {
+            $username = $request->getParam('username');
+            $email = $request->getParam('email');
+            $password = $request->getParam('password');
+
+
+            $violations=$this->inputCheck($request);
+
+            if (0 !== count($violations)) {
+                $this->error($violations[0]->getMessage());
+            }
+
+
+            if ($this->auth->findByCredentials(['login' => $username])) {
+                $this->error('此用户名已存在');
+            }
+
+            if ($this->auth->findByCredentials(['login' => $email])) {
+                $this->error('此邮箱已存在');
+            }
+
+            if ($this->validator->isValid()) {
+                $role = $this->auth->findRoleByName('User');
+
+                $user = $this->auth->registerAndActivate([
+                    'username' => $username,
+                    'email' => $email,
+                    'password' => $password,
+                    'permissions' => [
+                        'user.delete' => 0
+                    ]
+                ]);
+                UserService::checkWallet($user);
+
+
+
+                $role->users()->attach($user);
+
+                $this->flash('success', 'Your account has been created.');
+
+                $data=[
+                    "user"=>$user,
+                    "token"=>$this->jwtGenerator($user,$this->container->get('secret-key'))
+                ];
+
+                return $this->json($response,$data);
+
+
+            }
+        }
+
+        return $this->fail($response);
     }
 
-    //添加钱包地址时安全检测
-    public function safeCheck(){
+    public function logout(Request $request, Response $response)
+    {
+        $this->auth->logout();
 
-        return $this->setMsg("")->setData([])->toJson();
+        return $this->redirect($response, 'home');
     }
+
+
+    public function profile(Request $request, Response $response){
+        $user=$this->auth->getUser();
+        return $this->json($response,$user);
+    }
+
+
+
+
+
 }

@@ -1,135 +1,169 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: genv
+ * Date: 2017/12/12
+ * Time: 上午10:19
+ */
 
 namespace App\Http\Controllers\Api;
 
-use App\Helpers\OrderHelpers;
-use App\Http\Requests\AdRequest;
-
-use App\Models\Ad;
-use App\Models\Order;
-use App\Models\UserBalance;
-use App\Repositories\AdRepository;
-use App\Repositories\OrderRepository;
-use App\Repositories\TagRepository;
+use App\Events\OrderCancel;
+use App\Events\OrderCreated;
+use App\Events\OrderPay;
+use App\Helpers\CoinHelpers;
+use App\Model\Order;
+use App\Model\OrderComment;
+use App\Model\UserBalance;
+use App\Service\AdvertService;
+use App\Service\ChatService;
 use App\Service\OrderService;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
-use Symfony\Component\HttpFoundation\Request;
+
 
 class OrderController extends ApiController
 {
 
 
-    protected $order;
-    protected $status;
+    use CoinHelpers;
 
-    public function __construct(OrderRepository $order)
+    public function getOrder( )
     {
-        ///$this->middleware('auth')->except(['index', 'show']);
-
-        $this->order = $order;
-
-
-    }
-
-
-    public function order_create(AdRequest $request, Ad $ad)
-    {
-
-
-        $user = \Auth::user();
-        $ad_id = $request->input('ad_id');
-        $order_ad = $ad->findOrFail($ad_id);
-
-        $data = array_merge($request->all(), [
-            'user_id' => \Auth::id(),
-            'order_code' => time(),
-            'ad_id' => $order_ad->id,
-            'ad_code' => "",
-            'ad_user_id' => $order_ad->user_id,
-            'buyer_estimate' => '',
-            'seller_estimate' => '',
-            'status' => 0,
-            'coin_type'=>$order_ad->coin_type,
-        ]);
-
-        $data['qty']=$data["qty"] * 100000000 ;
-
-        if ($user->id == $order_ad->user_id) {
-            return $this->setMsg('自己不能下单')->setCode(2002)->toJson();
-        }
-
-        //获取可用余额
-        $balance = UserBalance::where('user_id', $order_ad->user_id)
-            ->where('coin_type', $order_ad->coin_type)
+        $params = \Illuminate\Support\Facades\Request::all();
+        $user = Auth::user();
+        $order = Order::with('aduser')->where('user_id', $user->id)
+            ->where('id', $params["order_id"])
             ->first();
+        return $order;
+
+    }
+
+    public function store(Request $request, Response $response)
+    {
 
 
-        $can_balance = $balance->total_balance - $balance->block_balance - $balance->pending_balance;
+        if ($request->isMethod('post')) {
 
-        if ($data["qty"] > $can_balance) {
-            return $this->setMsg('此广告账户余额不足，下单失败')->setCode(2002)->toJson();
+            Log::info('info', $request->all());
+            $advert = AdvertService::get($request->get("advert_id",0));
+            if (!$advert) {
+                $this->failed('广告不存在');
+
+            }
+            Log::info('Leven:user', [Auth::user()]);
+
+
+            $data = array_merge($request->all(), [
+                'user_id' => Auth::id(),
+                'order_code' => time(),
+                'ad_id' => $advert->id,
+                'ad_code' => "",
+                'ad_user_id' => $advert->user_id,
+                'buyer_estimate' => '',
+                'seller_estimate' => '',
+                'status' => 0,
+                'coin_type' => $advert->coin_type,
+            ]);
+
+            if ($advert->user_id == Auth::id()) {
+                $this->failed('不能自己给自己下单');
+            }
+
+
+            //获取可用余额
+            $balance = UserBalance::where('user_id', $advert->user_id)
+                ->where('coin_type', $advert->coin_type)
+                ->first();
+            if (!$balance) {
+                $this->failed('用户账户信息丢失');
+            }
+
+
+            $can_balance = $balance->total_balance - $balance->block_balance - $balance->pending_balance;
+
+            if ($data["qty"] > $can_balance) {
+                $this->failed('此广告账户余额不足');
+            }
+
+
+            //if ($this->validator->isValid()) {
+
+                $order = OrderService::store($data);
+
+                $orderService = new OrderService($order);
+                $orderService->sellerlockOrder();
+
+            $orders=Redis::command('hset', ['monitoring_order', $order->id, Carbon::now()]);
+
+            //放入监控
+              //  $this->redis->hset('monitoring_order', $order->id, Carbon::now());
+                Log::info('monitoring_order: ' . $order->id);
+
+            broadcast(new OrderCreated(Auth::user(),$order));
+
+            ChatService::setMessage($order,'CREATED');
+                return $this->success( $order);
+
+            //}
+
+            //return $this->failed($response);
+        }
+        return $this->success([]);
+
+    }
+
+
+    public function getByUser(Request $request, Response $response)
+    {
+
+        $user = Auth::getUser();
+        $adverts = OrderService::getByUser($request, $user);
+        $coins = CoinHelpers::getIds();
+        foreach ($adverts as $k => $v) {
+            $adverts[$k]->coin_name = $coins[$v->coin_type]['name'];
         }
 
-
-
-        $order = $this->order->store($data);
-        Log::info('save_order: '.$order);
-
-        $orderService = new OrderService($order);
-
-
-        $orderService->sellerlockOrder( );
-
-        //放入监控
-        Redis::command('hset', ['monitoring_order', $order->id,Carbon::now()]);
-        Log::info('monitoring_order: '.$order->id);
-
-
-        return $this->setMsg('创建成功')->setData(compact('order'))->toJson();
-
+        return $this->success($adverts);
 
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function detail($id)
+    public function show(Request $request, Response $response, $id)
     {
-        $order = $this->order->getById($id);
+        $advert = OrderService::get($id);
 
-        return view('order.detail', compact('order'));
+        return $this->success($advert);
     }
+
 
     /**
      * 付款完成
      * @param Request $request
      */
-    public function order_pay(Request $request)
+    public function pay(Request $request)
     {
-
-
-
-        $params = $request->all();
-        $user = \Auth::user();
-        $order = Order::where('user_id', $user->id)
-            ->where('id', $params["orderid"])
-            ->first();
+        $order = $this->getOrder();
 
         if ($order) {
             //更新订单状态
             $order->status = Config::get('constants.ORDER_STATUS.PAY');
             $order->save();
+            OrderService::log([
+                "order_id" => $order->id,
+                "message" => \GuzzleHttp\json_encode(["message" => 'created']),
+                "status" => Config::get('constants.ORDER_STATUS.PAY')
+            ]);
+            $message=ChatService::setMessage($order,'PAY');
 
-            Log::info('order_status_pay: '.Config::get('constants.ORDER_STATUS.PAY'));
+            broadcast(new OrderPay(Auth::user(),$order,$message));
 
         }
-        return $this->setData($order)->toJson();
+        return $this->success($order);
 
 
     }
@@ -138,26 +172,29 @@ class OrderController extends ApiController
      * 取消定单
      * @param Request $request
      */
-    public function order_cancel(Request $request)
+    public function cancel(Request $request)
     {
-        $params = $request->all();
-        $user = \Auth::user();
-        $order = Order::where('user_id', $user->id)
-            ->where('id', $params["orderid"])
-            ->first();
+        $order = $this->getOrder();
 
         if ($order) {
+
             //更新订单状态
             $order->status = Config::get('constants.ORDER_STATUS.CANCEL');
             $order->save();
 
             $orderService = new OrderService($order);
-
-            Log::info('order_status_cancel: '.Config::get('constants.ORDER_STATUS.CANCEL'));
-
+            OrderService::log([
+                "order_id" => $order->id,
+                "message" => \GuzzleHttp\json_encode(["message" => 'cancel']),
+                "status" => Config::get('constants.ORDER_STATUS.CANCEL')
+            ]);
+            //Log::info('order_status_cancel: ' . Config::get('constants.ORDER_STATUS.CANCEL'));
+            ChatService::setMessage($order,'CANCEL');
             $orderService->sellerUnlockOrder();
+            broadcast(new OrderCancel(Auth::user(),$order));
+
         }
-        return $this->setData($order)->toJson();
+        return $this->success($order);;
 
 
     }
@@ -167,14 +204,9 @@ class OrderController extends ApiController
      * 放行定单
      * @param Request $request
      */
-    public function order_release(Request $request)
+    public function release(Request $request)
     {
-        $params = $request->all();
-        $user = \Auth::user();
-        $order = Order::where('ad_user_id', $user->id)
-            ->where('id', $params["orderid"])
-            ->first();
-
+        $order = $this->getOrder();
 
 
         if ($order) {
@@ -182,13 +214,21 @@ class OrderController extends ApiController
             $order->status = Config::get('constants.ORDER_STATUS.RELEASE');
             $order->save();
 
-            Log::info('order_status_release: '.Config::get('constants.ORDER_STATUS.RELEASE'));
+            //Log::info('order_status_release: ' . Config::get('constants.ORDER_STATUS.RELEASE'));
 
             $orderService = new OrderService($order);
             $orderService->orderRelease();
+
+            OrderService::log([
+                "order_id" => $order->id,
+                "message" => \GuzzleHttp\json_encode(["message" => 'RELEASE']),
+                "status" => Config::get('constants.ORDER_STATUS.RELEASE')
+            ]);
+            ChatService::setMessage($order,'CANCEL');
+
         }
 
-        return $this->setData($order)->toJson();
+        return $this->success($order);;
 
 
     }
@@ -197,22 +237,32 @@ class OrderController extends ApiController
      * 评价订单
      * @param Request $request
      */
-    public function order_comment(Request $request)
+    public function comment(Request $request)
     {
-        $params = $request->all();
-        $user = \Auth::user();
-        $order = Order::where('user_id', $user->id)
-            ->where('id', $params["orderid"])
-            ->first();
+        $order = $this->getOrder();
 
         if ($order) {
             //更新订单状态
+            $comment=[
+                'order_id'=>$order->id,
+                'message'=>$request->get('message')
+            ];
+            OrderComment::create($comment);
+
             $order->status = Config::get('constants.ORDER_STATUS.COMMENT');
             $order->save();
-//            $orderService=new OrderService($order);
-//            $orderService->orderRelease();
+
+            OrderService::log([
+                "order_id" => $order->id,
+                "message" => \GuzzleHttp\json_encode(["message" => 'comment'])
+
+            ]);
+            ChatService::setMessage($order,'COMMENT');
+
+
+
         }
-        return $this->setData($order)->toJson();
+        return $this->success($order);;
 
 
     }
@@ -221,71 +271,26 @@ class OrderController extends ApiController
      * 审诉定单
      * @param Request $request
      */
-    public function order_complaint(Request $request)
+    public function complaint(Request $request)
     {
-        $params = $request->all();
-        $user = \Auth::user();
-        $order = Order::where('user_id', $user->id)
-            ->where('id', $params["orderid"])
-            ->first();
-
+        $order = $this->getOrder();
         if ($order) {
             //更新订单状态
             $order->status = Config::get('constants.ORDER_STATUS.COMPLAINT');
             $order->save();
-//            $orderService=new OrderService($order);
-//            $orderService->orderRelease();
+            OrderService::log([
+                "order_id" => $order->id,
+                "message" => \GuzzleHttp\json_encode(["message" => 'complaint'])
+            ]);
+
+            ChatService::setMessage($order,'COMPLAINT');
+
+
         }
-        return $this->setData($order)->toJson();
+        return $this->success($order);;
 
 
     }
 
-
-    public function info($id)
-    {
-
-        $user = Auth::user();
-        $token = $user->createToken('bee')->accessToken;
-        leven('access_token', $token);
-        $order = $this->order->getById($id);
-        leven("order", $order);
-
-
-        $ad_user = User::findOrFail($order->ad_user_id);
-
-        //$ad_user->avatar = 'https://i0.wp.com/laracasts.s3.amazonaws.com/images/generic-avatar.png?ssl=1';
-
-        $ad_im_token = app('rcloud')->user()->getToken(env('RONG_CLOUD_ID_PRE') . $ad_user->id, $ad_user->name, $ad_user->avatar);
-        $ad_im_token = \GuzzleHttp\json_decode($ad_im_token);
-        $ad_im_token->avatar = $ad_user->avatar;
-
-        ///$order->user->avatar = 'https://i0.wp.com/laracasts.s3.amazonaws.com/images/generic-avatar.png?ssl=1';
-
-        $order_im_token = app('rcloud')->user()->getToken(env('RONG_CLOUD_ID_PRE') . $order->user->id, $order->user->name, $order->user->avatar);
-        $order_im_token = \GuzzleHttp\json_decode($order_im_token);
-
-
-        $order_im_token->avatar = $order->user->avatar;
-
-
-        if ($user->id == $order->ad_user_id) {
-
-
-            leven('im_token', ($ad_im_token));
-
-            leven('order_im_token', ($order_im_token));
-
-        }
-        if ($user->id == $order->user_id) {
-            leven('im_token', ($order_im_token));
-
-            leven('order_im_token', ($ad_im_token));
-
-        }
-
-
-        return view('order.info', compact('order'));
-    }
 
 }

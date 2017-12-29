@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\User;
-use App\Comment;
+use App\Model\Comment;
+use App\Model\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class CommentPolicy
@@ -11,14 +11,24 @@ class CommentPolicy
     use HandlesAuthorization;
 
     /**
+     * Determine whether the user is admin for all authorization.
+     */
+    public function before(User $user)
+    {
+        if ($user->isAdmin()) {
+            return true;
+        }
+    }
+
+    /**
      * Determine whether the user can delete the comment.
      *
      * @param  \App\User  $user
      * @param  \App\Comment  $comment
-     * @return mixed
+     * @return boolean
      */
-    public function delete(User $user, Comment $comment)
+    public function delete(User $user, Comment $comment): bool
     {
-        return $user->is_admin || $comment->user_id === $user->id;
+        return $user->id === $comment->author_id;
     }
 }

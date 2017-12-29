@@ -8,13 +8,13 @@
 
 return [
     'ORDER_STATUS' =>  [
-        "CREATED"=>0,
-        "PAY"=>1,
-        "RELEASE"=>2,
-        "COMMENT"=>3,
-        "COMPLAINT"=>4,
-        "CANCEL"=>8,
-        "FINISH"=>9,
+        "CREATED" => 0,
+        "PAY" => 1,
+        "RELEASE" => 2,
+        "COMMENT" => 3,
+        "COMPLAINT" => 4,
+        "CANCEL" => 8,
+        "FINISH" => 9,
 
     ]
 

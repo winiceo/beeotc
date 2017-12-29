@@ -2,157 +2,62 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Socialite;
-use App\User;
-use Validator;
 use App\Http\Controllers\Controller;
-use App\Repositories\UserRepository;
+use App\Model\User;
+use Auth;
+use Socialite;
 
 class AuthController extends Controller
 {
-    protected $user;
-
-    public function __construct(UserRepository $user)
-    {
-        $this->user = $user;
-    }
-
     /**
      * Redirect the user to the GitHub authentication page.
      *
      * @return Response
      */
-    public function redirectToProvider()
+    public function redirectToProvider($provider)
     {
-        return Socialite::driver('github')->redirect();
+        return Socialite::driver($provider)->redirect();
     }
 
     /**
-     * Obtain the user information from GitHub.
+     * Obtain the user information from provider.
      *
      * @return Response
      */
-    public function handleProviderCallback()
+    public function handleProviderCallback($provider)
     {
-        $githubUser = Socialite::driver('github')->user();
-        $user = $this->user->getByGithubId($githubUser->id);
-
-        if (auth()->check()) {
-            $currentUser = auth()->user();
-
-            if ($currentUser->github_id) {
-                return redirect()->back();
-            } else {
-                if ($user) {
-                    return redirect()->back();
-                } else {
-                    $this->bindGithub($currentUser, $githubUser);
-
-                    return redirect()->back();
-                }
-            }
-        } else {
-            if ($user) {
-                auth()->loginUsingId($user->id);
-                return redirect()->to('article');
-            } else {
-                $this->registerUser($githubUser);
-                return redirect()->to('auth/github/register');
-            }
-        }
-    }
-
-    /**
-     * Bind the github account.
-     *
-     * @param $currentUser
-     * @param $registerData
-     * @return mixed
-     */
-    public function bindGithub($currentUser, $registerData)
-    {
-        $currentUser->github_id = $registerData->user['id'];
-        $currentUser->github_name = $registerData->nickname;
-        $currentUser->github_url = $registerData->user['url'];
-
-        return $currentUser->save();
-    }
-
-    /**
-     * Save the register data in session.
-     *
-     * @param $registerData
-     */
-    public function registerUser($registerData)
-    {
-        $data['avatar'] = $registerData->user['avatar_url'];
-        $data['github_id'] = $registerData->user['id'];
-        $data['github_name'] = $registerData->nickname;
-        $data['github_url'] = $registerData->user['url'];
-        $data['name'] = $registerData->nickname;
-        $data['nickname'] = $registerData->user['name'];
-        $data['email'] = $registerData->user['email'];
-
-        session()->put('oauthData', $data);
-    }
-
-    /**
-     * Display the github oauth for register page.
-     *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
-     */
-    public function create()
-    {
-        if (! session()->has('oauthData')) {
-            return redirect()->to('login');
+        try {
+            $user = Socialite::driver($provider)->user();
+        } catch (Exception $e) {
+            return redirect()->route('login');
         }
 
-        $oauthData = array_merge(session('oauthData'), request()->old());
+        $authUser = $this->findOrCreateUser($user, $provider);
 
-        return view('auth.github_register', compact('oauthData'));
+        Auth::login($authUser, true);
+
+        return redirect()->route('home')->withSuccess(__('auth.logged_in_provider', ['provider' => $provider]));
     }
 
     /**
-     * Store a new user.
+     * Return user if exists; create and return if doesn't
      *
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @param $user
+     * @return User
      */
-    public function store()
+    private function findOrCreateUser($user, $provider)
     {
-        if (! session()->has('oauthData')) {
-            return redirect('login');
+        $authUser = User::where('provider_id', $user->id)->first();
+
+        if ($authUser) {
+            return $authUser;
         }
 
-        $this->validator(request()->all())->validate();
-
-        $oauthData = session('oauthData');
-
-        $data = array_merge($oauthData, request()->all());
-
-        $data['password'] = bcrypt($data['password']);
-
-        $data['status'] = true;
-
-        auth()->guard()->login(User::create($data));
-
-        session()->forget('oauthData');
-
-        return redirect()->to('article');
+        return User::create([
+                        'name' => $user->name,
+                        'email' => $user->email,
+                        'provider' => $provider,
+                        'provider_id' => $user->id
+                    ]);
     }
-
-    /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
-    protected function validator(array $data)
-    {
-        return Validator::make($data, [
-            'name' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:users',
-            'password' => 'required|min:6|confirmed',
-        ]);
-    }
-
 }

@@ -2,69 +2,38 @@
 
 namespace App\Providers;
 
-use App\Article;
-use App\Discussion;
-use App\Helpers\CoinHelpers;
-use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\ServiceProvider;
-use App\Tools\FileManager\BaseManager;
-use App\Tools\FileManager\UpyunManager;
+use App\Model\Advert;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use \Queue;
+use  \Log;
+use Illuminate\Support\ServiceProvider;
+use Psr\Log\LoggerInterface;
 
 class AppServiceProvider extends ServiceProvider
 {
-
-    use CoinHelpers;
-
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
     public function boot()
     {
-        $lang = config('app.locale') != 'zh_cn' ? config('app.locale') : 'zh';
-        \Carbon\Carbon::setLocale($lang);
-
-        Blade::directive('leven', function ($expression) {
-            return "<?php echo leven($expression); ?>";
-        });
-        Blade::directive('coin', function ($expression) {
-            return "<?php echo ($expression/100000000); ?>";
-        });
-
-        Relation::morphMap([
-            'discussions' => Discussion::class,
-            'articles'    => Article::class,
-        ]);
-
+        $this->bootEloquentMorphs();
+        $this->bootMacros();
 
 
     }
 
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
+    private function bootEloquentMorphs()
+    {
+        Relation::morphMap([
+            Advert::TABLE => Advert::class,
+        ]);
+    }
+
+    public function bootMacros()
+    {
+        require base_path('resources/macros/blade.php');
+    }
+
     public function register()
     {
-        $this->app->singleton('uploader', function ($app) {
-            $config = config('filesystems.default', 'public');
-
-            if ($config == 'upyun') {
-                return new UpyunManager();
-            }
-
-            return new BaseManager();
-        });
-
-        $this->app->singleton('rcloud', function ($app) {
-            $config = [
-                'app_key' => env('RONG_CLOUD_APP_KEY'),
-                'app_secret' => env('RONG_CLOUD_APP_SECRET')
-            ];
-            return new \App\Im\RongCloud($config['app_key'],$config['app_secret']);
-        });
+        //$this->app->alias('bugsnag.multi', Log::class);
+        //$this->app->alias('bugsnag.multi', LoggerInterface::class);
     }
 }

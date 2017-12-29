@@ -1,26 +1,13 @@
+$orange:    hsl(14,  100%, 53%);
+$yellow:    hsl(48,  100%, 67%);
+$green:     hsl(141, 71%,  48%);
+$turquoise: hsl(171, 100%, 41%);
+$cyan:      hsl(204, 86%,  53%);
+$blue:      hsl(217, 71%,  53%);
+$purple:    hsl(271, 100%, 71%);
+$red:       hsl(348, 100%, 61%);
 
-// Body
-$body-bg: #fff;
-
-// Borders
-$laravel-border-color: darken($body-bg, 10%);
-$list-group-border-color: $laravel-border-color;
-
-$card-border-color: $laravel-border-color;
-
-// Brands
-$primary: #3097D1;
-$info: #8eb4cb;
-$success: #2ab27b;
-$warning: #cbb956;
-$danger: #bf5329;
-
-// Typography
-$font-family-sans-serif: "Raleway", sans-serif;
-$font-size-base: .875rem; // 14px
-$line-height-base: 1.6;
-$text-color: #636b6f;
-
-// Inputs
-$input-border-color: lighten($text-color, 40%);
-$input-placeholder-color: lighten($text-color, 30%);
+// Sidebar
+$sidenav-base-width: 250px;
+$sidenav-collapsed-width: 55px;
+$navbar-base-height: 56px;

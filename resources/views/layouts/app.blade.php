@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="utf-8">
@@ -7,81 +7,37 @@
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    @auth
+        <meta name="api-token" content="{{ auth()->user()->api_token }}">
+    @endauth
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-
     <!-- Styles -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
-
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <link href="{{ asset('static/app.css') }}" rel="stylesheet">
-
-    <script>
-
-        window.App=@json(leven());
-        window.Language = '{{ config('app.locale') }}';
-
-        window.Laravel = <?php echo json_encode([
-            'csrfToken' => csrf_token(),
-        ]); ?>
-
-
-       // window.app=@json($app);
-    </script>
-
-
-
-
+    <link href="/css/app.css" rel="stylesheet">
 </head>
+<body class="bg-light">
+    <div id="app">
+        @include('shared/navbar')
 
-@yield('styles')
-<body>
+        <div class="container">
+            @include('shared/alerts')
 
+            <div class="row">
+                <div class="col-md-12">
+                    @yield('content')
+                </div>
+            </div>
+        </div>
 
-<div id="app">
-    @include('particals.navbar')
- 
-    <div class="main">
-
-
-        @yield('content')
+        @include('shared/footer')
     </div>
 
-    @include('particals.footer')
-</div>
-<script src="{{ asset('lib/RongIMLib-2.2.9.js') }}"></script>
-<script src="{{ asset('lib/im.js') }}"></script>
-<!-- Scripts -->
-<script src="{{ mix('js/home.js') }}"></script>
-<script>
-    console.log(BeeChat)
-</script>    
-@yield('scripts')
-
-<script>
-    $(function () {
-        $("[data-toggle='tooltip']").tooltip();
-    });
-</script>
-
-@if(config('blog.google.open'))
-    <script>
-        {{--(function (i, s, o, g, r, a, m) {--}}
-            {{--i['GoogleAnalyticsObject'] = r;--}}
-            {{--i[r] = i[r] || function () {--}}
-                {{--(i[r].q = i[r].q || []).push(arguments)--}}
-            {{--}, i[r].l = 1 * new Date();--}}
-            {{--a = s.createElement(o),--}}
-                {{--m = s.getElementsByTagName(o)[0];--}}
-            {{--a.async = 1;--}}
-            {{--a.src = g;--}}
-            {{--m.parentNode.insertBefore(a, m)--}}
-        {{--})(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');--}}
-
-        {{--ga('create', '{{ config('blog.google.id') }}', 'auto');--}}
-        {{--ga('send', 'pageview');--}}
-    </script>
-@endif
-
-
+    <!-- Scripts -->
+    @if (Request::is('posts/*'))
+        <script src="//{{ Request::getHost() }}:8888/socket.io/socket.io.js"></script>
+    @endif
+    <script src="/js/app.js"></script>
+    @stack('inline-scripts')
+</body>
+</html>

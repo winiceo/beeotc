@@ -2,28 +2,28 @@
 
 namespace App\Helpers;
 
-use App\User;
+use App\Model\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 trait HasAuthor
 {
-    public function author(): User
+    public function user(): User
     {
-        return $this->authorRelation;
+        return $this->user;
     }
 
-    public function authoredBy(User $author)
+    public function userBy(User $user)
     {
-        $this->authorRelation()->associate($author);
+        $this->userRelation()->associate($user);
     }
 
-    public function authorRelation(): BelongsTo
+    public function userRelation(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'author_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function isAuthoredBy(User $user): bool
+    public function isuserBy(User $user): bool
     {
-        return $this->author()->matches($user);
+        return $this->user()->matches($user);
     }
 }

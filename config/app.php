@@ -10,9 +10,10 @@ return [
     | This value is the name of your application. This value is used when the
     | framework needs to place the application's name in a notification or
     | any other location as required by the application or its packages.
+    |
     */
 
-    'name' => env('APPLICATION_NAME') ?: 'OTC',
+    'name' => env('APP_NAME', 'Laravel'),
 
     /*
     |--------------------------------------------------------------------------
@@ -51,7 +52,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://pigjian.app'),
+    'url' => env('APP_URL', 'http://localhost'),
 
     /*
     |--------------------------------------------------------------------------
@@ -64,7 +65,7 @@ return [
     |
     */
 
-    'timezone' => env('TIMEZONE') ?: 'UTC',
+    'timezone' => 'UTC',
 
     /*
     |--------------------------------------------------------------------------
@@ -77,7 +78,7 @@ return [
     |
     */
 
-    'locale' => env('LOCALE') ?: 'zh_cn',
+    'locale' => 'zh',
 
     /*
     |--------------------------------------------------------------------------
@@ -90,7 +91,7 @@ return [
     |
     */
 
-    'fallback_locale' => 'zh_cn',
+    'fallback_locale' => 'zh',
 
     /*
     |--------------------------------------------------------------------------
@@ -162,32 +163,23 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
+        Illuminate\Broadcasting\BroadcastServiceProvider::class,
 
         /*
          * Package Service Providers...
          */
+
         Laravel\Passport\PassportServiceProvider::class,
-        //Laravel\Socialite\SocialiteServiceProvider::class,
-        //   JellyBool\Translug\TranslugServiceProvider::class,
-        //Intervention\Image\ImageServiceProvider::class,
-        Laravel\Tinker\TinkerServiceProvider::class,
-        Jcc\LaravelVote\VoteServiceProvider::class,
-//        JellyBool\Flysystem\Upyun\UpyunServiceProvider::class,
 
-        Barryvdh\Cors\ServiceProvider::class,
 
-        Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
+        Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
+
+        App\Providers\ParseServiceProvider::class,
 
 
 
-        Clockwork\Support\Laravel\ClockworkServiceProvider::class,
-
-        Jrean\UserVerification\UserVerificationServiceProvider::class,
 
 
-        /*
-         * Application Service Providers...
-         */
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
         App\Providers\BroadcastServiceProvider::class,
@@ -195,7 +187,15 @@ return [
         App\Providers\RouteServiceProvider::class,
 
 
-        Naux\Mail\SendCloudServiceProvider::class,
+        App\Providers\BladeServiceProvider::class,
+        App\Providers\ResponseServiceProvider::class,
+        App\Providers\ObserverServiceProvider::class,
+
+
+
+        App\Markdown\MarkdownServiceProvider::class,
+        App\Spam\SpamServiceProvider::class,
+        App\Validation\ValidationServiceProvider::class,
 
 
     ],
@@ -246,12 +246,13 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-        //'Socialite' => Laravel\Socialite\Facades\Socialite::class,
-        'Translug' => JellyBool\Translug\TranslugFacade::class,
-        'Image' => Intervention\Image\Facades\Image::class,
 
-        'UserVerification' => Jrean\UserVerification\Facades\UserVerification::class,
-        'Avatar'    => Laravolt\Avatar\Facade::class,
+        /*
+        * Package Aliases...
+        */
+        'Bugsnag' => Bugsnag\BugsnagLaravel\Facades\Bugsnag::class,
+        'Form' => Collective\Html\FormFacade::class,
+        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
 
     ],
 

@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\User;
+use App\Model\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class UserPolicy
@@ -10,26 +10,36 @@ class UserPolicy
     use HandlesAuthorization;
 
     /**
-     * Determine whether the current user can update the user.
-     *
-     * @param  \App\User  $currentUser
-     * @param  \App\User  $user
-     * @return mixed
+     * Determine whether the user is admin for all authorization.
      */
-    public function update(User $currentUser, User $user)
+    public function before(User $user)
     {
-        return $currentUser->id === $user->id;
+        if ($user->isAdmin()) {
+            return true;
+        }
     }
 
     /**
-     * Determine whether the current user can delete the user.
+     * Determine whether the user can update the user.
      *
-     * @param  \App\User  $currentUser
      * @param  \App\User  $user
-     * @return mixed
+     * @param  \App\User  $user
+     * @return boolean
      */
-    public function delete(User $currentUser, User $user)
+    public function update(User $current_user, User $user): bool
     {
-        return $currentUser->is_admin;
+        return $current_user->id === $user->id;
+    }
+
+    /**
+     * Determine whether the user can generate a personnal access token.
+     *
+     * @param  \App\User $current_user
+     * @param  \App\User $user
+     * @return bool
+     */
+    public function api_token(User $current_user, User $user): bool
+    {
+        return $current_user->id === $user->id;
     }
 }

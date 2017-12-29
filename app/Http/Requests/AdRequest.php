@@ -2,31 +2,25 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\User;
+use App\Validation\SpamRule;
+use App\Validation\DoesNotContainUrlRule;
 
-class AdRequest extends FormRequest
+class AdRequest extends Request
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
-    {
-        return true;
-    }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
     public function rules()
     {
         return [
-//            'crypto_currency'   => 'required|min:2',
-//            'trade_type' => 'required',
+            'coin_type' => 'required|digits_between:1,10' ,
+            'trade_type' => 'required|numeric',
+            'price' => 'required|numeric',
 
         ];
     }
+
+    public function author(): User
+    {
+        return $this->user();
+    }
+
 }

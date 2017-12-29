@@ -1,177 +1,61 @@
 <?php
 
-use TCG\Voyager\Events\Routing;
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| This file is where you may define all of the routes that are handled
+| by your application. Just tell Laravel the URIs it should respond
+| to using a Closure or controller method. Build something great!
+|
+*/
 
-// User Auth
 Auth::routes();
-Route::group(['prefix' => 'crm'], function () {
-    Voyager::routes();
+
+Route::prefix('auth')->group(function () {
+    Route::get('{provider}', 'Auth\AuthController@redirectToProvider')->name('auth.provider');
+    Route::get('{provider}/callback', 'Auth\AuthController@handleProviderCallback');
+});
+
+Route::prefix('admin')->middleware(['auth', 'role:admin'])->namespace('Admin')->as('admin.')->group(function () {
+    Route::get('dashboard', 'ShowDashboard')->name('dashboard');
+    Route::resource('posts', 'PostsController');
+    Route::delete('/posts/{post}/thumbnail', 'PostsThumbnailController@destroy')->name('posts_thumbnail.destroy');
+    Route::resource('users', 'UsersController', ['only' => ['index', 'edit', 'update']]);
+    Route::resource('comments', 'CommentsController', ['only' => ['index', 'edit', 'update', 'destroy']]);
+});
+
+Route::middleware('auth')->group(function () {
+    Route::prefix('settings')->group(function () {
+        Route::get('account', 'UsersController@edit')->name('users.edit');
+        Route::match(['put', 'patch'], 'account', 'UsersController@update')->name('users.update');
+
+        Route::get('password', 'UserPasswordsController@edit')->name('users.password');
+        Route::match(['put', 'patch'], 'password', 'UserPasswordsController@update')->name('users.password.update');
+
+        Route::get('token', 'UserTokensController@edit')->name('users.token');
+        Route::match(['put', 'patch'], 'token', 'UserTokensController@update')->name('users.token.update');
+    });
+
+    Route::resource('newsletter-subscriptions', 'NewsletterSubscriptionsController', ['only' => 'store']);
 });
 
 
-Route::get('email-verification/error', 'Auth\RegisterController@getVerificationError')->name('email-verification.error');
 
-Route::group(['as' => 'bee.'], function () {
-    event(new Routing());
+Route::as('site.')->group(function () {
+    Route::get('/', 'PostsController@index')->name('home');
+    Route::get('/buy', 'TradeController@buy')->name('buy');
+    Route::get('/sell', 'TradeController@sell')->name('sell');
+    Route::get('/advert', 'TradeController@sell')->name('advert');
 
-    Route::post('password/change', 'UserController@changePassword')->middleware('auth');
+    Route::resource('media', 'MediaController', ['only' => 'show']);
+    Route::get('/posts.feed', 'PostsFeedController@index')->name('posts.feed');
+    Route::resource('posts', 'PostsController', ['only' => 'show']);
+    Route::resource('users', 'UsersController', ['only' => 'show']);
 
-    Route::group(['prefix' => 'chat'], function () {
-        Route::get('/upload', 'ChatController@upload');
-
-        Route::post('upload', 'ChatController@store');
-
-
-    });
-
-
-    Route::get('/', 'IndexController@index');
-    Route::get('/test', 'TestController@test')->name('test');
-    Route::get('/mail', 'TestController@mail')->name('test');
-    Route::get('/init', 'InitController@init');
-
-// Search
-    Route::get('search', 'HomeController@search');
-
-// Discussion
-    Route::resource('discussion', 'DiscussionController', ['except' => 'destroy']);
-
-
-
-    Route::get('email-verification/check/{token}', 'Auth\RegisterController@getVerification')->name('email-verification.check');
-
-    //邮箱验证成功
-    Route::get('emails/verification-result/success', 'Auth\RegisterController@verificationSuccess')->name('email-verification.check');
-
-
-    Route::get('/emails/verfication','Auth\RegisterController@verification');
-    //邮箱验证失败
-    Route::get('/emails/verification-result/failure', 'Auth\RegisterController@verificationFailure')->name('email-verification.check');
-
-
-
-// User
-    Route::group(['prefix' => 'user'], function () {
-        Route::get('/', 'UserController@index');
-        Route::get('/avatar/{id}', 'UserInfoController@avatar');
-
-
-        Route::group(['middleware' => 'auth'], function () {
-
-            Route::get('/', 'UserController@index');
-            Route::get('security', 'UserController@security');
-            Route::get('trusted', 'UserController@trusted');
-            Route::get('trusting', 'UserController@trusting');
-
-            Route::get('blocking', 'UserController@blocking');
-
-            Route::get('wallet', 'WalletController@index');
-            Route::get('wallet/deposit/{id}', 'WalletController@depoist');
-            Route::get('wallet/withdraw/{id}', 'WalletController@withdraw');
-
-            Route::get('profile', 'UserController@edit');
-            Route::get('ad', 'UserAdController@index');
-
-
-            Route::put('profile/{id}', 'UserController@update');
-            Route::post('follow/{id}', 'UserController@doFollow');
-            Route::get('notification', 'UserController@notifications');
-            Route::post('notification', 'UserController@markAsRead');
-
-            //更新用户资料
-            Route::post('info', 'UserInfoController@update');
-
-
-            //用户订单
-            Route::get('orders', 'OrderController@overview');
-
-
-
-
-
-        });
-
-        Route::group(['prefix' => '{username}'], function () {
-            // Route::get('/', 'UserController@show');
-            Route::get('comments', 'UserController@comments');
-            Route::get('following', 'UserController@following');
-            Route::get('discussions', 'UserController@discussions');
-        });
-    });
-
-// User Setting
-    Route::group(['middleware' => 'auth', 'prefix' => 'setting'], function () {
-        Route::get('/', 'SettingController@index')->name('setting.index');
-        Route::get('binding', 'SettingController@binding')->name('setting.binding');
-
-        Route::get('notification', 'SettingController@notification')->name('setting.notification');
-        Route::post('notification', 'SettingController@setNotification');
-
-
-    });
-
-
-    Route::group(['prefix' => 'ad'], function () {
-
-        Route::get('create', 'AdController@create')->name('ad.create');
-        Route::get('store', 'AdController@store');
-        Route::get('detail/{id}', 'AdController@detail');
-
-        Route::get('edit/{id}','AdController@edit')->name('ad.edit');
-        Route::get('delete/{id}','AdController@delete')->name('ad.delete');
-
-    });
-
-//Route::get('ad/create', 'AdController@create')->name('ad.create');
-//
-//Route::post('ad/store', 'AdController@store');
-
-
-//Route::get('trade/buy/{coin}', 'TradeController@overview')->name('trade.overview');
-//Route::get('trade/buy/{coin}', 'TradeController@overview')->name('trade.overview');
-
-// Category
-    Route::group(['prefix' => 'trade'], function () {
-
-        Route::get('/', 'TradeController@overview')->name('trade.overview');
-        Route::get('/buy/{coin}', 'TradeController@buy')->name('trade.buy');
-        Route::get('/sell/{coin}', 'TradeController@sell')->name('trade.overview');
-    });
-
-
-    //order
-    Route::group(['prefix' => 'order'], function () {
-
-        Route::get('info/{id}', 'OrderController@info')->name('order.info');
-
-    });
-
-
-// Link
-    Route::get('link', 'LinkController@index');
-
-// Category
-    Route::group(['prefix' => 'category'], function () {
-        Route::get('{category}', 'CategoryController@show');
-        Route::get('/', 'CategoryController@index');
-    });
-
-// Tag
-    Route::group(['prefix' => 'tag'], function () {
-        Route::get('/', 'TagController@index');
-        Route::get('{tag}', 'TagController@show');
-    });
-
-    /* Dashboard Index */
-    Route::group(['prefix' => 'dashboard', 'middleware' => ['auth', 'admin']], function () {
-        Route::get('{path?}', 'HomeController@dashboard')->where('path', '[\/\w\.-]*');
-    });
-
-// Article
-    Route::get('/help', 'ArticleController@index');
-    Route::get('{slug}', 'ArticleController@show');
-
-    Route::get('/home', 'HomeController@index')->name('home');
-
+    Route::get('newsletter-subscriptions/unsubscribe', 'NewsletterSubscriptionsController@unsubscribe')->name('newsletter-subscriptions.unsubscribe');
 
 });
+
+

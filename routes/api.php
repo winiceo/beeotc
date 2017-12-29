@@ -1,139 +1,121 @@
 <?php
+
+use Illuminate\Http\Request;
+
+use Illuminate\Support\Facades\Route;
 use Illuminate\Contracts\Routing\Registrar as RouteContract;
 
 
-
-Route::group([
-    'namespace' => 'Api',
-], function () {
-    Route::post('sms/send',  'NoticeController@sendSms');
-    Route::get('test','VisitorController@index');
-
-    Route::post('chat/upload', 'ChatController@store')->middleware('auth:api');
-
-    Route::post('ad', 'AdController@store')->middleware('auth:api');
-
-//    Route::get('ad/{id}', 'AdController@edit')->middleware('auth:api');
-    Route::get('ad/{id}', 'AdController@edit')->middleware('auth:api');
-
-    Route::any('order', 'OrderController@order_create')->middleware('auth:api');
+//$api->get('/bootstrappers', function ( ) {
+//    $data = [
+//        'app_name' => 'beeotc',
+//    ];
+//    return response()->json($data);
+//
+//});
+//Route::post('/v2/user/login', 'Api\AuthenticateController@login');;
 
 
-    Route::post('finance/withdraw','FinanceController@withdraw')->middleware('auth:api');
+//// $api->get('/bootstrappers', API2\BootstrappersController::class . '@show');
+//
+Route::group(['prefix' => 'test'], function () {
+    Route::match(['GET', 'POST'], '', 'Api\TestController@profile');
 
-
-    Route::group(['prefix' => 'chat'], function () {
-        Route::post('message/send',  'ChatController@send')->middleware('auth:api');
-        Route::post('message/history',  'ChatController@history')->middleware('auth:api');
-        Route::post('order/pay',  'OrderController@order_pay')->middleware('auth:api');
-        Route::post('order/cancel',  'OrderController@order_cancel')->middleware('auth:api');
-        Route::post('order/release',  'OrderController@order_release')->middleware('auth:api');
-        Route::post('order/comment',  'OrderController@order_comment')->middleware('auth:api');
-        Route::post('order/complaint',  'OrderController@order_complaint')->middleware('auth:api');
-    });
-
-
-    Route::group(['prefix' => 'user'], function () {
-        Route::post('safe/check',  'UserController@safeCheck')->middleware('auth:api');
-        Route::post('address', 'AddressController@store')->middleware('auth:api');
+    Route::get('/chat',function(){
+        event(new App\Events\OrderPay(\App\Model\User::find(1),
+            \App\Model\Order::find(1),'234234'));
 
     });
-
-    // File Upload
-    Route::post('file/upload', 'UploadController@fileUpload')->middleware('auth:api');
-    // Edit Avatar
-    Route::post('crop/avatar', 'UserController@cropAvatar')->middleware('auth:api');
-
-    // Comment
-    Route::get('commentable/{commentableId}/comment', 'CommentController@show')->middleware('api');
-    Route::post('comments', 'CommentController@store')->middleware('auth:api');
-    Route::delete('comments/{id}', 'CommentController@destroy')->middleware('auth:api');
-    Route::post('comments/vote/{type}', 'MeController@postVoteComment')->middleware('auth:api');
-    Route::get('tags', 'TagController@getList');
 });
 
 
+Route::group(['prefix' => 'v2', 'namespace' => 'Api'], function (RouteContract $api) {
+    Route::post('user/login', 'AuthenticateController@login');
+    Route::post('user/register', 'AuthenticateController@register');
+
+    $api->group(['prefix' => 'user'], function () use ($api) {
+        $api->post('/profile', 'UserController@profile');
+        $api->post('/logout', 'UserController@logout');
+        $api->post('/safe/check', 'UserController@check');
+        $api->post('/advert', 'AdvertController@getByUser')->middleware(['auth:api']);
+        $api->post('/order', 'OrderController@getByUser')->middleware(['auth:api']);
+
+    });
+//
+//    $api->group('/finance', function () use($api) {
+//        $api->post('/depoist', 'UserController@depoist');
+//        $api->post('/withdraw', 'UserController@withdraw');
+//    })->middleware('auth:api');
+//
+//
+    $api->group(['prefix' => 'wallet', 'middleware' => ['auth:api']], function () use ($api) {
+
+        $api->post('/deposit/{id}', 'WalletController@deposit');
+        $api->post('/withdraw', 'WalletController@withdraw');
+        $api->post('/withdraw/history', 'WalletController@history');
+
+    });
 
 
+    $api->group(['prefix' => 'advert', 'middleware' => ['auth:api']], function () use ($api) {
+        $api->post('', 'AdvertController@overview');
+        $api->post('/store', 'AdvertController@store');
+        $api->post('/detail/{id}', 'AdvertController@show');
+    });
 
 
+    $api->group(['prefix'=>'verifycodes'], function () use ($api) {
+        $api->post('', 'CommonController@captcha');
+        $api->post('/register', 'CommonController@captchaReg');
+    });
 
-Route::group([
-    'middleware' => ['cors'],
-    'prefix' => 'admin',
-    'namespace' => 'Api'], function ( ) {
+    $api->group(['prefix' => 'order', 'middleware' => ['auth:api']], function () use ($api) {
+        $api->post('/detail/{id}', 'OrderController@show');
+        $api->post('/store', 'OrderController@store');
+        $api->post('/pay', 'OrderController@pay');
+        $api->post('/cancel', 'OrderController@cancel');
+        $api->post('/release', 'OrderController@release');
+        $api->post('/comment', 'OrderController@comment');
+        $api->post('/complaint', 'OrderController@complaint');
 
-    Route::get('cms/notice',  'NoticeController@index');
-    Route::get('json/setting',  'HomeController@setting');
+    });
 
+    $api->group(['prefix' => 'im', 'middleware' => ['auth:api']], function () use ($api) {
+        $api->post('/message/send', 'ImController@send');
+        $api->post('/message/history', 'ImController@history');
+        $api->post('/upload', 'ImController@upload');
+    });
 
-
-    /*
-    | 应用启动配置.
-    */
-
-//    $api->get('/bootstrappers', BootstrappersController::class . '@show');
-
-    // Create user authentication token
-    Route::post('tokens',  'TokenController@store');
-    Route::get('tokens',  'TokenController@refresh');
-
-
-    Route::post('login', 'AuthController@login');
-    Route::post('logout', 'AuthController@logout');
-    Route::post('refresh', 'AuthController@refresh');
-    Route::post('me', 'AuthController@me');
-
-
-
-
-    // Refresh token
-    //$api->patch('/tokens/{token}',  TokenController::class . '@refresh');
 });
 
-Route::group([
-    'middleware' => ['auth:api', 'admin'],
-    'namespace' => 'Api',
-], function () {
 
+Route::prefix('v1')->namespace('Api\V1')->group(function () {
+    Route::middleware('auth:api')->group(function () {
+        // Comments
+        Route::resource('comments', 'CommentsController', ['only' => 'destroy']);
+        Route::resource('posts.comments', 'PostCommentsController', ['only' => 'store']);
 
+        // Posts
+        Route::resource('posts', 'PostsController', ['only' => ['update', 'store', 'destroy']]);
+        Route::delete('/posts/{post}/thumbnail', 'PostsThumbnailController@destroy')->name('posts.thumbnail.destroy');
+        Route::post('/posts/{post}/likes', 'PostLikesController@store')->name('posts.likes.store');
+        Route::delete('/posts/{post}/likes', 'PostLikesController@destroy')->name('posts.likes.destroy');
 
+        // Users
+        Route::resource('users', 'UsersController', ['only' => 'update']);
+    });
 
-    Route::get('statistics', 'HomeController@statistics');
+    Route::post('/authenticate', 'Auth\AuthenticateController@authenticate')->name('authenticate');
 
-    Route::resource('user', 'UserController', ['except' => ['create', 'show']]);
-    Route::post('/user/{id}/status', 'UserController@status');
+    // Comments
+    Route::resource('posts.comments', 'PostCommentsController', ['only' => 'index']);
+    Route::resource('users.comments', 'UserCommentsController', ['only' => 'index']);
+    Route::resource('comments', 'CommentsController', ['only' => ['index', 'show']]);
 
-    Route::resource('article', 'ArticleController', ['names' => [
-        'index' => 'api.article.index',
-        'store' => 'api.article.store',
-        'edit' => 'api.article.edit',
-        'update' => 'api.article.update',
-        'destroy' => 'api.article.destroy',
-    ],'except' => ['create', 'show']]);
+    // Posts
+    Route::resource('posts', 'PostsController', ['only' => ['index', 'show']]);
+    Route::resource('users.posts', 'UserPostsController', ['only' => 'index']);
 
-    Route::resource('category', 'CategoryController', ['except' => ['create', 'show']]);
-    Route::get('/categories', 'CategoryController@getList');
-    Route::post('/category/{id}/status', 'CategoryController@status');
-
-    Route::resource('discussion', 'DiscussionController', ['except' => ['create', 'show']]);
-    Route::post('/discussion/{id}/status', 'DiscussionController@status');
-
-    Route::resource('comment', 'CommentController', ['except' => ['create']]);
-
-    Route::resource('tag', 'TagController', ['except' => ['create', 'show']]);
-    Route::post('/tag/{id}/status', 'TagController@status');
-
-    Route::resource('link', 'LinkController', ['except' => ['create', 'show']]);
-    Route::post('/link/{id}/status', 'LinkController@status');
-
-    Route::get('visitor', 'VisitorController@index');
-
-    Route::get('upload', 'UploadController@index');
-    Route::post('upload', 'UploadController@uploadForManager');
-    Route::post('folder', 'UploadController@createFolder');
-    Route::post('folder/delete', 'UploadController@deleteFolder');
-    Route::post('file/delete', 'UploadController@deleteFile');
-
-    Route::get('system', 'SystemController@getSystemInfo');
+    // Users
+    Route::resource('users', 'UsersController', ['only' => ['index', 'show']]);
 });

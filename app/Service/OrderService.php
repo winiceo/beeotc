@@ -9,24 +9,48 @@
 namespace App\Service;
 
 
-use App\Models\Order;
-use App\Models\UserBalance;
-use App\Repositories\OrderRepository;
+use App\Model\Order;
+use App\Model\OrderLog;
+use App\Model\User;
+use App\Model\UserBalance;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Config;
+use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Redis;
+use Monolog\Logger;
+use Symfony\Component\HttpFoundation\Request;
+
 
 class OrderService
 {
     protected $order;
 
-    public function __construct($order)
+     public function __construct(Order $order)
     {
+        $this->order=$order;
 
-        $this->order = $order;
 
+    }
+    public static function get($id)
+    {
+        $advert=Order::find($id);
+        return $advert;
+    }
+
+    public static function log($data){
+
+         OrderLog::create($data);
+
+         Log::info('order_status: ' , $data);
+
+    }
+
+
+    public static function store($data){
+        $ret =  Order::create($data);
+
+
+        return $ret;
     }
 
 
@@ -58,13 +82,12 @@ class OrderService
         $coin_type=$this->order->coin_type;
         $block_balance=$this->order->qty;
 
-        DB::table('user_balances')
-            ->where('user_id',$uid)
+        UserBalance::where('user_id',$uid)
             ->where('coin_type',$coin_type)
             ->increment('block_balance', $block_balance);
 
 
-        Log::info('increment_balance: '.$block_balance);
+        Log::info('balance',['message'=>'锁定卖家币 increment balance: '.$block_balance]);
 
     }
 
@@ -72,16 +95,18 @@ class OrderService
     public   function sellerUnlockOrder( ){
         $uid=$this->order->ad_user_id;
         $coin_type=$this->order->coin_type;
-        $block_balance=$this->order->block_balance;
+        $block_balance=$this->order->qty;
 
 
-        DB::table('user_balances')
-            ->where('user_id',$uid)
+        UserBalance::where('user_id',$uid)
             ->where('coin_type',$coin_type)
             ->decrement('block_balance', $block_balance);
 
-        Log::info('unlock_balance: '.$block_balance);
-
+        OrderService::log([
+            "order_id"=>$this->order->id,
+            "message"=>\GuzzleHttp\json_encode(["message"=>'seller unlock']),
+            "status"=>0
+        ]);
 
     }
 
@@ -95,26 +120,38 @@ class OrderService
             $coin_type=$this->order->coin_type;
             $block_balance=$this->order->qty;
 
-
-
             //解锁
-            DB::table('user_balances')
-                ->where('user_id',$uid)
+            UserBalance::where('user_id',$uid)
                 ->where('coin_type',$coin_type)
                 ->decrement('block_balance', $block_balance);
+                //->decrement('total_balance', $block_balance);
+
+            OrderService::log([
+                "order_id"=>$this->order->id,
+                "message"=>\GuzzleHttp\json_encode(["message"=>'seller unblock','block_balance'=>$block_balance]),
+                "status"=>0
+            ]);
 
             //减少总资产
-            DB::table('user_balances')
-                ->where('user_id',$uid)
+            UserBalance::where('user_id',$uid)
                 ->where('coin_type',$coin_type)
                 ->decrement('total_balance', $block_balance);
 
+            OrderService::log([
+                "order_id"=>$this->order->id,
+                "message"=>\GuzzleHttp\json_encode(["message"=>'seller decrement','block_balance'=>$block_balance]),
+                "status"=>0
+            ]);
 
-            DB::table('user_balances')
-                ->where('user_id',$this->order->user_id)
+            UserBalance::where('user_id',$this->order->user_id)
                 ->where('coin_type',$coin_type)
                 ->increment('total_balance', $block_balance);
 
+            OrderService::log([
+                "order_id"=>$this->order->id,
+                "message"=>\GuzzleHttp\json_encode(["message"=>'buyer increment','balance'=>$block_balance]),
+                "status"=>0
+            ]);
 
         }
 
@@ -149,6 +186,27 @@ class OrderService
             }
 
         }
+    }
+
+    public static function getByUser(Request $request,User $user, int $perPage = 20): Paginator
+    {
+
+        $order_by = $request->get('order_by', "id");
+        $desc = $request->get('desc', 1);
+
+        return Order::with('aduser')->where(function ($query) use ($request,$user) {
+
+            $query->where('user_id', $user->id);
+            $trade_type = $request->get('trade_type', -1);
+            if($trade_type!==-1) {
+                $query->where('trade_type', $trade_type);
+            }
+            $coin_type = $request->get('coin_type', -1);
+            if($coin_type!==-1){
+                $query->where('coin_type', $coin_type);
+            }
+        })->orderBy($order_by, $desc==1?"desc":"asc")
+        ->paginate($perPage);
     }
 
 }
