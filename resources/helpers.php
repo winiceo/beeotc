@@ -20,14 +20,27 @@ if (! function_exists('md_to_html')) {
     }
 }
 
-if (! function_exists('route_to_reply_able')) {
-    /**
-     * Returns the route for the replyAble.
-     */
-    function route_to_reply_able($replyAble): string
+
+
+
+if(!function_exists('leven')) {
+
+
+// 设置 配置文件;
+    function leven($key = NULL, $value = NULL)
     {
-        if ($replyAble instanceof App\Models\Thread) {
-            return route('thread', $replyAble->slug());
+        static $_config = array();
+        //如果是数组,写入配置数组,以全字母大写的形式返回;
+        if (is_array($key)) {
+            return $_config = array_merge($_config,  ($key));
         }
+        $key =  ($key);
+        if (!is_null($value)) {
+            return $_config[$key] = $value;
+        }
+        if (empty($key)) {
+            return $_config;
+        }
+        return isset($_config[$key]) ? $_config[$key] : NULL;
     }
 }

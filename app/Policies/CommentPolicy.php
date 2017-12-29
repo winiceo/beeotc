@@ -23,7 +23,7 @@ class CommentPolicy
     /**
      * Determine whether the user can delete the comment.
      *
-     * @param  \App\User  $user
+     * @param  \ App\Model\User  $user
      * @param  \App\Comment  $comment
      * @return boolean
      */

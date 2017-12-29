@@ -2,7 +2,7 @@
 
 namespace App\Model;
 
-use App\User;
+use  App\Model\User;
 
 
 /**
@@ -51,7 +51,7 @@ class Order extends Model
 
         return $this->hasMany(OrderComment::class)->orderBy('created_at', 'desc');
 
-        //return $this->hasOne('App\User', 'id', 'ad_user_id');
+        //return $this->hasOne(' App\Model\User', 'id', 'ad_user_id');
 
     }
 

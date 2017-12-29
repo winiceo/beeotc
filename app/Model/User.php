@@ -15,7 +15,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'provider', 'provider_id', 'registered_at', 'api_token'
+        'username', 'email', 'password', 'provider', 'provider_id', 'registered_at', 'api_token'
     ];
 
     /**
@@ -43,7 +43,7 @@ class User extends Authenticatable
      */
     public function getFullnameAttribute(): string
     {
-        return title_case($this->name);
+        return title_case($this->username);
     }
 
     /**

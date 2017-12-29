@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\User;
+use  App\Model\User;
 use App\Models\Thread;
 
 class ThreadPolicy

@@ -2,12 +2,12 @@
 
 namespace App\Jobs;
 
-use App\User;
+use  App\Model\User;
 
 class UnbanUser
 {
     /**
-     * @var \App\User
+     * @var \ App\Model\User
      */
     private $user;
 

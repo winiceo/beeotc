@@ -6,7 +6,7 @@ use function App\Helpers\bee_config;
 use App\Helpers\CoinHelpers;
 use App\Http\Requests\AdRequest;
 
-use App\Repositories\AdRepository;
+use App\Repositories\AdvertRepository;
 use App\Repositories\DiscussionRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\TagRepository;

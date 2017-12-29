@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use App\Rules\CanBeAuthor;
-use App\User;
+use  App\Model\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 

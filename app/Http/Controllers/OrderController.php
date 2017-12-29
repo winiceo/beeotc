@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 
-use App\Models\Order;
+use App\Model\Order;
 use App\Repositories\OrderRepository;
-use App\User;
+use App\Model\User;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;

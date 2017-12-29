@@ -3,66 +3,73 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\CoinHelpers;
-use App\Models\Ad;
+use App\Model\Advert;
 use App\Http\Requests;
-use App\Queries\SearchAds;
+use App\Queries\SearchAdvert;
 use App\Queries\SearchTrade;
-use App\Repositories\AdRepository;
+use App\Repositories\AdvertRepository;
 use Illuminate\Http\Request;
 use App\Repositories\ArticleRepository;
 
 class TradeController extends Controller
 {
-    protected $ad;
+    protected $advert;
 
-    public function __construct(AdRepository $ad)
+    public function __construct(AdvertRepository $advert)
     {
-        $this->ad = $ad;
+        $this->advert = $advert;
     }
 
 
     /**
      * Display the articles resource.
-     * 
+     *
      * @return mixed
      */
     public function overview(Request $request)
     {
-       // $ads = $this->ad->page(config('trade.ad.number'), config('trade.ad.sort'), config('trade.ad.sortColumn'));
-        $ads=SearchTrade::get($request);
+        // $adverts = $this->advert->page(config('tradverte.advert.number'), config('tradverte.advert.sort'), config('tradverte.advert.sortColumn'));
+        $adverts = SearchTrade::get($request);
 
-        $coins=CoinHelpers::getIds();
+        $coins = CoinHelpers::getIds();
 
-        foreach ($ads as $k=>$v){
-            $ads[$k]["coin_name"]=$coins[$v['coin_type']]["name"];
+        foreach ($adverts as $k => $v) {
+            $adverts[$k]["coin_name"] = $coins[$v['coin_type']]["name"];
         }
 
         leven($request->all());
 
-        return view('trade.index', compact('ads'));
+        return view('trade.index', compact('adverts'));
     }
 
 
-
-    public function buy(Requests\AdRequest $request,$coin){
-
-      //  dump($request);
+    public function buy(Request $request, $coin)
+    {
 
 
-       // $search = request('search');//$search ? SearchAds::get($search) :
-        $ads =  Ad::feedPaginated();
-        //dump($ads);
+        $adverts = Advert::feedPaginated();
 
-        return view('trade.buy', compact('ads'));
+       // dump($adverts);
+
+        return view('trade.index', compact('adverts'));
 
     }
+    public function sell(Request $request, $coin)
+    {
 
 
+        $adverts = Advert::feedPaginated();
+
+       // dump($adverts);
+
+        return view('trade.index', compact('adverts'));
+
+    }
 
 
     /**
      * Display the article resource by article slug.
-     * 
+     *
      * @param  string $slug
      * @return mixed
      */

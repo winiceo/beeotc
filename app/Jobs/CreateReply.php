@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\User;
+use  App\Model\User;
 use App\Models\Reply;
 use App\Models\ReplyAble;
 use App\Http\Requests\CreateReplyRequest;
@@ -20,7 +20,7 @@ class CreateReply
     private $ip;
 
     /**
-     * @var \App\User
+     * @var \ App\Model\User
      */
     private $author;
 

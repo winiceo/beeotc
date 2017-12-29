@@ -12,10 +12,22 @@
     @endauth
 
     <title>{{ config('app.name', 'Laravel') }}</title>
+    <script>
 
+        window.App=@json(leven());
+        window.Language = '{{ config('app.locale') }}';
+
+        window.Laravel = <?php echo json_encode([
+            'csrfToken' => csrf_token(),
+        ]); ?>
+
+
+        // window.app=@json($app);
+    </script>
     <!-- Styles -->
-    <link href="/css/app.css" rel="stylesheet">
-</head>
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+ </head>
 <body class="bg-light">
     <div id="app">
         @include('shared/navbar')
@@ -37,7 +49,11 @@
     @if (Request::is('posts/*'))
         <script src="//{{ Request::getHost() }}:8888/socket.io/socket.io.js"></script>
     @endif
-    <script src="/js/app.js"></script>
+
+    <script src="{{ mix('js/manifest.js') }}"></script>
+    <script src="{{ mix('js/vendor.js') }}"></script>
+    <script src="{{ mix('js/app.js') }}"></script>
+
     @stack('inline-scripts')
 </body>
 </html>

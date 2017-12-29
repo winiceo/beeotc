@@ -60,5 +60,13 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'role' => \App\Http\Middleware\RoleMiddleware::class,
 
+
+//        'admin' => \App\Http\Middleware\MustBeAdmin::class,
+//
+//        'cors' => \Barryvdh\Cors\HandleCors::class,
+//
+//        'isVerified' => \Jrean\UserVerification\Middleware\IsVerified::class,
+
+
     ];
 }

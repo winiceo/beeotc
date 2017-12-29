@@ -7,11 +7,11 @@
 
         {!! Form::open(['route' => 'register', 'role' => 'form', 'method' => 'POST']) !!}
             <div class="form-group">
-                {!! Form::label('name', __('validation.attributes.name'), ['class' => 'control-label']) !!}
-                {!! Form::text('name', old('name'), ['class' => 'form-control' . ($errors->has('name') ? ' is-invalid' : ''), 'required', 'autofocus']) !!}
+                {!! Form::label('username', __('validation.attributes.name'), ['class' => 'control-label']) !!}
+                {!! Form::text('username', old('username'), ['class' => 'form-control' . ($errors->has('username') ? ' is-invalid' : ''), 'required', 'autofocus']) !!}
 
-                @if ($errors->has('name'))
-                    <span class="invalid-feedback">{{ $errors->first('name') }}</span>
+                @if ($errors->has('username'))
+                    <span class="invalid-feedback">{{ $errors->first('username') }}</span>
                 @endif
             </div>
 

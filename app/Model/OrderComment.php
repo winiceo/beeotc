@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Model;
-use App\User;
+use  App\Model\User;
 
 
 class OrderComment extends Model

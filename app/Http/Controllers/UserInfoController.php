@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\UserBalance;
-use App\User;
+use App\Model\UserBalance;
+use  App\Model\User;
 use Auth;
 use Hash;
 use Image;

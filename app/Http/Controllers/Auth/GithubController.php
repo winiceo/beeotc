@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use Auth;
-use App\User;
+use  App\Model\User;
 use Laravel\Socialite\Two\InvalidStateException;
 use Socialite;
 use App\Social\GithubUser;

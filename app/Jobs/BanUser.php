@@ -2,13 +2,13 @@
 
 namespace App\Jobs;
 
-use App\User;
+use  App\Model\User;
 use Carbon\Carbon;
 
 class BanUser
 {
     /**
-     * @var \App\User
+     * @var \ App\Model\User
      */
     private $user;
 

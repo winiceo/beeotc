@@ -9,13 +9,13 @@
       {!! Form::model($user, ['method' => 'PATCH', 'route' => ['users.update', $user]]) !!}
 
         <div class="form-group row">
-          {!! Form::label('name', __('users.attributes.name'), ['class' => 'col-sm-2 col-form-label']) !!}
+          {!! Form::label('username', __('users.attributes.username'), ['class' => 'col-sm-2 col-form-label']) !!}
 
           <div class="col-sm-5">
-            {!! Form::text('name', null, ['class' => 'form-control' . ($errors->has('name') ? ' is-invalid' : ''), 'placeholder' => __('users.placeholder.name'), 'required']) !!}
+            {!! Form::text('username', null, ['class' => 'form-control' . ($errors->has('username') ? ' is-invalid' : ''), 'placeholder' => __('users.placeholder.username'), 'required']) !!}
 
-            @if ($errors->has('name'))
-                <span class="invalid-feedback">{{ $errors->first('name') }}</span>
+            @if ($errors->has('username'))
+                <span class="invalid-feedback">{{ $errors->first('username') }}</span>
             @endif
           </div>
         </div>

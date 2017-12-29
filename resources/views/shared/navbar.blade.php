@@ -16,15 +16,15 @@
                 </li>
 
                 <li class="nav-item">
-                    {{ link_to_route('site.buy', __('site.buy'), [], ['class' => 'nav-link']) }}
+                    {{ link_to_route('site.trade.buy', __('site.trade.buy'), ['coin'=>1], ['class' => 'nav-link']) }}
                 </li>
 
                 <li class="nav-item">
-                    {{ link_to_route('site.sell', __('site.sell'), [], ['class' => 'nav-link']) }}
+                    {{ link_to_route('site.trade.sell', __('site.trade.sell'), ['coin'=>1], ['class' => 'nav-link']) }}
                 </li>
 
                 <li class="nav-item">
-                    {{ link_to_route('site.advert', __('site.advert create'), [], ['class' => 'nav-link']) }}
+                    {{ link_to_route('site.advert.create', __('site.advert.create'), [], ['class' => 'nav-link']) }}
                 </li>
 
 
@@ -38,12 +38,14 @@
                 @else
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            {{ Auth::user()->name }}
+                            {{ Auth::user()->username }}
                         </a>
 
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             {{ link_to_route('users.show', __('users.public_profile'), Auth::user(), ['class' => 'dropdown-item']) }}
                             {{ link_to_route('users.edit', __('users.settings'), [], ['class' => 'dropdown-item']) }}
+                            {{ link_to_route('site.users.orders', __('users.orders'), [], ['class' => 'dropdown-item']) }}
+                            {{ link_to_route('site.users.adverts', __('users.adverts'), [], ['class' => 'dropdown-item']) }}
 
                             <div class="dropdown-divider"></div>
 

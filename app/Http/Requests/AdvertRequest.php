@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\User;
+use  App\Model\User;
 use App\Validation\SpamRule;
 use App\Validation\DoesNotContainUrlRule;
 

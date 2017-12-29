@@ -2,7 +2,7 @@
 
 namespace App\Spam;
 
-use App\User;
+use  App\Model\User;
 
 interface SpamDetector
 {

@@ -2,13 +2,13 @@
 
 namespace App\Jobs;
 
-use App\User;
+use  App\Model\User;
 use App\Http\Requests\UpdateProfileRequest;
 
 class UpdateProfile
 {
     /**
-     * @var \App\User
+     * @var \ App\Model\User
      */
     private $user;
 

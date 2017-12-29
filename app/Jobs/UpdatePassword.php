@@ -2,13 +2,13 @@
 
 namespace App\Jobs;
 
-use App\User;
+use  App\Model\User;
 use Illuminate\Contracts\Hashing\Hasher;
 
 class UpdatePassword
 {
     /**
-     * @var \App\User
+     * @var \ App\Model\User
      */
     private $user;
 

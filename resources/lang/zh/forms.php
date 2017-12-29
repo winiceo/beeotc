@@ -3,12 +3,12 @@
 return [
 
   'actions' => [
-    'save' => 'Save',
-    'update' => 'Update',
-    'back' => 'Back',
-    'generate' => 'Generate',
-    'delete' => 'Delete',
-    'add' => 'Add',
+    'save' => '保存',
+    'update' => '更新',
+    'back' => '返回',
+    'generate' => '生成',
+    'delete' => '删除',
+    'add' => '添加',
   ],
 
   'comments' => [
